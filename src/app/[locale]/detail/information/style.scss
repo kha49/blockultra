@@ -1,0 +1,435 @@
+.coin {
+  border-radius: 8px;
+  box-shadow: 0px 0px 16px 0px rgba(51, 55, 71, 0.08);
+  background-color: #fcfcfd;
+
+  &__header {
+    padding-bottom: 24px;
+    border-bottom: 1px solid #e5e6eb;
+
+    &-tag-mb {
+      display: none;
+    }
+  }
+
+  &__name {
+    display: flex;
+    align-items: center;
+    color: #333747;
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 32px;
+  }
+
+  &__tag {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    border-radius: 4px;
+    background-color: #eef2f6;
+    font-size: 12px;
+    color: #9fa4b7;
+    font-weight: 500;
+    line-height: 20px;
+  }
+
+  &__tag--all {
+    color: #6b79ff;
+  }
+
+  &__vertical-line {
+    width: 2px;
+    height: 24px;
+    background-color: #9fa4b7;
+    margin: 0 16px;
+  }
+
+  &__rating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  &__circle {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #9fa4b7;
+    margin: 0 16px;
+  }
+
+  &__actions {
+    .action {
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #e5e6eb;
+
+      &:hover {
+        background-color: #e5e6eb;
+      }
+    }
+  }
+
+  &__tags {
+    span {
+      font-size: 14px;
+    }
+  }
+
+  &__body {
+    gap: 70px;
+  }
+
+  &__value {
+    .price {
+      font-size: 40px;
+      font-weight: 800;
+      line-height: 48px;
+      white-space: nowrap;
+    }
+
+    .price--increase {
+      color: #1ab369;
+      font-weight: 600;
+      line-height: 24px;
+      margin-left: 16px;
+    }
+  }
+
+  &__range {
+    margin: 24px 0 12px;
+
+    span {
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 20px;
+    }
+
+    .price__range {
+      position: relative;
+      width: 94px;
+      margin: 0 8px;
+      height: 6px;
+      border-radius: 20px;
+      background-color: #e5e6eb;
+    }
+
+    .price__range--active {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 75%;
+      height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(#547aff, #4551de);
+    }
+
+    .chakra-menu__menu-button {
+      margin-left: 12px;
+      padding: 0 8px;
+      background-color: #eef2f6;
+      height: 20px;
+
+      > span {
+        font-size: 12px;
+        line-height: 20px;
+        color: #9fa4b7;
+      }
+    }
+  }
+
+  &__sub-price {
+    margin-bottom: 4px;
+    .sub-price {
+      color: #333747;
+      margin-right: 4px;
+    }
+
+    .price-change {
+      font-size: 12px;
+      color: #1ab369;
+    }
+  }
+
+  &__label {
+    color: #9fa4b7;
+    margin-right: 4px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+  }
+
+  &__social {
+    gap: 111px;
+  }
+
+  &__contract {
+    margin-top: 27px;
+
+    .contract {
+      background-color: #eef2f6;
+      width: fit-content;
+    }
+
+    .chakra-menu__menu-button {
+      padding: 0;
+      height: 20px;
+
+      > span {
+        font-size: 14px;
+        line-height: 20px;
+        font-weight: 500;
+        color: #4f556e;
+      }
+    }
+
+    .copy-text {
+      color: #6b79ff;
+    }
+  }
+
+  &__category {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 36px;
+
+    .category {
+      width: calc(100% / 3);
+      height: fit-content;
+
+      &__number {
+        font-weight: 600;
+        line-height: 24px;
+        white-space: nowrap;
+
+        &--increase {
+          color: #1ab369;
+          font-size: 12px;
+          margin-left: 4px;
+        }
+
+        &--code {
+          font-size: 16px;
+          margin-left: 4px;
+          color: #9fa4b7;
+          font-weight: 500;
+        }
+
+        small {
+          font-size: 12px;
+          color: #9fa4b7;
+          margin-left: 4px;
+        }
+      }
+    }
+  }
+
+  &__title {
+    display: flex;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 20px;
+    color: #9fa4b7;
+
+    svg {
+      margin-left: 4px;
+    }
+  }
+
+  &__links {
+    margin-top: 27px;
+
+    .more {
+      width: 28px;
+      height: 28px;
+      line-height: 28px;
+      text-align: center;
+      border-radius: 50%;
+      font-size: 12px;
+      color: #333747;
+      background-color: #eef2f6;
+      font-weight: 600;
+    }
+  }
+
+  .wallets-title {
+    padding: 0 12px;
+    span {
+      display: block;
+      width: 100%;
+      font-size: 16px;
+      padding-bottom: 16px;
+      font-weight: 700;
+      border-bottom: 1px solid #e5e6eb;
+    }
+  }
+
+  .wallets-item {
+    div {
+      display: flex;
+      width: 100%;
+      padding: 6px 12px;
+      align-items: center;
+      font-weight: 700;
+
+      &:hover {
+        background-color: #eef2f6;
+      }
+    }
+  }
+}
+
+.container {
+  padding: 0 5rem;
+}
+
+@media screen and (max-width: 1536px) {
+  .container {
+    padding: 0;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .coin {
+    &__header {
+      flex-wrap: wrap;
+
+      &-category {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        margin-top: 16px;
+      }
+
+      .coin__actions {
+        margin-bottom: 0;
+      }
+    }
+
+    &__body {
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    &__value {
+      width: 100%;
+    }
+
+    &__category {
+      width: 100%;
+    }
+
+    &__social {
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    &__contract {
+      width: 100%;
+    }
+
+    &__links {
+      width: calc(50% - 16px);
+      margin-top: 0;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .coin {
+    &__header {
+      &-category {
+        flex-wrap: wrap;
+
+        > div {
+          width: 100%;
+          justify-content: flex-start;
+        }
+
+        .coin__actions {
+          margin-bottom: 16px;
+        }
+      }
+
+      &-info {
+        flex-wrap: wrap;
+
+        .coin__name {
+          width: 100%;
+        }
+
+        .coin__vertical-line {
+          display: none;
+        }
+      }
+
+      &-tag {
+        display: none;
+      }
+
+      &-tag-mb {
+        display: flex;
+        width: 100%;
+        gap: 8px;
+      }
+
+      &-logo {
+        > img {
+          width: 56px;
+          height: 56px;
+          object-fit: contain;
+        }
+      }
+    }
+
+    &__value {
+      .price {
+        font-size: 26px;
+      }
+    }
+    &__range {
+      margin-top: 8px;
+    }
+  }
+}
+
+@media screen and (max-width: 568px) {
+  .coin {
+    &__category {
+      row-gap: 12px;
+
+      .category {
+        width: 50%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .coin {
+    &__links {
+      width: 100%;
+
+      > div {
+        justify-content: center;
+      }
+    }
+
+    &__contract {
+      .contract {
+        width: 100%;
+
+        .chakra-button {
+          flex: 1;
+
+          > span:first-child {
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+    }
+  }
+}

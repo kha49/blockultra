@@ -1,0 +1,37 @@
+.chakra-accordion__panel {
+  .chakra-input,
+  .chakra-select {
+    border-color: #d1d2dc;
+    font-size: 14px;
+
+    &:focus {
+      border-color: #d1d2dc;
+      box-shadow: none;
+    }
+  }
+}
+
+.btn-apply {
+  background: linear-gradient(180deg, #547aff 0%, #4551de 100%);
+  color: #fff;
+
+  &:hover {
+    background: linear-gradient(180deg, #547aff 0%, #4551de 100%);
+    opacity: 0.9;
+  }
+}
+
+.filter-wrapper {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: #e5e6eb;
+    border-radius: 32px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+}
