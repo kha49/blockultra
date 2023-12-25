@@ -27,3 +27,13 @@ function simpleStringify(object: any) {
   }
   return JSON.stringify(simpleObject); // returns cleaned up JSON
 }
+
+export function caculatorAverage24h(price: any, histPrice: any) {
+  if (price && histPrice) {
+    const currentPrice = price ? price['USD'] : 0;
+    const usdHistPrice = histPrice ? histPrice['24H']['USD'] : 0;
+    const average = (currentPrice - usdHistPrice) / usdHistPrice;
+    return average;
+  }
+  return 'N/A';
+}

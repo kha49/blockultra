@@ -7,6 +7,7 @@ import {
   IconTrending,
 } from '@/assets/icons';
 import IconFundraising from '@/assets/icons/IconFundraising';
+import IconUpcoming from '@/assets/icons/IconUpcoming';
 
 const data: any = [
   {
@@ -24,7 +25,7 @@ const data: any = [
   {
     id: 'gainers',
     icon: <IconGainers />,
-    label: 'Gainers&Losers',
+    label: 'Gainers & Losers',
     isActive: false,
   },
   {
@@ -37,6 +38,12 @@ const data: any = [
     id: 'fundraising',
     icon: <IconFundraising />,
     label: 'Fundraising',
+    isActive: false,
+  },
+  {
+    id: 'upcoming',
+    icon: <IconUpcoming />,
+    label: 'Upcoming IDO/IEO',
     isActive: false,
   },
 ];
@@ -69,7 +76,7 @@ const HomeTabs = ({ currentTab, setCurrentTab }: IProps) => {
             onClick={() => setCurrentTab(tab.id)}
           >
             <div className='min-w-[20px]'>{tab.icon}</div>
-            <span className='text-lg lg:text-xl'>{tab.label}</span>
+            <span className='text-lg lg:text-xl whitespace-nowrap'>{tab.label}</span>
           </div>
         ))}
       </div>

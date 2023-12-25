@@ -14,6 +14,10 @@
 
     .ant-tabs-tab-btn {
       padding: 0 32px;
+
+      &:hover {
+        color: #5766ff;
+      }
     }
 
     .ant-tabs-ink-bar {

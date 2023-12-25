@@ -1,4 +1,33 @@
-.tab-trending .ant-tabs-tab-btn {
-  display: flex;
-  align-items: center;
+.tab-trending {
+  .ant-tabs {
+    .ant-tabs-tab {
+      @media screen and (min-width: 1024px) {
+        font-size: 16px;
+      }
+
+      &.ant-tabs-tab-active {
+        .ant-tabs-tab-btn {
+          color: #5766ff;
+        }
+      }
+    }
+
+    .ant-tabs-tab-btn {
+      padding: 0 32px;
+      display: flex;
+      align-items: center;
+
+      &:hover span {
+        color: #5766ff;
+      }
+    }
+
+    .ant-tabs-ink-bar {
+      background-color: #5766ff;
+    }
+  }
+
+  .ant-tabs .ant-tabs-tab + .ant-tabs-tab {
+    margin: 0;
+  }
 }

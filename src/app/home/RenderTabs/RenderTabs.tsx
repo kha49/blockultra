@@ -2,11 +2,12 @@
 
 import React, { useState } from 'react';
 import HomeTabs from '../tabs';
-import AllCoin from '../coin';
+import Coins from '../coin';
 import Categories from '../categories';
 import Gainers from '../gainers';
 import Trending from '../trending';
 import Fundraising from '../fundraising';
+import UpComing from '../up-coming';
 
 const RenderTabs = () => {
   const [currentTab, setCurrentTab] = useState<string>('all_coin');
@@ -25,9 +26,11 @@ const RenderTabs = () => {
         return <Trending />;
       case 'fundraising':
         return <Fundraising />;
+      case 'upcoming':
+        return <UpComing />;
       case 'all_coin':
       default:
-        return <AllCoin />;
+        return <Coins />;
     }
   };
 

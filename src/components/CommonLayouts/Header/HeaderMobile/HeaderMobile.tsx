@@ -20,13 +20,15 @@ const HeaderMobile = () => {
 
   const openMobileHandler = () => {
     setActiveMenuMobile(true);
+    document.body.style.overflow = 'hidden';
   };
 
   const closeMobileHandler = () => {
     setActiveMenuMobile(false);
+    document.body.style.overflow = 'auto';
   };
   return (
-    <div className='block lg:hidden'>
+    <div className='block xl:hidden'>
       <div className='w-full px-8 py-3'>
         <Marquee />
       </div>

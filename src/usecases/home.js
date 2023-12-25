@@ -6,6 +6,12 @@ const baseUrl = 'api/home/';
 
 export const FetchCoins = (params) => apiClient.get(baseUrl + 'coins', params);
 
+export const SearchCoinsFilter = (params) =>
+  apiClient.get(baseUrl + 'coins/search', params);
+
+export const SearchCategoriesFilter = (params) =>
+  apiClient.get(baseUrl + 'categories/search', params);
+
 export const FetchCategories = (params) =>
   apiClient.get(baseUrl + 'categories', params);
 

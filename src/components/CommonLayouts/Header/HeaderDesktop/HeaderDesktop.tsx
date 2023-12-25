@@ -14,7 +14,7 @@ const HeaderDesktop = () => {
   const t = useTranslations('Header');
 
   return (
-    <div className='hidden lg:block'>
+    <div className='hidden xl:block'>
       <div className='z-[999] border-b border-solid border-grey-300'>
         <div className='mx-auto max-w-2xl flex items-center px-4 justify-between gap-8 py-3'>
           <div className='flex-grow'>

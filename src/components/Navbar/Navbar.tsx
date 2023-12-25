@@ -86,7 +86,7 @@ const Navbar = () => {
             },
             {
               id: 3,
-              name: 'Newest NFTs',
+              name: 'New NFTs',
               icons: <IconNewestNFTs />,
             },
           ],

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
-import './style.scss';
 import { Pagination, Select, Table } from 'antd';
 import type { PaginationProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { FetchFundraisings } from '../../../usecases/home';
+import { FetchUpComings } from '../../../usecases/home';
+import './style.scss';
 
 const columns: ColumnsType<any> = [
   {
@@ -23,24 +23,24 @@ const columns: ColumnsType<any> = [
     render: (_, value) => {
       return (
         <p className='inline-flex items-center'>
-          <img src={value.icon} width={32} />
+          <img src={value.image} width={32} />
           <span className='ml-2'>{value.name}</span>
         </p>
       );
     },
   },
   {
-    key: 'date',
-    title: 'Date',
-    width: 91,
+    key: 'initialCap',
+    title: 'Initial Cap',
+    width: 151,
     align: 'left',
     render: (_, value) => {
-      return value.date;
+      return value.initialCap;
     },
   },
   {
-    key: 'amountRaised',
-    title: 'Amount Raised',
+    key: 'totalRaise',
+    title: 'Total Raise',
     width: 151,
     align: 'right',
     render: (_, value) => {
@@ -48,8 +48,8 @@ const columns: ColumnsType<any> = [
     },
   },
   {
-    key: 'round',
-    title: 'Round',
+    key: 'bankers',
+    title: 'Bankers',
     width: 167,
     align: 'right',
     render: (_, value) => {
@@ -57,37 +57,37 @@ const columns: ColumnsType<any> = [
     },
   },
   {
-    key: 'valuation',
-    title: 'Valuation',
-    width: 186,
-    align: 'right',
-    render: (_, value) => {
-      return value.valuation;
-    },
-  },
-  {
-    key: 'backers',
-    title: 'Backers',
-    width: 168,
-    align: 'right',
-    render: (_, value) => {
-      return value.backers;
-    },
-  },
-  {
     key: 'category',
     title: 'Category',
-    width: 261,
+    width: 186,
     align: 'right',
     render: (_, value) => {
       return value.category.name;
     },
   },
+  {
+    key: 'launchpad',
+    title: 'Launch Pad',
+    width: 168,
+    align: 'right',
+    render: (_, value) => {
+      return value.launchpads[0]?.name;
+    },
+  },
+  {
+    key: 'startDate',
+    title: 'Start Date',
+    width: 261,
+    align: 'right',
+    render: (_, value) => {
+      return value.created_at;
+    },
+  },
 ];
 
-const Fundraising = () => {
+const UpComing = () => {
   const [total, setTotal] = useState();
-  const [fundraisings, setFundraisings] = useState();
+  const [upcomings, setUpComings] = useState();
   const showTotal = (total: number) => `Total ${total} items`;
   const [params, setParams] = useState({
     search_key: '',
@@ -110,24 +110,24 @@ const Fundraising = () => {
     setParams(newParam);
   };
 
-  function getFundraisings(params: any) {
-    FetchFundraisings(params).then((res: any) => {
-      setFundraisings(res.data);
+  function getUpComings(params: any) {
+    FetchUpComings(params).then((res: any) => {
+      setUpComings(res.data);
       setTotal(res.total);
     });
   }
 
   useEffect(() => {
-    getFundraisings(params);
+    getUpComings(params);
   }, [params]);
 
   return (
-    <div className='fundraising'>
+    <div className='upcoming'>
       <div className='w-full md:max-w-[250px] mb-4'>
         <Select
           showSearch
           style={{ width: 282, height: 44 }}
-          placeholder='Filter Fundraising'
+          placeholder='Filter UpComing'
           optionFilterProp='children'
           filterOption={(input, option) =>
             (option?.label ?? '').includes(input)
@@ -164,7 +164,7 @@ const Fundraising = () => {
       <div className='overflow-x-auto'>
         <Table
           columns={columns}
-          dataSource={fundraisings}
+          dataSource={upcomings}
           pagination={{ position: ['none'] }}
           rowKey='id'
         />
@@ -183,4 +183,4 @@ const Fundraising = () => {
   );
 };
 
-export default Fundraising;
+export default UpComing;
