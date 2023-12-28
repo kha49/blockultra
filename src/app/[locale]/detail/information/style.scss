@@ -123,19 +123,6 @@
       border-radius: 20px;
       background: linear-gradient(#547aff, #4551de);
     }
-
-    .chakra-menu__menu-button {
-      margin-left: 12px;
-      padding: 0 8px;
-      background-color: #eef2f6;
-      height: 20px;
-
-      > span {
-        font-size: 12px;
-        line-height: 20px;
-        color: #9fa4b7;
-      }
-    }
   }
 
   &__sub-price {
@@ -169,18 +156,6 @@
     .contract {
       background-color: #eef2f6;
       width: fit-content;
-    }
-
-    .chakra-menu__menu-button {
-      padding: 0;
-      height: 20px;
-
-      > span {
-        font-size: 14px;
-        line-height: 20px;
-        font-weight: 500;
-        color: #4f556e;
-      }
     }
 
     .copy-text {
@@ -277,16 +252,6 @@
         background-color: #eef2f6;
       }
     }
-  }
-}
-
-.container {
-  padding: 0 5rem;
-}
-
-@media screen and (max-width: 1536px) {
-  .container {
-    padding: 0;
   }
 }
 
@@ -420,16 +385,18 @@
     &__contract {
       .contract {
         width: 100%;
-
-        .chakra-button {
-          flex: 1;
-
-          > span:first-child {
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-        }
       }
+    }
+  }
+}
+
+.select-time {
+  .ant-select-selector {
+    border: none !important;
+    background-color: #eef2f6 !important;
+
+    .ant-select-selection-item {
+      font-size: 12px;
     }
   }
 }

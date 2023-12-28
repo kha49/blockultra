@@ -1,33 +1,51 @@
 import { Button, Dropdown, Flex, MenuProps, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { ItemType } from 'antd/es/menu/hooks/useItems';
 
-const times: MenuProps['items'] = [
+const times = [
   {
-    key: '1',
+    key: '1d',
     label: '24h',
   },
   {
-    key: '2',
+    key: '7d',
     label: '7d',
   },
   {
-    key: '3',
-    label: '30d',
+    key: '1m',
+    label: '1m',
+  },
+  {
+    key: '3m',
+    label: '3m',
+  },
+  {
+    key: '6m',
+    label: '6m',
+  },
+  {
+    key: '1y',
+    label: '1y',
   },
 ];
 
-const all_coin: MenuProps['items'] = [
+const allCoin = [
   {
-    key: '1',
-    label: 'Bitcoin',
+    key: 'all',
+    label: 'All Coins',
   },
   {
-    key: '2',
-    label: 'Bitcoin Cash',
+    key: '100',
+    label: 'Top 100',
   },
   {
-    key: '3',
-    label: 'Ethereum',
+    key: '300',
+    label: 'Top 300',
+  },
+  {
+    key: '1000',
+    label: 'Top 1000',
   },
 ];
 
@@ -37,33 +55,65 @@ type GainersHeaderProps = {
 };
 
 const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
+  const [coinSelected, setCoinSelected] = useState({
+    key: 'all',
+    label: 'All Coins',
+  });
+
+  const [timeSelected, setTimeSelected] = useState({
+    key: '1d',
+    label: '24h',
+  });
+
+  const _onChangeCoin = ({ key }: { key: string }) => {
+    const item = allCoin.find((a) => a?.key === key);
+    if (!item) return;
+    setCoinSelected({
+      ...item,
+    });
+  };
+
+  const _onChangeTime = ({ key }: { key: string }) => {
+    const item = times.find((a) => a?.key === key);
+    if (!item) return;
+    setTimeSelected({
+      ...item,
+    });
+  };
+
   return (
-    <Flex className='items-center justify-between px-6'>
+    <Flex className='gainers-header items-center justify-between mx-6 bg-[#FCFCFD]'>
       <h3 className='font-bold text-black text-[28px] tracking-[0] leading-[28px] whitespace-nowrap'>
         Top Coin Gainers & Losers
       </h3>
       <Space>
         <Dropdown
+          overlayClassName='overlay-menu-center'
           menu={{
-            items: all_coin,
-            onClick: ({ key }) => onFilterCoins(key),
+            items: allCoin,
+            onClick: _onChangeCoin,
           }}
           arrow
           trigger={['click']}
+          className='justify-center h-9 w-28 rounded border hover:cursor-pointer'
         >
-          <Button>
-            All Coins <DownOutlined />
-          </Button>
+          <Space>
+            {coinSelected.label} <DownOutlined />
+          </Space>
         </Dropdown>
         <Dropdown
-          menu={{ items: times, onClick: ({ key }) => onFilterTime(key) }}
+          overlayClassName='overlay-menu-center'
+          menu={{
+            items: times,
+            onClick: _onChangeTime,
+          }}
           arrow
           trigger={['click']}
+          className='justify-center h-9 w-28 rounded border hover:cursor-pointer'
         >
-          <Button>
-            24h
-            <DownOutlined />
-          </Button>
+          <Space>
+            {timeSelected.label} <DownOutlined />
+          </Space>
         </Dropdown>
       </Space>
     </Flex>

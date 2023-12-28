@@ -38,15 +38,15 @@ const Gainers = () => {
   }, []);
 
   return (
-    <div className=''>
+    <div className='gainer-tab'>
       <GainersHeader
         onFilterCoins={(coin) => console.log(coin)}
         onFilterTime={(time) => console.log(time)}
       />
       <div className='p-6'>
-        <Space size={[80, 80]}>
-          <TopData title='Top Gainers' data={gainers} />
-          <TopData title='Top Losers' data={losers} />
+        <Space size={[80, 80]} className='xl:flex-row sm: flex-col'>
+          <TopData title='Top Gainers' data={[]} />
+          <TopData title='Top Losers' data={[]} />
         </Space>
       </div>
     </div>

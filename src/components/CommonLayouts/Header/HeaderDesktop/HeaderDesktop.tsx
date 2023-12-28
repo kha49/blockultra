@@ -16,7 +16,7 @@ const HeaderDesktop = () => {
   return (
     <div className='hidden xl:block'>
       <div className='z-[999] border-b border-solid border-grey-300'>
-        <div className='mx-auto max-w-2xl flex items-center px-4 justify-between gap-8 py-3'>
+        <div className='flex items-center px-4 justify-between gap-8 py-3'>
           <div className='flex-grow'>
             <Marquee />
           </div>
@@ -37,7 +37,7 @@ const HeaderDesktop = () => {
           </div>
         </div>
       </div>
-      <div className='max-w-2xl mx-auto flex items-center px-4 py-3 justify-between'>
+      <div className='flex items-center px-4 py-3 justify-between'>
         <Navbar />
         <div className='flex items-center gap-5'>
           <div className='flex items-center gap-4'>

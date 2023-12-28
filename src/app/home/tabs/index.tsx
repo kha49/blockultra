@@ -76,7 +76,9 @@ const HomeTabs = ({ currentTab, setCurrentTab }: IProps) => {
             onClick={() => setCurrentTab(tab.id)}
           >
             <div className='min-w-[20px]'>{tab.icon}</div>
-            <span className='text-lg lg:text-xl whitespace-nowrap'>{tab.label}</span>
+            <span className='text-lg lg:text-xl whitespace-nowrap'>
+              {tab.label}
+            </span>
           </div>
         ))}
       </div>

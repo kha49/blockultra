@@ -9,6 +9,14 @@ import Trending from '../trending';
 import Fundraising from '../fundraising';
 import UpComing from '../up-coming';
 
+// const tabs: any = {
+//   categories: <Categories />,
+//   gainers: <Gainers />,
+//   trending: <Trending />,
+//   fundraising: <Fundraising />,
+//   all_coin: <AllCoin />,
+// };
+
 const RenderTabs = () => {
   const [currentTab, setCurrentTab] = useState<string>('all_coin');
 

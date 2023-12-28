@@ -2,8 +2,9 @@ import { IconBell, IconCopy, IconSave, IconStar } from '@/assets/icons';
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import InformationUnlock from '../information-unlock';
-import { Select } from 'antd';
+import { Popover, Select } from 'antd';
 import './style.scss';
+import IntroduceCoin from './popup/introduce-coin/IntroduceCoin';
 
 const CoinInformation = () => {
   return (
@@ -11,17 +12,20 @@ const CoinInformation = () => {
       <div className='bg-white p-6 coin'>
         <div className='flex justify-between coin__header'>
           <div className='flex coin__header-logo'>
-            <Image
-              src='/coin-info/logo.png'
-              alt=''
-              width={76}
-              height={76}
-              className='rounded-full mr-4'
-            />
+            <Popover content={<IntroduceCoin />}>
+              <Image
+                src='/coin-info/logo.png'
+                alt=''
+                width={76}
+                height={76}
+                className='rounded-full mr-4'
+              />
+            </Popover>
             <div>
               <div className='flex items-center mb-3 coin__header-info'>
                 <h1 className='coin__name'>
-                  Coin98 <span className='coin__tag ml-2'>C98</span>
+                  <Popover content={<IntroduceCoin />}>Coin98</Popover>
+                  <span className='coin__tag ml-2'>C98</span>
                   <span className='coin__vertical-line'></span>
                 </h1>
                 <div className='coin__rating'>
@@ -99,10 +103,10 @@ const CoinInformation = () => {
                   <div className='price__range'>
                     <div className='price__range--active'></div>
                   </div>
-                  <span>$0.0000006057</span>
+                  <span className='mr-2'>$0.0000006057</span>
                   <Select
                     defaultValue='24'
-                    style={{ width: 60 }}
+                    className='select-time w-[60px]'
                     options={[
                       { value: '24h', label: '24h' },
                       { value: '7d', label: '7D' },
@@ -225,14 +229,7 @@ const CoinInformation = () => {
                       </clipPath>
                     </defs>
                   </svg>
-                  <Select
-                    defaultValue='ETH'
-                    style={{ width: 120 }}
-                    options={[
-                      { value: 'ETH', label: 'Ethereum' },
-                      { value: 'BTC', label: 'Bitcoin' },
-                    ]}
-                  />
+                  <span className='text-sm'>Ethereum</span>
                   <span className='copy-text'>0x2df3...c8h3h5</span>
                   <IconCopy />
                   <Image

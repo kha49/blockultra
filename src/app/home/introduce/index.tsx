@@ -8,7 +8,7 @@ export default function Introduce() {
         Activity, Contribute And Earn
       </h2>
       <div className='introduce__wrapper'>
-        <div className='grid grid-cols-1 xl:grid-cols-2 grid-rows-1 xl:grid-rows-2 gap-x-16 xl:gap-x-32 gap-y-12 xl:gap-y-4'>
+        <div className='grid xl:grid-cols-2 md:grid-cols-2 sm:gird-cols-1 gap-x-16 xl:gap-x-32 gap-y-12 xl:gap-y-4'>
           <div className='introduce-item flex gap-8 md:gap-10'>
             <div className='introduce-item__image'>
               <Image src='/introduce/review-earn.png' alt='Reviews And Earn' />
