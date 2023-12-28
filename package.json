@@ -20,6 +20,7 @@
     "@heroicons/react": "^2.0.18",
     "@types/lodash": "^4.14.202",
     "axios": "^1.5.1",
+    "eslint-plugin-react-hooks": "^5.0.0-canary-c5b937576-20231219",
     "framer-motion": "^10.16.4",
     "lodash": "^4.17.21",
     "next": "13.5.4",
@@ -29,7 +30,9 @@
     "react-slick": "^0.29.0",
     "react-toastify": "^9.1.3",
     "react-ts-tradingview-widgets": "^1.2.0",
-    "slick-carousel": "^1.8.1"
+    "slick-carousel": "^1.8.1",
+    "styled-components": "^6.1.3",
+    "usehooks-ts": "^2.9.1"
   },
   "devDependencies": {
     "@types/node": "^20",
