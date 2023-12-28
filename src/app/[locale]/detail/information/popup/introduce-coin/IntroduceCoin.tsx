@@ -1,5 +1,4 @@
 import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
-import Button from '@/components/Button/Button';
 import Image from 'next/image';
 
 const IntroduceCoin = () => {

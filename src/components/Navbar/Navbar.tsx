@@ -232,7 +232,7 @@ const Navbar = () => {
 
   return (
     <div className='nav-bar flex text-gray-600 border-gray-900 border-solid gap-12 items-center'>
-      <div className='nav-bar-desktop hidden lg:flex text-gray-600 border-gray-900 border-solid gap-12 items-center'>
+      <div className='nav-bar-desktop hidden xl:flex text-gray-600 border-gray-900 border-solid gap-12 items-center'>
         <div className='flex items-center logo'>
           <Link href={'/'}>
             <Image src={'/logo.png'} width={131} height={31} alt='Logo' />
@@ -306,7 +306,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-      <div className='nav-bar-mobile lg:hidden w-full'>
+      <div className='nav-bar-mobile xl:hidden w-full'>
         <div className='menu-mobile p-4'>
           {navbarData?.map((navItem) => (
             <div
