@@ -14,8 +14,8 @@ const AdvancedRealTimeChart = dynamic(
 export default function InfoCharts() {
   return (
     <div className='info-charts'>
-      <div className='info-charts__wrapper grid grid-cols-1 md:grid-cols-3 gap-4'>
-        <div className='chart md:col-span-2'>
+      <div className='info-charts__wrapper grid grid-cols-1 xl:grid-cols-3 gap-4'>
+        <div className='chart xl:col-span-2'>
           <AdvancedRealTimeChart
             symbol={'BTCUSD'}
             interval={'60'}

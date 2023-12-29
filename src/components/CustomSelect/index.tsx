@@ -9,7 +9,6 @@ type CustomSelectProps = SelectProps & {
 
 const SelectWrapper = styled.div`
   position: relative;
-  margin-bottom: 16px;
 
   .prefix-icon-wrapper {
     position: absolute;
@@ -22,7 +21,7 @@ const SelectWrapper = styled.div`
   }
 
   && .ant-select .ant-select-selector {
-    padding-left: calc(3rem -15px);
+    padding-left: calc(3rem - 15px);
   }
 
   .ant-select .ant-select-arrow {

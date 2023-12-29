@@ -1,4 +1,5 @@
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
+import { ReactNode } from 'react';
 
 export interface ISearchData {
   id: number | string;

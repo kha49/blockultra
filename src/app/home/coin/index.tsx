@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useEffect, useState } from 'react';
 import './style.scss';
 import { Button, Checkbox, Pagination, Select, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { FetchCoins } from '../../../usecases/home';
+import { FetchCoins } from '@/usecases/home';
 import IconStarCoinTab from '@/assets/icons/home/IconStarCoinTab';
 import { cloneDeep, isArray, random } from 'lodash';
 import SelectItemTable from '@/components/SelectItemTable';
@@ -15,7 +15,6 @@ import {
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
-import { IconUp } from '@/assets/icons/home/IconUp';
 import { renderSortIcon } from '@/helpers';
 
 interface IData {
@@ -166,7 +165,7 @@ const columns: ColumnsType<IData> = [
     title: 'Price Graph (7d)',
     width: 261,
     align: 'right',
-    render: (_, value) => {
+    render: () => {
       return (
         <div className='flex items-center justify-end'>
           {/* <img src={`data:image/svg+xml;base64,${value.chart}`} /> */}
@@ -311,14 +310,10 @@ const Coins = () => {
     );
   };
 
-  const _onCHangeSort = (column: string, order: string) => {
-    // console.log(sorter);
-  };
-
   return (
     <div className='home-table coin-tab'>
       <div className=''>
-        <div className='filter flex justify-between'>
+        <div className='filter flex justify-between mb-4'>
           <div className='flex'>
             <FilterCustom
               placeholder='Filter Categories'

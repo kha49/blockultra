@@ -1,19 +1,7 @@
-.coin {
+.coin-detail {
   border-radius: 8px;
   box-shadow: 0px 0px 16px 0px rgba(51, 55, 71, 0.08);
   background-color: #fcfcfd;
-
-  &__actions {
-    .action {
-      padding: 8px;
-      border-radius: 4px;
-      border: 1px solid #e5e6eb;
-
-      &:hover {
-        background-color: #e5e6eb;
-      }
-    }
-  }
 
   &__range {
     margin: 24px 0 12px;
@@ -41,107 +29,6 @@
       height: 100%;
       border-radius: 20px;
       background: linear-gradient(#547aff, #4551de);
-    }
-  }
-
-  &__label {
-    color: #9fa4b7;
-    margin-right: 4px;
-    font-size: 14px;
-    font-weight: 500;
-    line-height: 20px;
-  }
-
-  &__title {
-    display: flex;
-    align-items: center;
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 20px;
-    color: #9fa4b7;
-
-    svg {
-      margin-left: 4px;
-    }
-  }
-
-  &__links {
-    margin-top: 27px;
-
-    .more {
-      width: 28px;
-      height: 28px;
-      line-height: 28px;
-      text-align: center;
-      border-radius: 50%;
-      font-size: 12px;
-      color: #333747;
-      background-color: #eef2f6;
-      font-weight: 600;
-    }
-  }
-
-  .wallets-title {
-    padding: 0 12px;
-    span {
-      display: block;
-      width: 100%;
-      font-size: 16px;
-      padding-bottom: 16px;
-      font-weight: 700;
-      border-bottom: 1px solid #e5e6eb;
-    }
-  }
-
-  .wallets-item {
-    div {
-      display: flex;
-      width: 100%;
-      padding: 6px 12px;
-      align-items: center;
-      font-weight: 700;
-
-      &:hover {
-        background-color: #eef2f6;
-      }
-    }
-  }
-}
-
-@media screen and (max-width: 1024px) {
-  .coin {
-    &__value {
-      width: 100%;
-    }
-
-    &__links {
-      width: calc(50% - 16px);
-      margin-top: 0;
-    }
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .coin {
-    &__value {
-      .price {
-        font-size: 26px;
-      }
-    }
-    &__range {
-      margin-top: 8px;
-    }
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .coin {
-    &__links {
-      width: 100%;
-
-      > div {
-        justify-content: center;
-      }
     }
   }
 }

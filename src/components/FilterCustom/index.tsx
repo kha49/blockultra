@@ -1,20 +1,14 @@
 import IconSearchCoinTab from '@/assets/icons/home/IconSearchCoinTab';
 import CustomSelect from '@/components/CustomSelect';
-import { Checkbox, Select, Tag } from 'antd';
-import { random } from 'lodash';
+import { Checkbox } from 'antd';
 import { useEffect, useState } from 'react';
 import { IFilterCustom, ISearchData } from './props';
 import { sleep } from '@/helpers';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import { useDebounce } from 'usehooks-ts';
 
-const FilterCustom = ({
-  renderOption,
-  renderTag,
-  onChange,
-  getData,
-  placeholder,
-}: IFilterCustom) => {
+const FilterCustom = (props: IFilterCustom) => {
+  const { renderOption, renderTag, onChange, getData, placeholder } = props;
   const [searchData, setSearchData] = useState<ISearchData[]>([]);
   const [arSelected, setArSelected] = useState<ISearchData[]>([]);
   const [isLoading, setIsLoading] = useState(false);

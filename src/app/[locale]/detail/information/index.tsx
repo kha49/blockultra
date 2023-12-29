@@ -16,11 +16,13 @@ import Fdv from './popup/fdv/Fdv';
 import Links from './popup/links/Links';
 import Backers from './popup/backers/Backers';
 import IconETH from '@/assets/icons/IconETH';
+import WalletAddress from './popup/wallet/WalletAddress';
+import WalletBrand from './popup/wallet/WalletBrand';
 
 const CoinInformation = () => {
   return (
     <div className='container mx-auto'>
-      <div className='bg-white p-6 coin'>
+      <div className='bg-white p-6 coin-detail'>
         <div className='flex flex-col md:flex-row justify-between pb-6 border-b border-grey-300'>
           <div className='flex items-center gap-4 mb-4 md:mb-0'>
             <Popover content={<IntroduceCoin />}>
@@ -94,20 +96,20 @@ const CoinInformation = () => {
               Accumulating
             </span>
           </div>
-          <div className='block'>
+          <div className='block mt-4 md:mt-0'>
             <div className='flex justify-end flex-wrap gap-4 coin__actions mb-3'>
-              <button className='action'>
+              <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
                 <IconSave />
               </button>
-              <button className='action'>
+              <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
                 <PencilSquareIcon className='w-5 h-5' />
               </button>
-              <button className='action'>
+              <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
                 <IconBell />
               </button>
             </div>
             <div className='flex justify-end flex-wrap gap-2'>
-              <span className='text-sm'>Categories</span>
+              <span className='text-sm text-grey-500'>Categories</span>
               <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
                 Wallet
               </span>
@@ -123,10 +125,10 @@ const CoinInformation = () => {
             </div>
           </div>
         </div>
-        <div className='grid grid-cols-6'>
-          <div className='col-span-6 md:col-span-3 xl:col-span-4 2xl:col-span-5'>
-            <div className='gap-4 md:gap-[70px] mt-6 flex flex-wrap'>
-              <div className='coin__value'>
+        <div className='grid grid-cols-6 xl:grid-cols-12'>
+          <div className='col-span-6 md:col-span-3 xl:col-span-8 2xl:col-span-10'>
+            <div className='gap-4 md:gap-[35px] xl:gap-[70px] mt-6 flex flex-wrap'>
+              <div>
                 <div className='flex flex-wrap gap-2 md:gap-4 items-center'>
                   <span className='text-xl md:text-3xl font-bold'>
                     $ 0.0000006269
@@ -135,7 +137,7 @@ const CoinInformation = () => {
                     +2.83%
                   </span>
                 </div>
-                <div className='flex items-center flex-wrap coin__range'>
+                <div className='flex items-center flex-wrap coin-detail__range'>
                   <span>$0.0000006057</span>
                   <div className='price__range'>
                     <div className='price__range--active'></div>
@@ -164,73 +166,92 @@ const CoinInformation = () => {
                   <span className='text-xs text-sp-green-500'>(9.5x)</span>
                 </div>
               </div>
-              <div className='grid grid-cols-1 md:grid-cols-3 gap-y-6 md:gap-y-9 gap-x-[60px]'>
+              <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-6 md:gap-y-9 gap-x-[60px]'>
                 <div className='category'>
-                  <div className='coin__title'>Market Cap</div>
-                  <div className='category__number'>
+                  <div className='text-grey-500 text-sm'>Market Cap</div>
+                  <div className='text-grey-700 flex flex-wrap items-center gap-1'>
                     $1,88B
-                    <span className='category__number--increase'>+2.83%</span>
+                    <span className='text-xs text-sp-green-500'>+2.83%</span>
                   </div>
                 </div>
                 <div className='category'>
-                  <div className='coin__title'>Volume 24h</div>
-                  <div className='category__number'>
+                  <div className='text-grey-500 text-sm'>Volume 24h</div>
+                  <div className='text-grey-700 flex flex-wrap items-center gap-1'>
                     $ 1,889 M
-                    <span className='category__number--increase'>+2.83%</span>
+                    <span className='text-xs text-sp-green-500'>+2.83%</span>
                   </div>
                 </div>
                 <div className='category'>
-                  <div className='coin__title'>Vol/MCap 24h</div>
-                  <div className='category__number'>0.689</div>
+                  <div className='text-grey-500 text-sm'>Vol/MCap 24h</div>
+                  <div className='text-grey-700'>0.689</div>
                 </div>
                 <div className='category'>
-                  <div className='coin__title'>
+                  <div className='text-grey-500 text-sm flex gap-1 items-center'>
                     FDV
                     <Popover content={<Fdv />}>
                       <IconFdv />
                     </Popover>
                   </div>
-                  <div className='category__number'>$ 1,88 T</div>
+                  <div className='text-grey-700'>$ 1,88 T</div>
                 </div>
                 <div className='category'>
-                  <div className='coin__title'>Circ.Supply</div>
-                  <div className='category__number'>
+                  <div className='text-grey-500 text-sm'>Circ.Supply</div>
+                  <div className='text-grey-700 flex flex-wrap items-center gap-1'>
                     1,515K
-                    <span className='category__number--code'>C98</span>
-                    <small>(69.96%)</small>
+                    <span className='text-grey-500 text-xs'>(69.96%)</span>
                   </div>
                 </div>
                 <div className='category'>
-                  <div className='coin__title'>Total Supply</div>
-                  <div className='category__number'>
-                    1,889B <span className='category__number--code'>C98</span>
+                  <div className='text-grey-500 text-sm'>Total Supply</div>
+                  <div className='text-grey-700 flex flex-wrap items-center'>
+                    1,889B
                   </div>
                 </div>
               </div>
             </div>
             <div className='flex items-center gap-4 xl:gap-8 2xl:gap-[110px] flex-wrap'>
-              <div className='mt-7'>
-                <span className='coin__label mb-1'>Contracts</span>
-                <div className='flex items-center gap-4 px-3 py-2 bg-grey-200'>
+              <div className='mt-3 xl:mt-7'>
+                <span className='text-grey-500 text-sm mb-1'>Contracts</span>
+                <div className='flex items-center gap-4 px-3 py-2 bg-grey-200 rounded'>
                   <IconETH />
                   <span className='text-sm'>ETH</span>
-                  <IconCaretDown />
+                  <Popover content={<WalletAddress />}>
+                    <IconCaretDown />
+                  </Popover>
                   <span className='text-primary-500 max-w-[62px] lg:max-w-[124px] truncate'>
                     0x2df3dkdkmskcamksmdcksdmkcsdc8h3h5
                   </span>
-                  <IconCopy />
-                  <Image
-                    src='/coin-info/fox.png'
-                    width={24}
-                    height={24}
-                    alt='fox'
-                  />
-                  <IconCaretDown />
+                  <Popover
+                    content={
+                      <span className='text-grey-700 text-xs'>
+                        Copy address
+                      </span>
+                    }
+                  >
+                    <IconCopy />
+                  </Popover>
+                  <Popover
+                    content={
+                      <span className='text-grey-700 text-xs'>
+                        Add to Metamask
+                      </span>
+                    }
+                  >
+                    <Image
+                      src='/coin-info/fox.png'
+                      width={24}
+                      height={24}
+                      alt='fox'
+                    />
+                  </Popover>
+                  <Popover content={<WalletBrand />}>
+                    <IconCaretDown />
+                  </Popover>
                 </div>
               </div>
-              <div className='flex flex-wrap gap-4 md:gap-8 xl:gap-[110px]'>
-                <div className='coin__links'>
-                  <p className='coin__label'>Links</p>
+              <div className='flex flex-wrap gap-4 md:gap-8 xl:gap-[110px] xl:mt-7'>
+                <div>
+                  <p className='text-grey-500 text-sm'>Links</p>
                   <div className='flex gap-4 xl:gap-5 py-[6px]'>
                     <svg
                       width='28'
@@ -309,12 +330,14 @@ const CoinInformation = () => {
                       />
                     </svg>
                     <Popover content={<Links />}>
-                      <span className='more cursor-pointer'>+3</span>
+                      <span className='flex items-center justify-center w-7 h-7 rounded-full bg-grey-300 text-xs font-semibold text-grey-700 text-center cursor-pointer'>
+                        +3
+                      </span>
                     </Popover>
                   </div>
                 </div>
-                <div className='coin__links'>
-                  <p className='coin__label'>Backers</p>
+                <div>
+                  <p className='text-grey-500 text-sm'>Backers</p>
                   <div className='flex gap-4 xl:gap-5 py-[6px]'>
                     <Image
                       src='/coin-info/backers-1.png'
@@ -335,14 +358,16 @@ const CoinInformation = () => {
                       alt='backers-1'
                     />
                     <Popover content={<Backers />}>
-                      <span className='more cursor-pointer'>+3</span>
+                      <span className='flex items-center justify-center w-7 h-7 rounded-full bg-grey-300 text-xs font-semibold text-grey-700 text-center cursor-pointer'>
+                        +3
+                      </span>
                     </Popover>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className='col-span-6 md:col-span-3 xl:col-span-2 2xl:col-span-1'>
+          <div className='col-span-6 md:col-span-3 xl:col-span-4 2xl:col-span-2'>
             <InformationUnlock />
           </div>
         </div>

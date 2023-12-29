@@ -25,8 +25,11 @@ export const FetchSumaries = (params) =>
 export const FetchTokenomics = (params) =>
   apiClient.get(baseUrl + 'tokenomics', params);
 
-export const FetchUnClocks = (params) =>
-  apiClient.get(baseUrl + 'unclocks', params);
+export const FetchUnlocks = (params) =>
+  apiClient.get(baseUrl + 'unlocks', params);
 
 export const FetchUpComings = (params) =>
   apiClient.get(baseUrl + 'upcomings', params);
+
+export const FetchCoinDetail = (params) =>
+  apiClient.get(`${baseUrl}coin-info/detail/${params}`, params);
