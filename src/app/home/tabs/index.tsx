@@ -66,7 +66,7 @@ const HomeTabs = ({ currentTab, setCurrentTab }: IProps) => {
 
   return (
     <>
-      <div className='flex items-center justify-normal lg:justify-center home-tabs md:mt-8 w-full gap-6 lg:gap-9 overflow-x-auto'>
+      <div className='hide-scroll flex items-center justify-normal lg:justify-center home-tabs md:mt-8 w-full gap-6 lg:gap-9 overflow-x-auto'>
         {tabs.map((tab: any) => (
           <div
             key={tab.id}

@@ -29,11 +29,15 @@ function simpleStringify(object: any) {
 }
 
 export function caculatorAverage24h(price: any, histPrice: any) {
-  if (price && histPrice) {
-    const currentPrice = price ? price['USD'] : 0;
-    const usdHistPrice = histPrice ? histPrice['24H']['USD'] : 0;
-    const average = (currentPrice - usdHistPrice) / usdHistPrice;
-    return average;
+  try {
+    if (price && histPrice) {
+      const currentPrice = price ? price['USD'] : 0;
+      const usdHistPrice = histPrice ? histPrice['24H']['USD'] : 0;
+      const average = (currentPrice - usdHistPrice) / usdHistPrice;
+      return average;
+    }
+  } catch (error) {
+    return 0;
   }
-  return 'N/A';
+  return 0;
 }

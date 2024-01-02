@@ -7,5 +7,5 @@ const baseUrl = 'api/common/';
 export const GlobalSearchCoins = (params) =>
   apiClient.get(baseUrl + 'global-search-coin', params);
 
-export const FetchHeaderBar = () =>
+export const FetchHeaderBar = (params) =>
   apiClient.get(baseUrl + 'header-bar-runing', params);

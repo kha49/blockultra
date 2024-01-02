@@ -1,1 +1,1 @@
-export const Community = () => {}
+export const Community = () => {};

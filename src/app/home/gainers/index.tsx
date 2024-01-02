@@ -38,7 +38,7 @@ const Gainers = () => {
   }, []);
 
   return (
-    <div className='gainer-tab'>
+    <div className='gainer-tab overflow-x-auto hide-scroll'>
       <GainersHeader
         onFilterCoins={(coin) => console.log(coin)}
         onFilterTime={(time) => console.log(time)}

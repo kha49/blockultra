@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { showToast } from './toast';
 let isRefreshing = false;
 let failedQueue = [];
 const api = axios.create({
@@ -47,6 +48,7 @@ api.interceptors.response.use(
               return api(originalRequest);
             })
             .catch((err) => {
+              showToast('error', err.message);
               return Promise.reject(err);
             });
         }
@@ -71,6 +73,7 @@ api.interceptors.response.use(
         });
       }
     }
+    showToast('error', err.message);
     return Promise.reject(err);
   }
 );

@@ -1,11 +1,10 @@
 import Link from 'next/link';
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './style.scss';
 import { Button, Checkbox, Pagination, Select, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { FetchCoins } from '@/usecases/home';
-import IconStarCoinTab from '@/assets/icons/home/IconStarCoinTab';
-import { cloneDeep, isArray, random } from 'lodash';
+import { get, isArray, random, round } from 'lodash';
 import SelectItemTable from '@/components/SelectItemTable';
 import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
 import { IconCustomCointTab } from '@/assets/icons/home/IconCustomCoinTab';
@@ -15,37 +14,22 @@ import {
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
-import { renderSortIcon } from '@/helpers';
+import {
+  currencyFormat,
+  nFormatter,
+  percentFormat,
+  renderSortIcon,
+} from '@/helpers';
+import { IResponseAxios } from '@/models/IResponse';
+import { IHomeCoin } from './props';
+import Image from 'next/image';
+import { caculatorAverage24h } from '@/helpers/functions';
 
-interface IData {
-  id: number;
-  name: ReactNode | string;
-  rate: string;
-  price: string;
-  period: string;
-  volume: string;
-  marketCap: string;
-  graph: string;
-}
-
-const dataExample: IData[] = [
-  ...Array.from(new Array(1000).keys()).map((e) => ({
-    id: e,
-    name: `Bitcoin${e}`,
-    rate: '4.3',
-    price: '$12.168',
-    period: '-5.63%',
-    volume: '$345.65B',
-    marketCap: '$345.65B',
-    graph: e % 2 ? 'down' : 'increase',
-  })),
-];
-
-const columns: ColumnsType<IData> = [
+const columns: ColumnsType<IHomeCoin> = [
   {
     key: 'id',
     title: '#',
-    width: 56,
+    width: 40,
     align: 'left',
     render: (_, value, index) => {
       return index + 1;
@@ -57,37 +41,16 @@ const columns: ColumnsType<IData> = [
     width: 248,
     align: 'left',
     render: (_, value) => {
+      const imageSource = get(value, 'image.x60', '');
       return (
         <span className='table-header'>
           <div className='flex items-center'>
-            <svg
-              width='32'
-              height='32'
-              viewBox='0 0 32 32'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <g clipPath='url(#clip0_596_42130)'>
-                <path
-                  d='M16 32C24.8366 32 32 24.8366 32 16C32 7.16344 24.8366 0 16 0C7.16344 0 0 7.16344 0 16C0 24.8366 7.16344 32 16 32Z'
-                  fill='#F3BA2F'
-                />
-                <path
-                  d='M12.116 14.404L16 10.52L19.886 14.406L22.146 12.146L16 6L9.856 12.144L12.116 14.404ZM6 16L8.26 13.74L10.52 16L8.26 18.26L6 16ZM12.116 17.596L16 21.48L19.886 17.594L22.146 19.853L16 26L9.856 19.856L9.853 19.853L12.116 17.596ZM21.48 16L23.74 13.74L26 16L23.74 18.26L21.48 16ZM18.292 15.998H18.294V16L16 18.294L13.709 16.004L13.705 16L13.709 15.997L14.11 15.595L14.305 15.4L16 13.706L18.293 15.999L18.292 15.998Z'
-                  fill='white'
-                />
-              </g>
-              <defs>
-                <clipPath id='clip0_596_42130'>
-                  <rect width='32' height='32' fill='white' />
-                </clipPath>
-              </defs>
-            </svg>
-            <Link href={`/en/detail/${value.name}`} className='mx-2'>
+            <img src={imageSource} alt={value.name} className='w-7 h-7' />
+            <Link href={`/en/detail/${value.symbol}`} className='mx-2'>
               {value.name}
             </Link>
             <span className='px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5 coin-code'>
-              BTC
+              {value.symbol}
             </span>
           </div>
         </span>
@@ -99,18 +62,19 @@ const columns: ColumnsType<IData> = [
   {
     key: 'rate',
     title: 'Rate',
-    width: 91,
+    width: 50,
     align: 'right',
     render: (_, value) => {
-      if (!value.rate) {
-        return <span>-</span>;
-      }
+      // return null;
+      // if (!value.rate) {
+      return <span>-</span>;
+      // }
 
-      return (
-        <p className='inline-flex items-center'>
-          <span className='mr-1'>{value.rate}</span> <IconStarCoinTab />
-        </p>
-      );
+      // return (
+      //   <p className='inline-flex items-center'>
+      //     <span className='mr-1'>{value.rate}</span> <IconStarCoinTab />
+      //   </p>
+      // );
     },
     sortIcon: renderSortIcon,
     sorter: true,
@@ -118,10 +82,10 @@ const columns: ColumnsType<IData> = [
   {
     key: 'price',
     title: 'Price',
-    width: 151,
+    width: 200,
     align: 'right',
-    render: (_, value: any) => {
-      return value.price['USD'];
+    render: (_, value) => {
+      return currencyFormat(value.price.USD, '$');
     },
     sortIcon: renderSortIcon,
     sorter: true,
@@ -132,14 +96,8 @@ const columns: ColumnsType<IData> = [
     width: 167,
     align: 'right',
     render: (_, value) => {
-      return (
-        <p
-          style={{ color: value.graph === 'increase' ? '#1AB369' : '#FA3363' }}
-        >
-          {/* {value.average24} */}
-          123
-        </p>
-      );
+      const avg = round(caculatorAverage24h(value.price, value.histPrices), 2);
+      return percentFormat(avg);
     },
   },
   {
@@ -148,7 +106,7 @@ const columns: ColumnsType<IData> = [
     width: 186,
     align: 'right',
     render: (_, value: any) => {
-      return value.volume24h;
+      return nFormatter(value.volume24h, 2, '$');
     },
   },
   {
@@ -157,7 +115,8 @@ const columns: ColumnsType<IData> = [
     width: 168,
     align: 'right',
     render: (_, value) => {
-      return value.marketCap;
+      // return value.marketCap;
+      return nFormatter(Number(value.marketCap), 2, '$');
     },
   },
   {
@@ -165,18 +124,26 @@ const columns: ColumnsType<IData> = [
     title: 'Price Graph (7d)',
     width: 261,
     align: 'right',
-    render: () => {
-      return (
-        <div className='flex items-center justify-end'>
-          {/* <img src={`data:image/svg+xml;base64,${value.chart}`} /> */}
-        </div>
-      );
+    render: (_, value) => {
+      try {
+        return (
+          <div className='flex items-center justify-end'>
+            <img
+              width={200}
+              height={52}
+              src={`data:image/svg+xml;base64,${value.chart}`}
+            />
+          </div>
+        );
+      } catch (error) {
+        return null;
+      }
     },
   },
 ];
 
 const Coins = () => {
-  const [data, setData] = useState<IData[]>([]);
+  const [data, setData] = useState<IHomeCoin[]>([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(999);
@@ -186,15 +153,20 @@ const Coins = () => {
   });
 
   const getCoins = useCallback(async () => {
-    /* #region fake */
-    setData(cloneDeep(dataExample.slice(0, pageSize)));
-    setTotal(9999);
-    /* #endregion */
-
-    FetchCoins().then((res: any) => {
-      console.log(res);
+    const response: IResponseAxios<IHomeCoin> = await FetchCoins({
+      limit: pageSize,
+      page: currentPage,
+      columnKey: order.columnKey,
+      order: order.order,
     });
-  }, [pageSize]);
+
+    if (!response) return;
+    const { data, total } = response;
+    setData(data);
+    setTotal(total!!);
+
+    /* #endregion */
+  }, [pageSize, currentPage, order]);
 
   // function searchCategoriesFilter() {
   //   SearchCategoriesFilter({ name: '' }).then((res: any) => {
@@ -316,13 +288,13 @@ const Coins = () => {
         <div className='filter flex justify-between mb-4'>
           <div className='flex'>
             <FilterCustom
-              placeholder='Filter Categories'
+              placeholder='Filter Coins'
               renderOption={_renderOption}
               renderTag={_renderTag}
               onChange={() => {}}
               getData={_getData}
             />
-            <Button className='ml-1 h-10'>
+            <Button className='ml-1 h-10 hidden xl:block md:block'>
               <div className='flex'>
                 <IconFilterCoinTab />
                 <span className='ml-1'>Filters</span>
@@ -330,7 +302,7 @@ const Coins = () => {
             </Button>
           </div>
           <div>
-            <Button className='ml-1 h-10'>
+            <Button className='ml-1 h-10 hidden xl:block md:block'>
               <div className='flex'>
                 <IconCustomCointTab />
                 <span className='ml-1'>Customize</span>
@@ -338,7 +310,7 @@ const Coins = () => {
             </Button>
           </div>
         </div>
-        <div className='overflow-x-auto'>
+        <div className='overflow-x-auto hide-scroll'>
           <Table
             columns={columns}
             dataSource={data}
@@ -364,6 +336,7 @@ const Coins = () => {
             current={currentPage}
             onChange={_onChangePage}
             showSizeChanger={false}
+            size='small'
           />
         </div>
 

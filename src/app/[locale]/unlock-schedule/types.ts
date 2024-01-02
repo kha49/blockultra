@@ -17,13 +17,20 @@ type TLaunchpad = {
 };
 
 export type IUnlockData = {
-  name: string;
-  price: number;
+  name: {
+    displayName: string;
+    icon: string;
+    tag: string;
+  };
+  price: {
+    ratio: number;
+    value: number;
+  };
   marketCap: number;
   launchpadList: TLaunchpad[];
   roi: number;
   process: {
-    total: number;
+    value: number;
     lock: {
       ratio: number;
       name: string;

@@ -10,9 +10,9 @@ const IconDownCoinTab = () => {
       <path
         d='M11 6.5L6 1.5L1 6.5'
         stroke='#4F556E'
-        stroke-width='1.25'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='1.25'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   );

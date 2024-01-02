@@ -18,6 +18,7 @@ import Backers from './popup/backers/Backers';
 import IconETH from '@/assets/icons/IconETH';
 import WalletAddress from './popup/wallet/WalletAddress';
 import WalletBrand from './popup/wallet/WalletBrand';
+import Categories from './popup/categories/Categories';
 
 const CoinInformation = () => {
   return (
@@ -37,7 +38,9 @@ const CoinInformation = () => {
             <div>
               <div className='flex items-center flex-wrap mb-3'>
                 <h1 className='flex items-center text-grey-700 text-2xl font-bold'>
-                  <Popover content={<IntroduceCoin />}>Coin98</Popover>
+                  <Popover content={<IntroduceCoin />}>
+                    <span className='font-jb text-2xl'>Coin98</span>
+                  </Popover>
                   <span className='flex items-center px-2 rounded text-xs text-grey-500 bg-grey-200 font-medium ml-2'>
                     C98
                   </span>
@@ -110,18 +113,20 @@ const CoinInformation = () => {
             </div>
             <div className='flex justify-end flex-wrap gap-2'>
               <span className='text-sm text-grey-500'>Categories</span>
-              <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
+              <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
                 Wallet
               </span>
-              <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
+              <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
                 BNB
               </span>
-              <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
+              <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
                 Defi
               </span>
-              <span className='flex items-center px-2 rounded text-xs text-primary-500 font-medium bg-grey-200 whitespace-nowrap'>
-                See All
-              </span>
+              <Popover placement='bottomRight' content={<Categories />}>
+                <span className='flex items-center px-2 rounded text-xs text-primary-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
+                  See All
+                </span>
+              </Popover>
             </div>
           </div>
         </div>
@@ -137,7 +142,7 @@ const CoinInformation = () => {
                     +2.83%
                   </span>
                 </div>
-                <div className='flex items-center flex-wrap coin-detail__range'>
+                <div className='flex items-center flex-wrap coin-detail__range text-grey-700'>
                   <span>$0.0000006057</span>
                   <div className='price__range'>
                     <div className='price__range--active'></div>
@@ -157,33 +162,41 @@ const CoinInformation = () => {
                 </div>
                 <div className='flex items-center mb-1'>
                   <span className='text-grey-500 text-sm'>IDO Price:</span>
-                  <span className='text-grey-700 text-sm mr-1'> $0.075</span>
+                  <span className='text-grey-700 text-sm mr-1 font-jsb font-semibold'>
+                    {' '}
+                    $0.075
+                  </span>
                   <span className='text-xs text-sp-green-500'>(3.05x)</span>
                 </div>
                 <div className='flex items-center mb-1'>
                   <span className='text-grey-500 text-sm'>Private Price:</span>
-                  <span className='text-grey-700 text-sm mr-1'> $0.025</span>
+                  <span className='text-grey-700 text-sm mr-1 font-jsb font-semibold'>
+                    {' '}
+                    $0.025
+                  </span>
                   <span className='text-xs text-sp-green-500'>(9.5x)</span>
                 </div>
               </div>
               <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-6 md:gap-y-9 gap-x-[60px]'>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Market Cap</div>
-                  <div className='text-grey-700 flex flex-wrap items-center gap-1'>
+                  <div className='text-grey-700 flex flex-wrap items-center gap-1 font-jsb font-semibold'>
                     $1,88B
                     <span className='text-xs text-sp-green-500'>+2.83%</span>
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Volume 24h</div>
-                  <div className='text-grey-700 flex flex-wrap items-center gap-1'>
+                  <div className='text-grey-700 flex flex-wrap items-center gap-1 font-jsb font-semibold'>
                     $ 1,889 M
                     <span className='text-xs text-sp-green-500'>+2.83%</span>
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Vol/MCap 24h</div>
-                  <div className='text-grey-700'>0.689</div>
+                  <div className='text-grey-700 font-jsb font-semibold'>
+                    0.689
+                  </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm flex gap-1 items-center'>
@@ -192,18 +205,20 @@ const CoinInformation = () => {
                       <IconFdv />
                     </Popover>
                   </div>
-                  <div className='text-grey-700'>$ 1,88 T</div>
+                  <div className='text-grey-700 font-jsb font-semibold'>
+                    $ 1,88 T
+                  </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Circ.Supply</div>
-                  <div className='text-grey-700 flex flex-wrap items-center gap-1'>
+                  <div className='text-grey-700 flex flex-wrap items-center gap-1 font-jsb font-semibold'>
                     1,515K
                     <span className='text-grey-500 text-xs'>(69.96%)</span>
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Total Supply</div>
-                  <div className='text-grey-700 flex flex-wrap items-center'>
+                  <div className='text-grey-700 flex flex-wrap items-center font-jsb font-semibold'>
                     1,889B
                   </div>
                 </div>

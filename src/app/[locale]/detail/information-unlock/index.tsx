@@ -7,7 +7,7 @@ import CountdownTimer from '@/components/CountdownTimer/CountDownTimer';
 import { IconUnLock } from '@/assets/icons';
 
 export default function InformationUnlock() {
-  const countDownTime = new Date('2023-12-31T23:59:59');
+  const countDownTime = new Date('2024-12-31T23:59:59');
   const option = {
     color: [
       new graphic.LinearGradient(0, 0, 0, 1, [

@@ -1,73 +1,71 @@
-import React from 'react';
+'use client';
+
+import { useState } from 'react';
 import AboutTab from './tabs/about/About';
 import TeamTab from './tabs/team/Team';
-import { Tabs } from 'antd';
+import './index.scss';
+import Updating from './Updating';
 
 const Profile = () => {
   const tabs = [
     {
-      id: '1',
+      id: 1,
       disable: false,
       label: 'About',
       component: <AboutTab />,
     },
     {
-      id: '2',
+      id: 2,
       disable: false,
       label: 'Team',
-      component: <TeamTab />,
+      component: <Updating />,
     },
     {
-      id: '3',
+      id: 3,
       disable: false,
       label: 'Advisors',
-      component: <TeamTab />,
+      component: <Updating />,
     },
     {
-      id: '4',
+      id: 4,
       disable: false,
       label: 'Unique Selling Proposition (USP)',
-      component: <TeamTab />,
+      component: <Updating />,
     },
     {
-      id: '5',
+      id: 5,
       disable: false,
       label: 'Partners',
-      component: (
-        <div className='text-sm font-medium text-grey-700'>
-          {`Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry's standard dummy text ever
-          since the 1500s, when an unknown printer took a galley of type and
-          scrambled it to make a type specimen book. It has survived not only
-          five centuries, but also the leap into electronic typesetting,
-          remaining essentially unchanged. It was popularised in the 1960s with
-          the release of Letraset sheets containing Lorem Ipsum passages, and
-          more recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum k. It has survived not only five
-          centuries, but also the leap into electronic typesetting, remaining
-          essentially unchanged. It was popularised in the 1960s with the
-          release of Letraset sheets containing Lorem Ipsum passages, and more
-          recently with desktop publishing software like Aldus PageMaker
-          including versions of Lorem Ipsum`}
-        </div>
-      ),
+      component: <Updating />,
     },
   ];
+  const [active, setActive] = useState<number>(1);
+  const activeTab = (id: number) => {
+    setActive(id);
+  };
+  const renderTableContent = () => {
+    return tabs[active - 1]?.component;
+  };
 
   return (
-    <div className='fade-top bh-white rounded-lg p-2'>
-      <Tabs
-        defaultActiveKey='1'
-        tabPosition={'top'}
-        items={tabs?.map((tab) => {
-          return {
-            label: tab.label,
-            key: tab.id,
-            disabled: tab.disable,
-            children: tab.component,
-          };
-        })}
-      />
+    <div className='profile p-6 rounded-lg fade-top'>
+      <div className='bh-white flex flex-wrap gap-4 border-b border-grey-300 mb-4 pb-4'>
+        {tabs.map((tab, index) => (
+          <div
+            key={index}
+            onClick={() => activeTab(tab.id)}
+            className={
+              'w-auto h-auto rounded-xl py-3 px-5 gap-2 cursor-pointer ' +
+              (tab.id === active
+                ? 'bg-gradient-to-b from-blue-500 to-indigo-900 text-white'
+                : 'border')
+            }
+          >
+            <p>{tab?.label}</p>
+          </div>
+        ))}
+      </div>
+      {renderTableContent()}
     </div>
   );
 };

@@ -4,6 +4,7 @@ import { Socials } from '../socials';
 import { Overview } from '../overview';
 import Tokenomics from '../tokenomics';
 import { Tabs } from 'antd';
+import { Fundraising } from '../fundraising';
 import './index.scss';
 
 const CoinTabInfo = () => {
@@ -28,9 +29,9 @@ const CoinTabInfo = () => {
     },
     {
       id: '4',
-      disable: true,
+      disable: false,
       label: 'Fundraising',
-      component: '',
+      component: <Fundraising />,
     },
     {
       id: '5',

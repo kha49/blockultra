@@ -82,8 +82,9 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
   };
 
   return (
-    <Flex className='gainers-header items-center justify-between mx-6 bg-[#FCFCFD]'>
-      <h3 className='font-bold text-black text-[28px] tracking-[0] leading-[28px] whitespace-nowrap'>
+    <div className='flex flex-col sm:flex-col md:flex-row xl:flex-row items-center sm:items-start bg-[#FCFCFD] justify-between mx-6'>
+      {/* <div className='gainers-header items-center justify-between mx-6 bg-[#FCFCFD] flex-col xl:flex-row md:flex-row sm:flex-col sm:items-start'> */}
+      <h3 className='font-bold text-black text-[28px] tracking-[0] leading-[28px] whitespace-nowrap sm:mb-3'>
         Top Coin Gainers & Losers
       </h3>
       <Space>
@@ -116,7 +117,7 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
           </Space>
         </Dropdown>
       </Space>
-    </Flex>
+    </div>
   );
 };
 

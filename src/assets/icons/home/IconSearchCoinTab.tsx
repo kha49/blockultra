@@ -12,16 +12,16 @@ const IconSearchCoinTab = () => {
         cy='9.80541'
         r='7.49047'
         stroke='#9FA4B7'
-        stroke-width='1.25'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='1.25'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
       <path
         d='M15.0151 15.4043L17.9518 18.3334'
         stroke='#9FA4B7'
-        stroke-width='1.25'
-        stroke-linecap='round'
-        stroke-linejoin='round'
+        strokeWidth='1.25'
+        strokeLinecap='round'
+        strokeLinejoin='round'
       />
     </svg>
   );

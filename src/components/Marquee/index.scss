@@ -38,11 +38,13 @@
     }
 
     &.marquee-2 {
-      animation-delay: 15s;
+      animation-delay: 6s;
+
       > div {
         &:first-child {
           margin-left: 48px;
           position: relative;
+
           &::before {
             content: '';
             position: absolute;
@@ -61,6 +63,24 @@
   }
 }
 
+@media screen and (max-width: 1024px) {
+  .marquee-2 {
+    animation-delay: 6s !important;
+  }
+}
+
+@media screen and (max-width: 640px) {
+  .marquee-2 {
+    animation-delay: 10s !important;
+  }
+}
+
+@media screen and (max-width: 500px) {
+  .marquee-2 {
+    animation-delay: 14s !important;
+  }
+}
+
 @keyframes scroll2 {
   0% {
     left: 100%;
@@ -68,5 +88,11 @@
 
   100% {
     left: -100%;
+  }
+}
+
+.gas-tooltip {
+  .ant-tooltip-inner {
+    min-width: 350px;
   }
 }

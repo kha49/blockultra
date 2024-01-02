@@ -4,7 +4,9 @@ const apiClient = new APIClient();
 
 const baseUrl = 'api/home/';
 
-export const FetchCoins = (params) => apiClient.get(baseUrl + 'coins', params);
+export const FetchCoins = (params) => {
+  return apiClient.get(baseUrl + 'coins', params);
+};
 
 export const SearchCoinsFilter = (params) =>
   apiClient.get(baseUrl + 'coins/search', params);
@@ -16,16 +18,16 @@ export const FetchCategories = (params) =>
   apiClient.get(baseUrl + 'categories', params);
 
 export const FetchTrendings = (params) =>
-  apiClient.get(baseUrl + 'trendings', params);
+  apiClient.post(baseUrl + 'trendings', params);
 
 export const FetchUpComings = (params) =>
-  apiClient.get(baseUrl + 'upcomings', params);
+  apiClient.post(baseUrl + 'upcomings', params);
 
 export const FetchFundraisings = (params) =>
-  apiClient.get(baseUrl + 'fundraisings', params);
+  apiClient.post(baseUrl + 'fundraisings', params);
 
 export const FetchGainers = (params) =>
-  apiClient.get(baseUrl + 'gainers', params);
+  apiClient.post(baseUrl + 'gainers', params);
 
 export const FetchLosers = (params) =>
-  apiClient.get(baseUrl + 'losers', params);
+  apiClient.post(baseUrl + 'losers', params);
