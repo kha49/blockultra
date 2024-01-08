@@ -2,7 +2,7 @@
 import { Flex, Pagination, Table, Tag } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import SelectItemTable from '@/components/SelectItemTable';
 import './styles.scss';
 import HeadFilter from '../head-filter';
@@ -10,22 +10,23 @@ import { IIeoIdoData } from '../../types';
 import DataGroup from '@/components/DataGroup';
 import BankersModal from '../bankers-modal';
 import LaunchpadModal from '../launchpad-modal';
+import { IResponseAxios } from '@/models/IResponse';
+import { ORDER } from '@/helpers/constants';
+import { FetchIeoIdoUpcoming } from '@/usecases/ieo-ido';
 
-const columns: ColumnsType<IIeoIdoData> = [
+const columns: ColumnsType<any> = [
   {
     title: 'Project',
     dataIndex: 'project',
     key: 'project',
-    render: (_, { project }) => (
+    render: (_, { name, image, tag, isHot }) => (
       <Flex align={'center'} gap={8}>
-        <Image src={project.icon} alt={'icon'} width={24} height={24} />
-        <span>{project.name}</span>
+        {/* <Image src={image} alt={'icon'} width={24} height={24} /> */}
+        <span>{name}</span>
         <Tag className={'bg-[#F1F4F7]'} bordered={false}>
-          {project.tag}
+          {tag}
         </Tag>
-        {project.isHot && (
-          <Image alt='hot' src={'/hot.svg'} width={12} height={12} />
-        )}
+        {isHot && <Image alt='hot' src={'/hot.svg'} width={12} height={12} />}
       </Flex>
     ),
   },
@@ -45,9 +46,9 @@ const columns: ColumnsType<IIeoIdoData> = [
     title: 'Backers',
     dataIndex: 'backers',
     key: 'backers',
-    render: (_, { backers }) => (
-      <BankersModal data={backers}>
-        {({ onOpen }) => <DataGroup data={backers} onClick={onOpen} />}
+    render: (_, { funds }) => (
+      <BankersModal data={funds}>
+        {({ onOpen }) => <DataGroup data={funds} onClick={onOpen} />}
       </BankersModal>
     ),
   },
@@ -55,14 +56,15 @@ const columns: ColumnsType<IIeoIdoData> = [
     title: 'Category',
     dataIndex: 'category',
     key: 'category',
+    render: (_, { category }) => <>{category.name}</>,
   },
   {
     title: 'Launchpad',
     dataIndex: 'launchpadList',
     key: 'launchpadList',
-    render: (_, { launchpadList }) => (
-      <LaunchpadModal data={launchpadList}>
-        {({ onOpen }) => <DataGroup data={launchpadList} onClick={onOpen} />}
+    render: (_, { launchpads }) => (
+      <LaunchpadModal data={launchpads}>
+        {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
       </LaunchpadModal>
     ),
   },
@@ -70,40 +72,29 @@ const columns: ColumnsType<IIeoIdoData> = [
     title: 'Start Date',
     dataIndex: 'startedDate',
     key: 'startedDate',
-  },
-];
-
-const data: IIeoIdoData[] = [
-  {
-    project: {
-      name: 'BTC',
-      icon: '/coin-info/wallets-1.png',
-      tag: 'BTC',
-      isHot: true,
-    },
-    initialCap: 100.0,
-    totalRaise: 345.65,
-    backers: Array.from(Array(5)).map((_, idx) => ({
-      avatarUrl: 'https://picsum.photos/200/300?random=' + idx,
-      name: 'launchpad ' + idx,
-      group: 'Group ' + (idx % 2 ? 1 : 2),
-    })),
-    launchpadList: Array.from(Array(5)).map((_, idx) => ({
-      avatarUrl: 'https://picsum.photos/200/300?random=' + idx,
-      name: 'launchpad ' + idx,
-    })),
-    category: 'GameFi',
-    startedDate: '2021-09-01',
+    render: (_, { start_date }) => <>{start_date}</>,
   },
 ];
 
 export const IeoIdoTable = () => {
-  const total = 1000;
-  const pageSize = 10;
-  const currentPage = 1;
-  const _onChangePage = (page: number) => {};
+  const [data, setData] = useState<IIeoIdoData[]>([]);
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [total, setTotal] = useState(0);
 
-  const _onChangeSize = (value: number) => {};
+  const [order, setOrder] = useState({
+    columnKey: '',
+    order: '',
+  });
+
+  const _onChangePage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const _onChangeSize = (value: number) => {
+    setCurrentPage(1);
+    setPageSize(value);
+  };
 
   const _renderRange = () => {
     const start = (currentPage - 1) * pageSize + 1;
@@ -114,6 +105,24 @@ export const IeoIdoTable = () => {
       </span>
     );
   };
+
+  const getIeoIdoUpComing = useCallback(async () => {
+    const response: IResponseAxios<IIeoIdoData> = await FetchIeoIdoUpcoming({
+      limit: pageSize,
+      page: currentPage,
+      sort_by: order.columnKey,
+      sort_order: ORDER[order.order],
+    });
+
+    if (!response) return;
+    const { data, total } = response;
+    setData(data);
+    setTotal(total!!);
+  }, [pageSize, currentPage, order]);
+
+  useEffect(() => {
+    getIeoIdoUpComing();
+  }, [getIeoIdoUpComing, pageSize, currentPage, order]);
 
   return (
     <Flex vertical gap={16} className={'ieo-ido-table'}>

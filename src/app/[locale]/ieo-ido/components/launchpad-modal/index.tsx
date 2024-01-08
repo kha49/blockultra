@@ -33,7 +33,7 @@ export default function LaunchpadModal(props: LaunchpadProps) {
   return (
     <>
       {children(childrenCallback)}
-      <Modal
+      {/* <Modal
         title='Launchpads'
         onCancel={handleCancel}
         centered
@@ -50,7 +50,7 @@ export default function LaunchpadModal(props: LaunchpadProps) {
             </Flex>
           ))}
         </Flex>
-      </Modal>
+      </Modal> */}
     </>
   );
 }

@@ -38,7 +38,7 @@ const SwitcherLanguage = () => {
         className='flex gap-1 items-center cursor-pointer'
         onClick={(e) => e.preventDefault()}
       >
-        {lang} <IconCaretDown />
+        {lang.toUpperCase()} <IconCaretDown />
       </div>
     </Dropdown>
   );

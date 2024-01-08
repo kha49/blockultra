@@ -30,7 +30,7 @@ const SwitcherCurrency = () => {
         className='flex gap-1 items-center cursor-pointer'
         onClick={(e) => e.preventDefault()}
       >
-        {cur} <IconCaretDown />
+        {cur.toUpperCase()} <IconCaretDown />
       </div>
     </Dropdown>
   );

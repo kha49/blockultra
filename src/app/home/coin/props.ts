@@ -41,6 +41,17 @@ export interface IHomeCoin {
   average24?: any;
   chart: string;
 }
+
+export interface ISearchFilter {
+  key: string;
+  rank: number;
+  name: string;
+  symbol: string;
+  image: Image;
+  price: Price;
+  id?: string;
+}
+
 interface AtlPrice {
   BTC: number;
   ETH: number;

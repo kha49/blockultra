@@ -10,12 +10,19 @@ import {
   IOptionCustom,
 } from '@/components/FilterCustom/props';
 import { isArray, random, round } from 'lodash';
-import { nFormatter, percentFormat, renderSortIcon } from '@/helpers';
-import { FetchCategories } from '@/usecases/home';
+import {
+  nFormatter,
+  percentFormat,
+  renderRangePaging,
+  renderSortIcon,
+} from '@/helpers';
+import { FetchCategories, SearchCategoriesFilter } from '@/usecases/home';
 import { IResponseAxios } from '@/models/IResponse';
 
 import ReactECharts from 'echarts-for-react';
-import { COLOR_CHART } from '@/helpers/constants';
+import { COLOR_CHART, ORDER } from '@/helpers/constants';
+import { ISearchFilter } from '../coin/props';
+import { useDebounce } from 'usehooks-ts';
 
 const columns: ColumnsType<IHomeCategory> = [
   {
@@ -117,7 +124,7 @@ const columns: ColumnsType<IHomeCategory> = [
     align: 'right',
     render: (_, value) => {
       return (
-        <div className='flex items-center'>
+        <div className='flex items-center justify-end'>
           <ReactECharts
             style={{
               height: 32,
@@ -189,16 +196,20 @@ const Categories = () => {
     order: '',
   });
 
+  const [keyFilter, setKeyFilter] = useState<string[]>([]);
+  const debouncedValue = useDebounce<string[]>(keyFilter, 500);
+
   useEffect(() => {
     _fetchCategories();
-  }, [currentPage, order, pageSize]);
+  }, [currentPage, order, pageSize, debouncedValue]);
 
   const _fetchCategories = async () => {
     const response: IResponseAxios<IHomeCategory> = await FetchCategories({
       limit: pageSize,
       page: currentPage,
-      columnKey: order.columnKey,
-      order: order.order,
+      sort_by: order.columnKey,
+      sort_order: ORDER[order.order],
+      key_search: keyFilter.join(','),
     });
     if (!response) return;
     const { data, total } = response;
@@ -211,28 +222,16 @@ const Categories = () => {
   };
 
   const _onChangeSize = (value: number) => {
+    setCurrentPage(1);
     setPageSize(value);
   };
 
-  const _renderRange = () => {
-    const start = (currentPage - 1) * pageSize + 1;
-    const end = start + data.length - 1;
+  const _renderOption = ({ name, checked, id }: IOptionCustom) => {
     return (
-      <span className='table-total'>
-        {start} - {end} from {total}
-      </span>
-    );
-  };
-
-  const _renderOption = ({ name, code, checked }: IOptionCustom) => {
-    return (
-      <Select.Option isSelectOption={true} value={code} key={name}>
+      <Select.Option isSelectOption={true} value={id} key={id}>
         <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
           <div className=''>
             <span className='name mx-2'>{name}</span>
-            {/* <span className='code px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5'>
-              {code}
-            </span> */}
           </div>
           <div className='ant-checkbox'>
             {!checked ? (
@@ -245,7 +244,7 @@ const Categories = () => {
   };
 
   const _renderTag = (options: ICustomTagProp) => {
-    const { value, closable, onClose, index } = options;
+    const { value, closable, onClose, index, rawData } = options;
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
       event.preventDefault();
       event.stopPropagation();
@@ -267,21 +266,28 @@ const Categories = () => {
         onClose={onClose}
         style={{ marginRight: 3 }}
       >
-        {value}
+        {rawData?.name ?? value}
       </Tag>
     );
   };
 
   const _getData = async ({ searchKey }: IOptionAny) => {
-    return [
-      ...Array.from(Array(20).keys()).map(() => ({
-        id: random(1, 100000),
-        name: `name-${searchKey}${random(1, 100000)}`,
-        code: `code-${searchKey}${random(100, 999)}`,
-        thumb: '',
-        isSelected: false,
-      })),
-    ];
+    const res: any = await SearchCategoriesFilter({
+      slug: searchKey,
+    });
+    if (!res) return [];
+
+    return res.map((e: ISearchFilter) => ({
+      id: e.id,
+      name: e.name,
+      code: e.id,
+      thumb: '',
+      isSelected: false,
+    }));
+  };
+
+  const _onSelectFilter = (value: string[]) => {
+    setKeyFilter(value);
   };
 
   return (
@@ -291,7 +297,7 @@ const Categories = () => {
           placeholder='Filter Categories'
           renderOption={_renderOption}
           renderTag={_renderTag}
-          onChange={() => {}}
+          onChange={_onSelectFilter}
           getData={_getData}
         />
       </div>
@@ -326,7 +332,9 @@ const Categories = () => {
       </div>
 
       <div className='pt-6 flex items-center justify-between table-pagination'>
-        <div>{_renderRange()}</div>
+        <div>
+          {renderRangePaging(currentPage, pageSize, data.length, total)}
+        </div>
         <div className='pagination-desktop'>
           <Pagination
             total={total}

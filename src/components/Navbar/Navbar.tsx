@@ -31,6 +31,7 @@ import IconTopKOLs from '@/assets/icons/IconTopKOLs';
 import IconTopActiveUsers from '@/assets/icons/IconTopActiveUsers';
 import IconTopPosts from '@/assets/icons/IconTopPosts';
 import { IconArrowDown } from '@/assets/icons/IconArrowDown';
+import { useParams, useRouter } from 'next/navigation';
 
 const Navbar = () => {
   const navbarData = [
@@ -47,11 +48,13 @@ const Navbar = () => {
               id: 1,
               name: 'Top Coins',
               icons: <IconTopcoin />,
+              link: '/',
             },
             {
               id: 2,
               name: 'Trending Coins',
               icons: <IconTrendingCoin />,
+              link: '/',
             },
             {
               id: 3,
@@ -102,16 +105,19 @@ const Navbar = () => {
           id: 1,
           name: 'Top Backers',
           icons: <IconTopBacker />,
+          href: '/fundraising/top-backers',
         },
         {
           id: 2,
           name: 'Funding Rounds',
           icons: <IconFundingRounds />,
+          href: '/fundraising/funding-rounds',
         },
         {
           id: 3,
           name: 'Overview',
           icons: <IconOverview />,
+          href: '/fundraising/overview',
         },
       ],
     },
@@ -124,31 +130,43 @@ const Navbar = () => {
           id: 1,
           name: 'Upcoming',
           icons: <IconUpcoming />,
+          href: '/ieo-ido',
+          // href: '/ieo-ido/upcoming',
         },
         {
           id: 2,
           name: 'Ongoing',
           icons: <IconOngoing />,
+          href: '/ieo-ido',
+          // href: '/ieo-ido/ongoing',
         },
         {
           id: 3,
           name: 'Ended',
           icons: <IconEnded />,
+          href: '/ieo-ido',
+          // href: '/ieo-ido/ended',
         },
         {
           id: 4,
           name: 'IDO Launchpads',
           icons: <IconIDOLaunchpads />,
+          href: '/ieo-ido',
+          // href: '/ieo-ido/ido-launchpads',
         },
         {
           id: 5,
           name: 'IEO Launchpads',
           icons: <IconIEOLaunchpads />,
+          href: '/ieo-ido',
+          // href: '/ieo-ido/ieo-launchpads',
         },
         {
           id: 6,
           name: 'Overview',
           icons: <IconOverview />,
+          href: '/ieo-ido',
+          // href: '/ieo-ido/overview',
         },
       ],
     },
@@ -161,26 +179,36 @@ const Navbar = () => {
           id: 1,
           name: 'Spot',
           icons: <IconSpot />,
+          href: '/exchange',
+          // href: '/exchange/spot',
         },
         {
           id: 2,
           name: 'Derivatives',
           icons: <IconDerivatives />,
+          href: '/exchange',
+          // href: '/exchange/derivatives',
         },
         {
           id: 3,
           name: 'Dex',
           icons: <IconDex />,
+          href: '/exchange',
+          // href: '/exchange/dex',
         },
         {
           id: 4,
           name: 'Lending',
           icons: <IconLending />,
+          href: '/exchange',
+          // href: '/exchange/lending',
         },
         {
           id: 5,
           name: 'CEX Transparency',
           icons: <IconCEXTansparency />,
+          href: '/exchange',
+          // href: '/exchange/cex-transparency',
         },
       ],
     },
@@ -193,37 +221,56 @@ const Navbar = () => {
           id: 1,
           name: 'Airdrops',
           icons: <IconAirdrops />,
+          href: '/community',
+          // href: '/community/airdrops',
         },
         {
           id: 2,
           name: 'Research',
           icons: <IconResearch />,
+          href: '/community',
+          // href: '/community/research',
         },
         {
           id: 3,
           name: 'Top KOLs',
           icons: <IconTopKOLs />,
+          href: '/community',
+          // href: '/community/top-kols',
         },
         {
           id: 4,
           name: 'Top Active Users',
           icons: <IconTopActiveUsers />,
+          href: '/community',
+          // href: '/community/top-active-users',
         },
         {
           id: 5,
           name: 'Top Posts',
           icons: <IconTopPosts />,
+          href: '/community',
+          // href: '/community/top-posts',
         },
       ],
     },
     {
       id: 6,
       categoryName: 'Unlock',
+      link: 'unlock-schedule',
+      isNotSubMenu: true,
       isMultiLevel: false,
+      href: '/unlock-schedule',
     },
   ];
+  const router = useRouter();
+  const params = useParams<{ locale: string }>();
   const [activeMenuMobile, setActiveMenuMobile] = useState<number>(0);
-  const activeMobileHandler = (id: number) => {
+  const activeMobileHandler = (id: number, href?: string) => {
+    if (href) {
+      return router.push(`/${params.locale}/${href}`);
+    }
+
     if (id === activeMenuMobile) {
       return setActiveMenuMobile(0);
     }
@@ -242,9 +289,18 @@ const Navbar = () => {
           <div className='flex gap-8'>
             {navbarData?.map((navItem) => (
               <div className='menu cursor-pointer relative' key={navItem?.id}>
-                <span className='menu text-base font-bold font-jeb text-grey-700'>
-                  {navItem.categoryName}
-                </span>
+                {navItem?.href ? (
+                  <Link
+                    href={`/${params.locale}/${navItem.href}`}
+                    className='menu text-base font-bold font-jb hover:text-primary-500 text-grey-700'
+                  >
+                    {navItem.categoryName}
+                  </Link>
+                ) : (
+                  <span className='menu text-base font-bold font-jb hover:text-primary-500 text-grey-700'>
+                    {navItem.categoryName}
+                  </span>
+                )}
                 <div className='sub-menu absolute top-full left-1/2 -translate-x-2/4'>
                   <div className='caret'></div>
                   {navItem.isMultiLevel ? (
@@ -254,9 +310,12 @@ const Navbar = () => {
                         <div className='grid grid-cols-2 gap-8'>
                           {navItem?.subCateLevel1.map((sub: any) => (
                             <div className='ingredient' key={sub.id}>
-                              <div className='ingredient__title text-base font-bold text-grey-700 mb-3'>
-                                {sub.name}
-                              </div>
+                              <Link href={`/${params.locale}/${sub.href}`}>
+                                <div className='ingredient__title text-base font-bold text-grey-700 mb-3'>
+                                  {sub.name}
+                                </div>
+                              </Link>
+
                               {sub?.subCateLevel2 &&
                               sub?.subCateLevel2.length > 0 ? (
                                 <div>
@@ -288,13 +347,14 @@ const Navbar = () => {
                   navItem?.subCateLevel1.length > 0 ? (
                     <div className='sub-menu-wrapper fade-top rounded-lg bg-grey-100 p-2 min-w-[220px]'>
                       {navItem?.subCateLevel1.map((sub: any) => (
-                        <div
+                        <Link
                           className='flex gap-2 p-3 sub-menu-item'
                           key={sub.id}
+                          href={`/${params.locale}/${sub.href}`}
                         >
                           {sub?.icons}
                           <span>{sub.name}</span>
-                        </div>
+                        </Link>
                       ))}
                     </div>
                   ) : (
@@ -314,8 +374,8 @@ const Navbar = () => {
               key={navItem?.id}
             >
               <div
-                className='menu text-base font-bold font-jeb text-grey-700 flex justify-between items-center'
-                onClick={() => activeMobileHandler(navItem.id)}
+                className='menu text-base font-bold font-jb hover:text-primary-500 text-grey-700 flex justify-between items-center'
+                onClick={() => activeMobileHandler(navItem.id, navItem.href)}
               >
                 <span
                   className={
@@ -350,21 +410,42 @@ const Navbar = () => {
                       <div className='grid grid-cols-1 gap-8'>
                         {navItem?.subCateLevel1.map((sub: any) => (
                           <div className='ingredient' key={sub.id}>
-                            <div className='ingredient__title text-base font-bold text-grey-700 mb-3'>
-                              {sub.name}
-                            </div>
+                            {sub.href ? (
+                              <Link
+                                href={`/${params.locale}/${sub.href}`}
+                                className='ingredient__title text-base font-bold text-grey-700 mb-3'
+                              >
+                                {sub.name}
+                              </Link>
+                            ) : (
+                              <div className='ingredient__title text-base font-bold text-grey-700 mb-3'>
+                                {sub.name}
+                              </div>
+                            )}
+
                             {sub?.subCateLevel2 &&
                             sub?.subCateLevel2.length > 0 ? (
                               <div>
-                                {sub?.subCateLevel2.map((sublv2: any) => (
-                                  <div
-                                    className='flex gap-2 p-3 sub-menu-item rounded'
-                                    key={sublv2.id}
-                                  >
-                                    {sublv2?.icons}
-                                    <span>{sublv2.name}</span>
-                                  </div>
-                                ))}
+                                {sub?.subCateLevel2.map((sublv2: any) =>
+                                  sublv2?.href ? (
+                                    <Link
+                                      href={`/${params.locale}/${sublv2.href}`}
+                                      className='flex gap-2 p-3 sub-menu-item rounded'
+                                      key={sublv2.id}
+                                    >
+                                      {sublv2?.icons}
+                                      <span>{sublv2.name}</span>
+                                    </Link>
+                                  ) : (
+                                    <div
+                                      className='flex gap-2 p-3 sub-menu-item rounded'
+                                      key={sublv2.id}
+                                    >
+                                      {sublv2?.icons}
+                                      <span>{sublv2.name}</span>
+                                    </div>
+                                  )
+                                )}
                               </div>
                             ) : (
                               ''
@@ -383,15 +464,26 @@ const Navbar = () => {
                 navItem?.subCateLevel1 &&
                 navItem?.subCateLevel1.length > 0 ? (
                   <div className='fade-right rounded-lg p-2'>
-                    {navItem?.subCateLevel1.map((sub: any) => (
-                      <div
-                        className='flex gap-2 p-3 sub-menu-item'
-                        key={sub.id}
-                      >
-                        {sub?.icons}
-                        <span>{sub.name}</span>
-                      </div>
-                    ))}
+                    {navItem?.subCateLevel1.map((sub: any) =>
+                      sub?.href ? (
+                        <Link
+                          href={`/${params.locale}/${sub.href}`}
+                          className='flex gap-2 p-3 sub-menu-item'
+                          key={sub.id}
+                        >
+                          {sub?.icons}
+                          <span>{sub.name}</span>
+                        </Link>
+                      ) : (
+                        <div
+                          className='flex gap-2 p-3 sub-menu-item'
+                          key={sub.id}
+                        >
+                          {sub?.icons}
+                          <span>{sub.name}</span>
+                        </div>
+                      )
+                    )}
                   </div>
                 ) : (
                   ''

@@ -3,6 +3,11 @@
 import { RefObject, useEffect, useRef, useState, FC } from 'react';
 import SearchResult from '../SearchResult/SearchResult';
 import { ISearchInputProps } from './SearchInput.type';
+import { useDebounce } from 'usehooks-ts';
+import { GlobalSearchCoins } from '@/usecases/common';
+import { IGlobalSearch, IRecent } from './props';
+import { get, uniqBy } from 'lodash';
+import { TEXT_RECENT_DATA } from '@/helpers/constants';
 
 const SearchInput: FC<ISearchInputProps> = ({
   isButton,
@@ -11,6 +16,15 @@ const SearchInput: FC<ISearchInputProps> = ({
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [search, setSearch] = useState<string>('');
   const wrapperRef = useRef(null);
+  const debouncedValue = useDebounce<string>(search, 500);
+  const [data, setData] = useState<IGlobalSearch>({
+    categories: [],
+    coins: [],
+    fundraisings: [],
+    trendings: [],
+    upcomings: [],
+  });
+  const [recents, setRecents] = useState<IRecent[]>([]);
 
   const useOutsideAlerter = <T extends HTMLElement>(ref: RefObject<T>) => {
     useEffect(() => {
@@ -32,12 +46,51 @@ const SearchInput: FC<ISearchInputProps> = ({
 
   const handlerSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-    setTimeout(() => {
-      setIsTyping(true);
-    }, 300);
+    // setTimeout(() => {
+    //   setIsTyping(true);
+    // }, 300);
+  };
+  // console.log(isTyping, 'isTyping');
+  useEffect(() => {
+    GlobalSearchCoins({ name: debouncedValue }).then((res: any) => {
+      setData(res);
+
+      if (!debouncedValue) return;
+
+      const oneCoin = get(res, 'coins[0]', null);
+      const oneTren = get(res, 'trendings[0]', null);
+
+      if (oneCoin || oneTren) {
+        recents.push({
+          name: get(oneCoin ?? oneTren, 'key', null),
+          key: get(oneCoin ?? oneTren, 'name', null),
+          icon: get(oneCoin ?? oneTren, 'image.x60', null),
+        });
+
+        const recentData = uniqBy(recents, 'key').reverse();
+
+        setRecents(recentData);
+        localStorage.setItem(TEXT_RECENT_DATA, JSON.stringify(recentData));
+      }
+    });
+  }, [debouncedValue]);
+
+  useEffect(() => {
+    const jsonData = localStorage.getItem(TEXT_RECENT_DATA);
+    if (!jsonData) return;
+    try {
+      const recentData = JSON.parse(jsonData);
+      setRecents(recentData);
+    } catch (error) {}
+  }, []);
+
+  const _onClearRecent = () => {
+    localStorage.removeItem(TEXT_RECENT_DATA);
+    setRecents([]);
   };
 
   useOutsideAlerter(wrapperRef);
+
   return (
     <div>
       <form ref={wrapperRef}>
@@ -73,7 +126,7 @@ const SearchInput: FC<ISearchInputProps> = ({
             onChange={(e) => handlerSearch(e)}
             onFocus={() => setIsTyping(true)}
             className={
-              'block w-full p-4 pl-14 text-sm text-gray-900 border border-gray-300 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 outline-none ' +
+              'block w-full p-4 pl-14 text-sm text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 outline-none ' +
               (component === 'banner' ? 'rounded-full' : 'rounded-lg')
             }
             placeholder='Enter Coin, Token, NFT, Category...'
@@ -102,7 +155,11 @@ const SearchInput: FC<ISearchInputProps> = ({
               (isTyping ? 'active' : '')
             }
           >
-            <SearchResult />
+            <SearchResult
+              data={data}
+              recents={recents}
+              onClearRecent={_onClearRecent}
+            />
           </div>
         </div>
       </form>

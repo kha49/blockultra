@@ -7,7 +7,7 @@ import {
   IconTrending,
 } from '@/assets/icons';
 import IconFundraising from '@/assets/icons/IconFundraising';
-import IconUpcoming from '@/assets/icons/IconUpcoming';
+import IconUpcomingIEOIDO from '@/assets/icons/IconUpcomingIEOIDO';
 
 const data: any = [
   {
@@ -42,7 +42,7 @@ const data: any = [
   },
   {
     id: 'upcoming',
-    icon: <IconUpcoming />,
+    icon: <IconUpcomingIEOIDO />,
     label: 'Upcoming IDO/IEO',
     isActive: false,
   },

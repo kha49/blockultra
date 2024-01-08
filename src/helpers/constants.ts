@@ -82,3 +82,11 @@ export const COLOR_CHART = {
   CRAYOLA: '#1AB369',
   RADICAL_RED: '#FA3363',
 };
+
+export const ORDER: any = {
+  descend: 'desc',
+  ascend: 'asc',
+  '': '',
+};
+
+export const TEXT_RECENT_DATA = 'recent_data';

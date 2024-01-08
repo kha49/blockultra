@@ -1,5 +1,4 @@
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
-import { ReactNode } from 'react';
 
 export interface ISearchData {
   id: number | string;
@@ -24,6 +23,7 @@ export interface IFilterCustom {
 
 export interface ICustomTagProp extends CustomTagProps {
   index: number;
+  rawData?: any;
 }
 
 export interface IOptionAny {

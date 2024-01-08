@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { useCallback, useEffect, useState } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 import './style.scss';
 import { Button, Checkbox, Pagination, Select, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { FetchCoins } from '@/usecases/home';
-import { get, isArray, random, round } from 'lodash';
+import { FetchCoins, SearchCoinsFilter } from '@/usecases/home';
+import { get, isArray, round } from 'lodash';
 import SelectItemTable from '@/components/SelectItemTable';
 import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
 import { IconCustomCointTab } from '@/assets/icons/home/IconCustomCoinTab';
@@ -18,12 +18,14 @@ import {
   currencyFormat,
   nFormatter,
   percentFormat,
+  renderRangePaging,
   renderSortIcon,
 } from '@/helpers';
 import { IResponseAxios } from '@/models/IResponse';
-import { IHomeCoin } from './props';
-import Image from 'next/image';
+import { IHomeCoin, ISearchFilter } from './props';
 import { caculatorAverage24h } from '@/helpers/functions';
+import { ORDER } from '@/helpers/constants';
+import { useDebounce } from 'usehooks-ts';
 
 const columns: ColumnsType<IHomeCoin> = [
   {
@@ -65,16 +67,7 @@ const columns: ColumnsType<IHomeCoin> = [
     width: 50,
     align: 'right',
     render: (_, value) => {
-      // return null;
-      // if (!value.rate) {
       return <span>-</span>;
-      // }
-
-      // return (
-      //   <p className='inline-flex items-center'>
-      //     <span className='mr-1'>{value.rate}</span> <IconStarCoinTab />
-      //   </p>
-      // );
     },
     sortIcon: renderSortIcon,
     sorter: true,
@@ -115,7 +108,6 @@ const columns: ColumnsType<IHomeCoin> = [
     width: 168,
     align: 'right',
     render: (_, value) => {
-      // return value.marketCap;
       return nFormatter(Number(value.marketCap), 2, '$');
     },
   },
@@ -129,6 +121,7 @@ const columns: ColumnsType<IHomeCoin> = [
         return (
           <div className='flex items-center justify-end'>
             <img
+              alt='graph'
               width={200}
               height={52}
               src={`data:image/svg+xml;base64,${value.chart}`}
@@ -146,18 +139,21 @@ const Coins = () => {
   const [data, setData] = useState<IHomeCoin[]>([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [total, setTotal] = useState(999);
+  const [total, setTotal] = useState(0);
   const [order, setOrder] = useState({
     columnKey: '',
     order: '',
   });
+  const [keyFilter, setKeyFilter] = useState<string[]>([]);
+  const debouncedValue = useDebounce<string[]>(keyFilter, 300);
 
   const getCoins = useCallback(async () => {
     const response: IResponseAxios<IHomeCoin> = await FetchCoins({
       limit: pageSize,
       page: currentPage,
-      columnKey: order.columnKey,
-      order: order.order,
+      sort_by: order.columnKey,
+      sort_order: ORDER[order.order],
+      key_search: keyFilter.join(','),
     });
 
     if (!response) return;
@@ -166,59 +162,18 @@ const Coins = () => {
     setTotal(total!!);
 
     /* #endregion */
-  }, [pageSize, currentPage, order]);
-
-  // function searchCategoriesFilter() {
-  //   SearchCategoriesFilter({ name: '' }).then((res: any) => {
-  //     const data = res.map((item: any) => {
-  //       return {
-  //         value: item.name,
-  //         label: item.name,
-  //       };
-  //     });
-  //     setCoinsSearch(data);
-  //   });
-  // }
-
-  // const onChange: PaginationProps['onChange'] = (pageNumber) => {
-  //   setParams({ ...params, page: pageNumber });
-  // };
-
-  // const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
-  //   current,
-  //   pageSize
-  // ) => {
-  //   const newParam = { ...params, page: current, limit: pageSize };
-  //   setParams(newParam);
-  // };
-
-  // const onChangeSearch = (item: any) => {
-  //   setParams({ ...params, search_key: item });
-  // };
-
-  // const onSearch = (item: any) => {
-  //   setParams({ ...params, search_key: item });
-  // };
+  }, [pageSize, currentPage, order, keyFilter]);
 
   useEffect(() => {
     getCoins();
-  }, [getCoins, pageSize, currentPage, order]);
-
-  const _renderRange = () => {
-    const start = (currentPage - 1) * pageSize + 1;
-    const end = start + data.length - 1;
-    return (
-      <span className='table-total'>
-        {start} - {end} from {total}
-      </span>
-    );
-  };
+  }, [getCoins, pageSize, currentPage, order, debouncedValue]);
 
   const _onChangePage = (page: number) => {
     setCurrentPage(page);
   };
 
   const _onChangeSize = (value: number) => {
+    setCurrentPage(1);
     setPageSize(value);
   };
 
@@ -251,20 +206,21 @@ const Coins = () => {
   };
 
   const _getData = async ({ searchKey }: IOptionAny) => {
-    return [
-      ...Array.from(Array(20).keys()).map(() => ({
-        id: random(1, 100000),
-        name: `name-${searchKey}${random(1, 100000)}`,
-        code: `code-${searchKey}${random(100, 999)}`,
-        thumb: '',
-        isSelected: false,
-      })),
-    ];
+    const res: any = await SearchCoinsFilter(searchKey);
+    if (!res) return [];
+
+    return res.map((e: ISearchFilter) => ({
+      id: e.key,
+      name: e.name,
+      code: e.symbol,
+      thumb: '',
+      isSelected: false,
+    }));
   };
 
   const _renderOption = ({ name, code, checked }: IOptionCustom) => {
     return (
-      <Select.Option isSelectOption={true} value={code} key={name}>
+      <Select.Option isSelectOption={true} value={code} key={code}>
         <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
           <div className=''>
             <span className='name mx-2'>{name}</span>
@@ -282,6 +238,10 @@ const Coins = () => {
     );
   };
 
+  const _onSelectFilter = (value: string[]) => {
+    setKeyFilter(value);
+  };
+
   return (
     <div className='home-table coin-tab'>
       <div className=''>
@@ -291,18 +251,20 @@ const Coins = () => {
               placeholder='Filter Coins'
               renderOption={_renderOption}
               renderTag={_renderTag}
-              onChange={() => {}}
+              onChange={_onSelectFilter}
               getData={_getData}
             />
-            <Button className='ml-1 h-10 hidden xl:block md:block'>
-              <div className='flex'>
-                <IconFilterCoinTab />
-                <span className='ml-1'>Filters</span>
-              </div>
-            </Button>
+            <div className='hidden xl:block md:block'>
+              <Button className='ml-1 h-10 '>
+                <div className='flex'>
+                  <IconFilterCoinTab />
+                  <span className='ml-1'>Filters</span>
+                </div>
+              </Button>
+            </div>
           </div>
-          <div>
-            <Button className='ml-1 h-10 hidden xl:block md:block'>
+          <div className='hidden xl:block md:block'>
+            <Button className='ml-1 h-10 '>
               <div className='flex'>
                 <IconCustomCointTab />
                 <span className='ml-1'>Customize</span>
@@ -341,7 +303,9 @@ const Coins = () => {
         </div>
 
         <div className='pt-6 flex items-center justify-between table-pagination'>
-          <div>{_renderRange()}</div>
+          <div>
+            {renderRangePaging(currentPage, pageSize, data.length, total)}
+          </div>
           <div className='pagination-desktop'>
             <Pagination
               total={total}
@@ -360,4 +324,4 @@ const Coins = () => {
   );
 };
 
-export default Coins;
+export default memo(Coins);

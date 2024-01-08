@@ -1,0 +1,15 @@
+.allocations {
+  .echarts-for-react {
+    width: 240px !important;
+    height: 240px !important;
+  }
+
+  .index {
+    margin-bottom: 12px;
+    display: flex;
+
+    &__name {
+      margin-left: 13px;
+    }
+  }
+}
