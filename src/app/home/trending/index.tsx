@@ -1,11 +1,21 @@
-import { IconStar } from '@/assets/icons';
+// import { IconStar } from '@/assets/icons';
 import { useEffect, useState } from 'react';
 import './style.scss';
 import { Pagination, Table, Tabs } from 'antd';
-import type { PaginationProps } from 'antd';
+// import type { PaginationProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { FetchTrendings } from '../../../usecases/home';
 import { caculatorAverage24h } from '@/helpers/functions';
+import { ORDER } from '@/helpers/constants';
+import SelectItemTable from '@/components/SelectItemTable';
+import {
+  currencyFormat,
+  nFormatter,
+  percentFormat,
+  renderRangePaging,
+  renderSortIcon,
+} from '@/helpers';
+import { isArray } from 'lodash';
 
 const columns: ColumnsType<any> = [
   {
@@ -22,50 +32,55 @@ const columns: ColumnsType<any> = [
     title: 'Name',
     width: 248,
     align: 'left',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, value) => {
       return (
         <p className='inline-flex items-center'>
-          <img src={value.image.icon} width={32} />
+          <img src={value.image.x60} width={32} />
           <span className='ml-2'>{value.name}</span>
+          {value.symbol ? (
+            <span className='ml-2 px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5 text-xs'>
+              {value.symbol}
+            </span>
+          ) : null}
         </p>
       );
     },
   },
-  {
-    key: 'rate',
-    title: 'Rate',
-    width: 91,
-    align: 'left',
-    render: (_, value) => {
-      return (
-        <p className='inline-flex items-center'>
-          <span className='mr-1'>{value.rate}</span> <IconStar />
-        </p>
-      );
-    },
-  },
+  // {
+  //   key: 'rate',
+  //   title: 'Rate',
+  //   width: 91,
+  //   align: 'left',
+  //   render: (_, value) => {
+  //     return (
+  //       <p className='inline-flex items-center'>
+  //         <span className='mr-1'>{value.rate}</span> <IconStar />
+  //       </p>
+  //     );
+  //   },
+  // },
   {
     key: 'price',
     title: 'Price',
     width: 151,
     align: 'right',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, value) => {
-      return value.price['USD'];
+      return currencyFormat(value.price['USD'], '$');
     },
   },
   {
     key: 'period',
     title: '24h %',
-    width: 167,
+    width: 150,
     align: 'right',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, value) => {
-      return (
-        <p
-          style={{ color: value.graph === 'increase' ? '#1AB369' : '#FA3363' }}
-        >
-          {value.average24}
-        </p>
-      );
+      return percentFormat(value.average24);
     },
   },
   {
@@ -73,8 +88,10 @@ const columns: ColumnsType<any> = [
     title: 'Volume (24h)',
     width: 186,
     align: 'right',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, value) => {
-      return value.volume24h;
+      return nFormatter(value.volume24h, 2, '$');
     },
   },
   {
@@ -82,8 +99,10 @@ const columns: ColumnsType<any> = [
     title: 'Market Cap',
     width: 168,
     align: 'right',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, value) => {
-      return value.marketCap;
+      return nFormatter(value.marketCap, 2, '$');
     },
   },
   {
@@ -91,6 +110,8 @@ const columns: ColumnsType<any> = [
     title: 'Price Graph (7d)',
     width: 261,
     align: 'right',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, value) => {
       return (
         <div className='flex items-center justify-end'>
@@ -132,15 +153,15 @@ const IconFire = () => {
 };
 
 const Trending = () => {
-  const [params, setParams] = useState({
-    search_key: '',
-    sort_by: '',
-    sort_order: '',
-    limit: 0,
-    page: 0,
+  const [pageSize, setPageSize] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [order, setOrder] = useState({
+    columnKey: '',
+    order: '',
   });
-  const [trendings, setTrendings] = useState();
-  const [total, setTotal] = useState();
+  const [trendings, setTrendings] = useState([]);
+
   const showTotal = (total: number) => `Total ${total} items`;
   function getTrendings(params: any) {
     FetchTrendings(params).then((res: any) => {
@@ -153,21 +174,24 @@ const Trending = () => {
       setTotal(res.total);
     });
   }
-  const onChange: PaginationProps['onChange'] = (pageNumber) => {
-    setParams({ ...params, page: pageNumber });
-  };
-
-  const onShowSizeChange: PaginationProps['onShowSizeChange'] = (
-    current,
-    pageSize
-  ) => {
-    const newParam = { ...params, page: current, limit: pageSize };
-    setParams(newParam);
-  };
 
   useEffect(() => {
-    getTrendings(params);
-  }, [params]);
+    getTrendings({
+      limit: pageSize,
+      page: currentPage,
+      sort_order: ORDER[order.order],
+      sort_by: order.columnKey,
+    });
+  }, [pageSize, currentPage, order]);
+
+  const _onChangePage = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const _onChangeSize = (value: number) => {
+    setCurrentPage(1);
+    setPageSize(value);
+  };
 
   const tabs = [
     'Trending Coins',
@@ -186,26 +210,62 @@ const Trending = () => {
             key: id,
             label: label,
             children: (
-              <div className='overflow-x-auto'>
-                <Table
-                  columns={columns}
-                  dataSource={trendings}
-                  pagination={{ position: ['none'] }}
-                  rowKey='id'
-                />
-                <div className='p-6 flex items-center justify-center'>
+              <div>
+                <div className='overflow-x-auto hide-scroll'>
+                  <Table
+                    columns={columns}
+                    dataSource={trendings}
+                    pagination={{ position: ['none'], pageSize }}
+                    rowKey='id'
+                    showSorterTooltip={false}
+                    onChange={(_page, _filter, sort) => {
+                      const itemSort = isArray(sort) ? sort[0] : sort;
+                      setOrder({
+                        columnKey: itemSort.columnKey
+                          ? itemSort.columnKey.toString()
+                          : '',
+                        order: itemSort.order ? itemSort.order.toString() : '',
+                      });
+                    }}
+                  />
+                </div>
+                <div className='pt-6 flex items-center justify-center table-pagination pagination-mobile'>
                   <Pagination
                     total={total}
-                    showTotal={(total) => showTotal(total)}
-                    showSizeChanger
-                    showQuickJumper
-                    onChange={onChange}
-                    onShowSizeChange={onShowSizeChange}
+                    pageSize={pageSize}
+                    current={currentPage}
+                    onChange={_onChangePage}
+                    showSizeChanger={false}
+                    size='small'
                   />
+                </div>
+
+                <div className='pt-6 flex items-center justify-between table-pagination'>
+                  <div>
+                    {renderRangePaging(
+                      currentPage,
+                      pageSize,
+                      trendings.length,
+                      total
+                    )}
+                  </div>
+                  <div className='pagination-desktop'>
+                    <Pagination
+                      total={total}
+                      pageSize={pageSize}
+                      current={currentPage}
+                      onChange={_onChangePage}
+                      showSizeChanger={false}
+                    />
+                  </div>
+                  <div>
+                    <SelectItemTable onChange={_onChangeSize} />
+                  </div>
                 </div>
               </div>
             ),
             icon: <IconFire />,
+            disabled: true,
           };
         })}
       />

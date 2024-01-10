@@ -6,6 +6,8 @@ import Tokenomics from '../tokenomics';
 import { Tabs } from 'antd';
 import { Fundraising } from '../fundraising';
 import './index.scss';
+import Markets from '../markets';
+import Unlock from '../unlock';
 
 const CoinTabInfo = () => {
   const tabs = [
@@ -17,9 +19,9 @@ const CoinTabInfo = () => {
     },
     {
       id: '2',
-      disable: true,
+      disable: false,
       label: 'Markets',
-      component: '',
+      component: <Markets />,
     },
     {
       id: '3',
@@ -47,9 +49,9 @@ const CoinTabInfo = () => {
     },
     {
       id: '7',
-      disable: true,
+      disable: false,
       label: 'Unlock',
-      component: '',
+      component: <Unlock />,
     },
     {
       id: '8',

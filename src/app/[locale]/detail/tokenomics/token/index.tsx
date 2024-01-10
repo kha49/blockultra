@@ -33,7 +33,7 @@ export default function TokenAllocation() {
         type: 'pie',
         radius: ['50%', '70%'],
         itemStyle: {
-          borderRadius: 0,
+          borderRadius: 5,
           borderColor: '#fff',
           borderWidth: 3,
         },
@@ -306,8 +306,8 @@ export default function TokenAllocation() {
   };
 
   return (
-    <div className='token grid grid-cols-1 md:grid-cols-2 gap-4 p-6 bg-white rounded-lg'>
-      <div className='allocation flex flex-col md:flex-row items-center gap-4 md:gap-8'>
+    <div className='token box-shadow-common grid grid-cols-1 lg:grid-cols-2 gap-4 p-6 bg-white rounded-lg'>
+      <div className='allocation flex flex-col lg:flex-row items-center'>
         <div className='relative'>
           <ReactECharts option={optionPie} />
           <div className='absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 flex flex-col justify-center items-center'>
@@ -321,7 +321,10 @@ export default function TokenAllocation() {
           {listAllocation && listAllocation.length > 0
             ? listAllocation.map((item) => {
                 return (
-                  <div className='note__item flex gap-4 mb-6' key={item.id}>
+                  <div
+                    className='flex items-center justify-between gap-4 mb-6'
+                    key={item.id}
+                  >
                     <SwitchAllocation
                       id={item.id}
                       isActive={item.isActive}
@@ -329,6 +332,14 @@ export default function TokenAllocation() {
                       activeColor={item.activeColor}
                       onChange={(e: any) => handler(e)}
                     />
+                    <div className='flex items-center justify-between gap-4'>
+                      <div className='text-grey-700 text-medium text-xs'>
+                        NBIT 1.85B
+                      </div>
+                      <div className='text-grey-500 text-medium text-xs'>
+                        25.32%
+                      </div>
+                    </div>
                   </div>
                 );
               })

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import AboutTab from './tabs/about/About';
-import TeamTab from './tabs/team/Team';
+// import TeamTab from './tabs/team/Team';
 import './index.scss';
 import Updating from './Updating';
 

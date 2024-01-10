@@ -1,6 +1,6 @@
 'use client';
 
-import HexagonItem from '@/components/hexagon/Hexagon';
+import HexagonItem from '@/components/Hexa/Hexagon';
 import './index.scss';
 import { COLOR_CHART } from '@/helpers/constants';
 import ReactECharts from 'echarts-for-react';

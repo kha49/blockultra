@@ -3,7 +3,7 @@ import { showToast } from './toast';
 let isRefreshing = false;
 let failedQueue = [];
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL + '/',
+  baseURL: 'https://103.146.23.183',
   headers: {
     'Content-Type': 'application/json',
   },

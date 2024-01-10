@@ -1,7 +1,6 @@
-import { Button, Dropdown, Flex, MenuProps, Space } from 'antd';
+import { Dropdown, Space } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { useState } from 'react';
-import { ItemType } from 'antd/es/menu/hooks/useItems';
 
 const times = [
   {
@@ -71,6 +70,7 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
     setCoinSelected({
       ...item,
     });
+    onFilterCoins(item.key);
   };
 
   const _onChangeTime = ({ key }: { key: string }) => {
@@ -79,6 +79,7 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
     setTimeSelected({
       ...item,
     });
+    onFilterTime(item.key);
   };
 
   return (

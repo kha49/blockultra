@@ -1,39 +1,40 @@
-import { IconBitcoin } from '@/assets/icons/home/gainers/IconBitcoin';
-import { renderSortIcon } from '@/helpers';
+import {
+  currencyFormat,
+  nFormatter,
+  percentFormat,
+  renderSortIcon,
+} from '@/helpers';
 import { Flex } from 'antd';
 import Table, { ColumnsType } from 'antd/es/table';
 import { isArray } from 'lodash';
 import Link from 'next/link';
-import { ReactNode, useState } from 'react';
-
-interface IData {
-  id: number;
-  name: ReactNode | string;
-  price: string;
-  period: string;
-  volume: string;
-  graph: string;
-  icon?: string | JSX.Element;
-  code?: string;
-}
+import { useEffect, useState } from 'react';
+import { IGainer } from './props';
 
 type TopDataProps = {
   title: string;
-  data: IData[];
+  data: IGainer[];
+  onChangeOrder: ({
+    columnKey,
+    order,
+  }: {
+    columnKey: string;
+    order: string;
+  }) => void;
 };
 
-const TopData = ({ title }: TopDataProps) => {
+const TopData = ({ title, data, onChangeOrder }: TopDataProps) => {
   const [order, setOrder] = useState({
     columnKey: '',
     order: '',
   });
 
   return (
-    <Flex className='flex-1 flex-col gap-4'>
-      <h4 className='font-bold text-[#333747] text-[20px] tracking-[0] leading-[28px] whitespace-nowrap'>
+    <div className='flex-1 flex-col gap-4'>
+      <h4 className='font-bold text-[#333747] text-[20px] tracking-[0] leading-[28px] mb-4 whitespace-nowrap'>
         {title}
       </h4>
-      <div className='overflow-x-auto'>
+      <div className='overflow-x-auto hide-scroll'>
         <Table
           columns={columns}
           dataSource={data}
@@ -41,17 +42,19 @@ const TopData = ({ title }: TopDataProps) => {
           rowKey='id'
           onChange={(_page, _filter, sort) => {
             const itemSort = isArray(sort) ? sort[0] : sort;
-            setOrder({
+            const newOr = {
               columnKey: itemSort.columnKey
                 ? itemSort.columnKey.toString()
                 : '',
               order: itemSort.order ? itemSort.order.toString() : '',
-            });
+            };
+            setOrder(newOr);
+            onChangeOrder(newOr);
           }}
           showSorterTooltip={false}
         />
       </div>
-    </Flex>
+    </div>
   );
 };
 
@@ -75,13 +78,19 @@ const columns: ColumnsType<any> = [
     render: (_, value) => {
       return (
         <div className='flex items-center'>
+          <img width={32} height={32} alt={value.name} src={value.image.x60} />
           {value.icon}
-          <Link href='/en/detail' className='mx-2'>
-            {value.name}
-          </Link>
-          <span className='px-2 bg-[#EEF2F6] text-[#9FA4B7] leading-5'>
-            {value.code}
-          </span>
+          <p className='textover-ellipsis'>
+            <Link href={`/en/detail/${value.symbol}`} className='mx-2'>
+              {value.name}
+            </Link>
+          </p>
+
+          {value.symbol ? (
+            <span className='ml-2 px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5 text-xs'>
+              {value.symbol}
+            </span>
+          ) : null}
         </div>
       );
     },
@@ -92,10 +101,10 @@ const columns: ColumnsType<any> = [
   {
     key: 'price',
     title: 'Price',
-    width: 151,
+    width: 120,
     align: 'right',
     render: (_, value) => {
-      return value.price.USD;
+      return currencyFormat(value.price.USD, '$');
     },
     sortIcon: renderSortIcon,
     sorter: true,
@@ -106,13 +115,7 @@ const columns: ColumnsType<any> = [
     width: 167,
     align: 'right',
     render: (_, value) => {
-      return (
-        <p
-          style={{ color: value.graph === 'increase' ? '#1AB369' : '#FA3363' }}
-        >
-          {value.average24}
-        </p>
-      );
+      return percentFormat(value.average24);
     },
     sortIcon: renderSortIcon,
     sorter: true,
@@ -123,22 +126,9 @@ const columns: ColumnsType<any> = [
     width: 186,
     align: 'right',
     render: (_, value) => {
-      return value.volume24h;
+      return nFormatter(value.volume24h, 2, '$');
     },
     sortIcon: renderSortIcon,
     sorter: true,
   },
-];
-
-const data: IData[] = [
-  ...Array.from(Array(20).keys()).map((e) => ({
-    id: e + 1,
-    name: 'Bitcoin',
-    icon: <IconBitcoin />,
-    code: 'BTC',
-    price: '$12.168',
-    period: e % 2 ? '+5.63%' : '-10.10%',
-    volume: '$345.65B',
-    graph: e % 2 ? 'increase' : 'down',
-  })),
 ];

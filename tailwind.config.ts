@@ -29,6 +29,9 @@ const config: Config = {
         'sp-green-500': '#1AB369',
         'blue-500': '#547AFF',
         'indigo-900': '#4551DE',
+        orange: {
+          '500': '#F7931A'
+        }
       },
       maxWidth: {
         sm: '640px',

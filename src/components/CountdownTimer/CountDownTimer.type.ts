@@ -1,6 +1,6 @@
 export interface ICountdownTimerProps {
   targetDate: Date;
-  countDownName: string;
+  countDownName?: string;
 }
 
 export interface TimeLeft {

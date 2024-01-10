@@ -39,7 +39,7 @@ const MarqueeItem = ({ data }: { data: IMarqueeItem }) => {
     if (!data.isGas || !data.child) return null;
     const elements: JSX.Element[] = data.child.map((item, index) => {
       return (
-        <div className={`w-36 ${index === 1} pr-2 pl-2`}>
+        <div key={item.id} className={`w-36 ${index === 1} pr-2 pl-2`}>
           <div className='text text-gray-400 font-semibold'>
             {item.coinName}
           </div>

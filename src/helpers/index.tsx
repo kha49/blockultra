@@ -91,3 +91,18 @@ export const secondsToHms = (d: number | string) => {
   var sDisplay = s > 0 ? s + ' sec ' : '';
   return hDisplay + mDisplay + sDisplay;
 };
+
+export const renderRangePaging = (
+  page: number,
+  pageSize: number,
+  dataLength: number,
+  total: number
+) => {
+  const start = (page - 1) * pageSize + 1;
+  const end = start + dataLength - 1;
+  return (
+    <span className='table-total'>
+      {start} - {end} from {total}
+    </span>
+  );
+};

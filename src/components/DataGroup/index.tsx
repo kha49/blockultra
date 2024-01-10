@@ -1,12 +1,7 @@
 import { Avatar, Flex, Tag } from 'antd';
 import React from 'react';
 
-type IData = {
-  avatarUrl: string;
-  name: string;
-};
-
-type DataGroupProps<T = IData> = {
+type DataGroupProps<T = any> = {
   onClick?: () => void;
   data?: T[];
 };
@@ -22,15 +17,17 @@ export default function DataGroup(props: DataGroupProps) {
 
   return (
     <Flex align='center' gap={8}>
-      <Avatar size={32} src={first.avatarUrl} />
+      <Avatar size={32} src={first.image} />
       <span>{first.name}</span>
-      <Tag
-        className={'bg-[#F1F4F7] cursor-pointer'}
-        bordered={false}
-        onClick={onClick}
-      >
-        +{rest.length}
-      </Tag>
+      {rest.length > 0 && (
+        <Tag
+          className={'bg-[#F1F4F7] cursor-pointer'}
+          bordered={false}
+          onClick={onClick}
+        >
+          +{rest.length + 1}
+        </Tag>
+      )}
     </Flex>
   );
 }

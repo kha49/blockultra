@@ -43,9 +43,13 @@ const CountdownTimer: React.FC<ICountdownTimerProps> = ({
 
   return (
     <div className='mx-auto max-w-[210px]'>
-      <h4 className='font-jsb text-grey-700 text-center mb-1'>
-        {countDownName}
-      </h4>
+      {
+        countDownName ? (
+          <h4 className='font-jsb text-grey-700 text-center mb-1'>
+            {countDownName}
+          </h4>
+        ) : ''
+      }
       <div className='flex items-start justify-center gap-1'>
         {d && d > 0 ? (
           <>

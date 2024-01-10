@@ -4,4 +4,6 @@ const apiClient = new APIClient();
 
 const baseUrl = 'api/token-unlocks';
 
-export const FetchList = (params) => apiClient.get(baseUrl, params);
+export const FetchTokenUnlock = (params) => apiClient.get(baseUrl, params);
+export const FetchUnlockDetail = (params) =>
+  apiClient.get(`${baseUrl}/${params}`);

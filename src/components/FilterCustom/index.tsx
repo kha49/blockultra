@@ -1,11 +1,11 @@
 import IconSearchCoinTab from '@/assets/icons/home/IconSearchCoinTab';
 import CustomSelect from '@/components/CustomSelect';
 import { Checkbox } from 'antd';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { IFilterCustom, ISearchData } from './props';
-import { sleep } from '@/helpers';
 import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
 import { useDebounce } from 'usehooks-ts';
+import { orderBy, uniqBy } from 'lodash';
 
 const FilterCustom = (props: IFilterCustom) => {
   const { renderOption, renderTag, onChange, getData, placeholder } = props;
@@ -17,20 +17,22 @@ const FilterCustom = (props: IFilterCustom) => {
   const debouncedValue = useDebounce<string>(textSearch, 500);
 
   const _getData = async (searchKey?: string) => {
-    // todo call api with search key
     setIsLoading(true);
-    await sleep(1000);
-    setIsLoading(false);
     const data = await getData({
-      searchKey: textSearch,
+      searchKey: searchKey ?? '',
     });
-    setSearchData([...arSelected, ...data]);
+    setIsLoading(false);
+    setSearchData([..._mergeAr(arSelected, data)]);
+  };
+
+  const _mergeAr = (oldAr: any[], newAr: any[]) => {
+    const allDt = [...oldAr, ...newAr];
+    return uniqBy(allDt, (e) => e.code);
   };
 
   const _renderOptions = () => {
     const elements: JSX.Element[] = [];
-
-    searchData.forEach((s) => {
+    orderBy(searchData, (e) => e.selectedTime).forEach((s) => {
       const checked = isSelected.includes(s.code);
       elements.push(renderOption({ ...s, checked }));
     });
@@ -39,8 +41,11 @@ const FilterCustom = (props: IFilterCustom) => {
   };
 
   const _onChangeSelect = (value: string[]) => {
+    value = value.reverse();
     searchData.forEach((e) => {
-      e.isSelected = value.includes(e.code);
+      const index = value.indexOf(e.code);
+      e.isSelected = index > -1;
+      e.selectedTime = index > -1 ? new Date().getTime() + index : null;
     });
     setArSelected([...searchData.filter((s) => s.isSelected)]);
     setIsSelected(value);
@@ -48,19 +53,13 @@ const FilterCustom = (props: IFilterCustom) => {
   };
 
   const _tagRender = (props: CustomTagProps) => {
-    const index = isSelected.indexOf(props.value);
-
-    return renderTag({ ...props, index });
+    const index = arSelected.findIndex((e) => e.code === props.value);
+    return renderTag({ ...props, index, rawData: arSelected[index] });
   };
 
   const _onSearch = (value: string) => {
     setTextSearch(value);
   };
-
-  /* #region useEffect */
-  useEffect(() => {
-    _getData();
-  }, []);
 
   useEffect(() => {
     _getData(debouncedValue);
@@ -97,4 +96,4 @@ const FilterCustom = (props: IFilterCustom) => {
   );
 };
 
-export default FilterCustom;
+export default memo(FilterCustom);
