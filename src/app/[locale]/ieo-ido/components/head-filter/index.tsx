@@ -1,5 +1,5 @@
 'use client';
-import { Button, Flex, Segmented } from 'antd';
+import { Button, Flex } from 'antd';
 import React from 'react';
 import './styles.scss';
 import clsx from 'clsx';
@@ -55,26 +55,14 @@ export default function HeadFilter() {
         ))}
       </Flex>
 
-      <Flex wrap='wrap' gap={8} justify='space-between'>
-        <Flex gap={8}>
-          <SelectProject />
-          <Button className='ml-1 h-10'>
-            <Flex className='text-[#333747]'>
-              <IconFilterCoinTab />
-              <span className='ml-1'>Filters</span>
-            </Flex>
-          </Button>
-        </Flex>
-
-        <Segmented
-          className='items-center'
-          options={[
-            { value: 'all', label: 'All' },
-            { value: 'hot', label: 'Hot' },
-          ]}
-        />
-
-        <div className='flex w-[400px]' />
+      <Flex gap={8}>
+        <SelectProject />
+        <Button className='ml-1 h-10'>
+          <Flex className='text-[#333747]'>
+            <IconFilterCoinTab />
+            <span className='ml-1'>Filters</span>
+          </Flex>
+        </Button>
       </Flex>
     </Flex>
   );
