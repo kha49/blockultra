@@ -17,7 +17,6 @@ const columns: ColumnsType<any> = [
     dataIndex: 'name',
     key: 'name',
     render: (_, { name, image }) => {
-      debugger;
       return (
         <Flex align={'center'} gap={8}>
           <Image src={name.icon} alt={'icon'} width={24} height={24} />

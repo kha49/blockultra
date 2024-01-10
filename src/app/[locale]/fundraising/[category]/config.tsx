@@ -1,11 +1,12 @@
 import { ColumnsType } from 'antd/es/table';
-import { IFundingRoundsData, ITopBackerData } from './types';
+import { IFundingRoundsData } from './types';
 import { Avatar, Flex, Tag } from 'antd';
 import Image from 'next/image';
 import moment from 'moment';
 import BackersModal from './components/backers-modal';
 import DataGroup from '@/components/DataGroup';
-import Doughnut from '@/components/DoughnutChart';
+import { formatDate } from '@/helpers/datetime';
+import { nFormatter } from '@/helpers';
 
 export const FundraisingCategory = {
   FundingRounds: 'funding-rounds',
@@ -13,10 +14,18 @@ export const FundraisingCategory = {
   Overview: 'overview',
 };
 
+const TEMP_DISABLED_TAGS = [FundraisingCategory.Overview];
+
 export const FundraisingCategoryLabel = {
   [FundraisingCategory.FundingRounds]: 'Funding Rounds',
   [FundraisingCategory.TopBackers]: 'Top Backers',
   [FundraisingCategory.Overview]: 'Overview',
+};
+
+export const FundraisingPathApi = {
+  [FundraisingCategory.FundingRounds]: 'funding-rounds',
+  [FundraisingCategory.TopBackers]: 'top-backers',
+  [FundraisingCategory.Overview]: 'overview',
 };
 
 export type FundraisingType = keyof typeof FundraisingCategory;
@@ -47,15 +56,13 @@ export const getBreadcrumbConfig = (category?: FundraisingType) => {
 const roundsColumns: ColumnsType<any> = [
   {
     title: 'Project',
-    dataIndex: 'project',
-    key: 'project',
-    render: (_, { project }) => (
+    dataIndex: 'name',
+    key: 'name',
+    fixed: true,
+    render: (_, { name, icon }) => (
       <Flex align={'center'} gap={8}>
-        {/* <Image src={project.icon} alt={'icon'} width={24} height={24} /> */}
-        <span>{project}</span>
-        {/* <Tag className={'bg-[#F1F4F7]'} bordered={false}>
-          {project.tag}
-        </Tag> */}
+        <Image src={icon} alt={'icon'} width={24} height={24} />
+        <span>{name}</span>
       </Flex>
     ),
   },
@@ -63,32 +70,32 @@ const roundsColumns: ColumnsType<any> = [
     title: 'Date',
     dataIndex: 'date',
     key: 'date',
-    render: (_, { date }) => moment(date).format('DD MMM YYYY'),
+    render: (value) => formatDate(value),
   },
   {
     title: 'Amount Raised',
-    dataIndex: 'amountRaised',
-    key: 'amountRaised',
-    render: (_, { amountRaised }) => <>${amountRaised}M</>,
+    dataIndex: 'raise',
+    key: 'raise',
+    render: (raise) => nFormatter(raise, 2, '$'),
   },
   {
     title: 'Round',
-    dataIndex: 'round',
-    key: 'round',
+    dataIndex: 'stage',
+    key: 'stage',
   },
   {
     title: 'Valuation',
-    dataIndex: 'valuation',
-    key: 'valuation',
-    render: (_, { valuation }) => <>${valuation}M</>,
+    dataIndex: 'raise',
+    key: 'raise',
+    render: (_, { raise }) => nFormatter(raise, 2, '$'),
   },
   {
     title: 'Backers',
-    dataIndex: 'backers',
-    key: 'backers',
-    render: (_, { backers }) => (
-      <BackersModal data={backers}>
-        {({ onOpen }) => <DataGroup data={backers} onClick={onOpen} />}
+    dataIndex: 'funds',
+    key: 'funds',
+    render: (_, { funds }) => (
+      <BackersModal data={funds}>
+        {({ onOpen }) => <DataGroup data={funds} onClick={onOpen} />}
       </BackersModal>
     ),
   },
@@ -96,6 +103,7 @@ const roundsColumns: ColumnsType<any> = [
     title: 'Category',
     dataIndex: 'category',
     key: 'category',
+    render: (_, { category }) => category?.name,
   },
 ];
 
@@ -104,9 +112,10 @@ const topBackersColumns: ColumnsType<any> = [
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
+    fixed: true,
     render: (_, { name, logo }) => (
       <Flex align={'center'} gap={8}>
-        {/* <Image src={logo} alt={'icon'} width={24} height={24} /> */}
+        <Image src={logo} alt={'icon'} width={24} height={24} />
         <span>{name}</span>
       </Flex>
     ),
@@ -177,49 +186,6 @@ const topBackersColumns: ColumnsType<any> = [
   // },
 ];
 
-export const mockDataFundingRounds: IFundingRoundsData[] = [
-  {
-    project: {
-      name: 'Binance',
-      icon: '/binance.svg',
-      tag: 'BNB',
-      isHot: true,
-    },
-    date: '2021-07-12',
-    amountRaised: 200,
-    round: 'Round 1',
-    valuation: 200,
-    backers: [
-      {
-        group: 'VC',
-        name: 'Binance',
-        avatarUrl: '/binance.svg',
-      },
-      {
-        group: 'VC',
-        name: 'Binance',
-        avatarUrl: '/binance.svg',
-      },
-      {
-        group: 'VC',
-        name: 'Binance',
-        avatarUrl: '/binance.svg',
-      },
-      {
-        group: 'VC',
-        name: 'Binance',
-        avatarUrl: '/binance.svg',
-      },
-      {
-        group: 'VC',
-        name: 'Binance',
-        avatarUrl: '/binance.svg',
-      },
-    ],
-    category: 'Exchange',
-  },
-];
-
 export const getColumnsFundraising = (category: string) => {
   switch (category) {
     case FundraisingCategory.FundingRounds:
@@ -228,5 +194,24 @@ export const getColumnsFundraising = (category: string) => {
       return topBackersColumns;
     default:
       return [];
+  }
+};
+
+export const getFundraisingTags = () => {
+  return Object.values(FundraisingCategory).map((key) => ({
+    label: FundraisingCategoryLabel[key],
+    value: key,
+    disabled: TEMP_DISABLED_TAGS.includes(key),
+  }));
+};
+
+export const getFundraisingPathApi = (category: string) => {
+  switch (category) {
+    case FundraisingCategory.FundingRounds:
+      return FundraisingPathApi[FundraisingCategory.FundingRounds];
+    case FundraisingCategory.TopBackers:
+      return FundraisingPathApi[FundraisingCategory.TopBackers];
+    default:
+      return FundraisingPathApi[FundraisingCategory.Overview];
   }
 };

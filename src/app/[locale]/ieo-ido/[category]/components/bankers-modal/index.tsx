@@ -1,7 +1,7 @@
-import { Avatar, Flex, Modal } from 'antd';
+import { Avatar, Flex, Image, Modal } from 'antd';
 import React from 'react';
+import { IIeoIdoData } from '../../types';
 import _ from 'lodash';
-import { IBacker } from '../../types';
 
 type IChildrenCallback = {
   onOpen: () => void;
@@ -9,12 +9,12 @@ type IChildrenCallback = {
   isOpen: boolean;
 };
 
-type BackersModalProps = {
+type BankersModalProps = {
   children: (props: IChildrenCallback) => React.ReactNode;
-  data: IBacker[];
+  data: IIeoIdoData['backers'];
 };
 
-export default function BackersModal(props: BackersModalProps) {
+export default function BankersModal(props: BankersModalProps) {
   const { children, data } = props;
   const [isOpen, setIsOpen] = React.useState(false);
   const showModal = () => {
@@ -29,8 +29,6 @@ export default function BackersModal(props: BackersModalProps) {
     onClose: handleCancel,
     isOpen,
   };
-
-  const mappedData = _.groupBy(data, 'type');
 
   return (
     <>
@@ -49,23 +47,14 @@ export default function BackersModal(props: BackersModalProps) {
         }}
       >
         <Flex vertical gap={24} className='mt-6'>
-          {_.map(mappedData, (value, key) => {
-            return (
-              <Flex vertical gap={16}>
-                <h4 className='font-bold text-sm text-[#333747]'>{key}</h4>
-                <Flex vertical gap={16}>
-                  {value.map((item) => (
-                    <Flex align='center' gap={8}>
-                      <Avatar src={item.image} alt='avatar' size={32} />
-                      <span className='text-sm font-normal text-[#333747]'>
-                        {item.name}
-                      </span>
-                    </Flex>
-                  ))}
-                </Flex>
-              </Flex>
-            );
-          })}
+          {data.map((item, index) => (
+            <Flex align='center' gap={8} key={index}>
+              <Avatar src={item.image} alt='avatar' size={32} />
+              <span className='text-sm font-normal text-[#333747]'>
+                {item.name}
+              </span>
+            </Flex>
+          ))}
         </Flex>
       </Modal>
     </>

@@ -4,6 +4,9 @@ const apiClient = new APIClient();
 
 const baseUrl = 'api/ieo-ido';
 
+export const FetchIeoIdo = (path, params) =>
+  apiClient.get(`api/${path}`, params);
+
 export const FetchIeoIdoUpcoming = (params) => apiClient.get(baseUrl, params);
 export const FetchUnlockDetail = (params) =>
   apiClient.get(`${baseUrl}/${params}`);

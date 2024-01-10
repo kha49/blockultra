@@ -63,7 +63,7 @@ const CustomSelect = ({ prefixIcon, children, ...rest }: CustomSelectProps) => {
             <IconDownCoinTab />
           </div>
         }
-        className='select-custom'
+        className='select-custom hover:!border-primary-500'
         {...rest}
       >
         {children}

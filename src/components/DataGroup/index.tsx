@@ -19,13 +19,15 @@ export default function DataGroup(props: DataGroupProps) {
     <Flex align='center' gap={8}>
       <Avatar size={32} src={first.image} />
       <span>{first.name}</span>
-      <Tag
-        className={'bg-[#F1F4F7] cursor-pointer'}
-        bordered={false}
-        onClick={onClick}
-      >
-        +{rest.length}
-      </Tag>
+      {rest.length > 0 && (
+        <Tag
+          className={'bg-[#F1F4F7] cursor-pointer'}
+          bordered={false}
+          onClick={onClick}
+        >
+          +{rest.length + 1}
+        </Tag>
+      )}
     </Flex>
   );
 }

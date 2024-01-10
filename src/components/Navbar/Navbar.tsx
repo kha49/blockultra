@@ -130,43 +130,37 @@ const Navbar = () => {
           id: 1,
           name: 'Upcoming',
           icons: <IconUpcoming />,
-          href: '/ieo-ido',
-          // href: '/ieo-ido/upcoming',
+          href: '/ieo-ido/upcoming',
         },
         {
           id: 2,
           name: 'Ongoing',
           icons: <IconOngoing />,
-          href: '/ieo-ido',
-          // href: '/ieo-ido/ongoing',
+          href: '#',
         },
         {
           id: 3,
           name: 'Ended',
           icons: <IconEnded />,
-          href: '/ieo-ido',
-          // href: '/ieo-ido/ended',
+          href: '/ieo-ido/ended',
         },
         {
           id: 4,
           name: 'IDO Launchpads',
           icons: <IconIDOLaunchpads />,
-          href: '/ieo-ido',
-          // href: '/ieo-ido/ido-launchpads',
+          href: '/ieo-ido/ido-launchpads',
         },
         {
           id: 5,
           name: 'IEO Launchpads',
           icons: <IconIEOLaunchpads />,
-          href: '/ieo-ido',
-          // href: '/ieo-ido/ieo-launchpads',
+          href: '#',
         },
         {
           id: 6,
           name: 'Overview',
           icons: <IconOverview />,
-          href: '/ieo-ido',
-          // href: '/ieo-ido/overview',
+          href: '#',
         },
       ],
     },
@@ -292,12 +286,12 @@ const Navbar = () => {
                 {navItem?.href ? (
                   <Link
                     href={`/${params.locale}/${navItem.href}`}
-                    className='menu text-base font-bold font-jb hover:text-primary-500 text-grey-700'
+                    className='menu text-base font-semibold font-jb hover:text-primary-500 text-grey-700'
                   >
                     {navItem.categoryName}
                   </Link>
                 ) : (
-                  <span className='menu text-base font-bold font-jb hover:text-primary-500 text-grey-700'>
+                  <span className='menu text-base font-semibold font-jb hover:text-primary-500 text-grey-700'>
                     {navItem.categoryName}
                   </span>
                 )}
@@ -374,7 +368,7 @@ const Navbar = () => {
               key={navItem?.id}
             >
               <div
-                className='menu text-base font-bold font-jb hover:text-primary-500 text-grey-700 flex justify-between items-center'
+                className='menu text-base font-semibold font-jb hover:text-primary-500 text-grey-700 flex justify-between items-center'
                 onClick={() => activeMobileHandler(navItem.id, navItem.href)}
               >
                 <span
@@ -413,12 +407,12 @@ const Navbar = () => {
                             {sub.href ? (
                               <Link
                                 href={`/${params.locale}/${sub.href}`}
-                                className='ingredient__title text-base font-bold text-grey-700 mb-3'
+                                className='ingredient__title text-base font-semibold font-jb text-grey-700 mb-3'
                               >
                                 {sub.name}
                               </Link>
                             ) : (
-                              <div className='ingredient__title text-base font-bold text-grey-700 mb-3'>
+                              <div className='ingredient__title text-base font-semibold font-jb text-grey-700 mb-3'>
                                 {sub.name}
                               </div>
                             )}

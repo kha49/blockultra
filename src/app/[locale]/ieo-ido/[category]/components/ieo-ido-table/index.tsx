@@ -4,16 +4,23 @@ import React, { useCallback, useEffect, useState } from 'react';
 import SelectItemTable from '@/components/SelectItemTable';
 import './styles.scss';
 import HeadFilter from '../head-filter';
-import { getColumnsFundraising, getFundraisingPathApi } from '../../config';
-import { useParams } from 'next/navigation';
+import { IIeoIdoData } from '../../types';
 import { IResponseAxios } from '@/models/IResponse';
-import { FetchFundraising } from '@/usecases/fundraising';
 import { ORDER } from '@/helpers/constants';
+import { FetchIeoIdo } from '@/usecases/ieo-ido';
+import { useParams } from 'next/navigation';
+import {
+  IeoIdoCategory,
+  getIeoIdoApiPath,
+  getIeoIdoColumns,
+} from '../../config';
 
-export const FunDTable = () => {
-  const params = useParams<{ locale: string; category: string }>();
+export const IeoIdoTable = () => {
+  const { category = IeoIdoCategory.upcoming } = useParams<{
+    category: string;
+  }>();
 
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<IIeoIdoData[]>([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -32,8 +39,6 @@ export const FunDTable = () => {
     setPageSize(value);
   };
 
-  const columns = getColumnsFundraising(params.category);
-
   const _renderRange = () => {
     const start = (currentPage - 1) * pageSize + 1;
     const end = start + data.length - 1;
@@ -44,35 +49,37 @@ export const FunDTable = () => {
     );
   };
 
-  const getTopbacker = useCallback(async () => {
-    const url = getFundraisingPathApi(params.category);
-    const response: IResponseAxios<any> = await FetchFundraising(url, {
-      limit: pageSize,
-      page: currentPage,
-      sort_by: order.columnKey,
-      sort_order: ORDER[order.order],
-    });
+  const getIeoIdoUpComing = useCallback(async () => {
+    const response: IResponseAxios<IIeoIdoData> = await FetchIeoIdo(
+      getIeoIdoApiPath(category),
+      {
+        limit: pageSize,
+        page: currentPage,
+        sort_by: order.columnKey,
+        sort_order: ORDER[order.order],
+      }
+    );
 
     if (!response) return;
     const { data, total } = response;
     setData(data);
     setTotal(total!!);
-  }, [pageSize, currentPage, order, params.category]);
+  }, [pageSize, currentPage, order, category]);
 
   useEffect(() => {
-    getTopbacker();
-  }, [getTopbacker]);
+    getIeoIdoUpComing();
+  }, [getIeoIdoUpComing]);
 
   return (
-    <Flex vertical gap={16} className={'fundraising'}>
+    <Flex vertical gap={16} className={'ieo-ido-table'}>
       <HeadFilter />
       <Table
-        columns={columns as any}
-        dataSource={data as any}
+        columns={getIeoIdoColumns(category)}
+        dataSource={data}
         pagination={false}
         className='overflow-x-auto overflow-y-hidden'
       />
-      <div className='pt-6 flex items-center justify-center table-pagination pagination-mobile'>
+      <div className='pt-6 flex-col md:flex-row flex items-center justify-center table-pagination pagination-mobile'>
         <Pagination
           total={total}
           pageSize={pageSize}
@@ -82,7 +89,7 @@ export const FunDTable = () => {
         />
       </div>
 
-      <div className='pt-6 flex flex-wrap gap-6 items-center justify-between table-pagination'>
+      <div className='pt-6 flex items-center gap-6 justify-between table-pagination'>
         <div>{_renderRange()}</div>
         <div className='pagination-desktop'>
           <Pagination

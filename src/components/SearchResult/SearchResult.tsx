@@ -91,11 +91,15 @@ const SearchResult = ({
                     {e.key}
                   </div>
                 </div>
-                <div className='coin-info__content__price'>
+                <div className='coin-info__content__price flex items-center'>
                   <span className='price text-xs font-medium font-jm'>
                     {nFormatter(e.price.USD, 2, '$')}
                   </span>
-                  {e.priceChangeIn24h ? percentFormat(e.priceChangeIn24h) : ''}
+                  <span className='price text-xs font-medium font-jm'>
+                    {e.priceChangeIn24h
+                      ? percentFormat(e.priceChangeIn24h)
+                      : ''}
+                  </span>
                 </div>
               </div>
             </div>

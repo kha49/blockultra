@@ -1,9 +1,5 @@
 'use client';
-import {
-  FundraisingType,
-  getBreadcrumbConfig,
-  validFundraisingType,
-} from './config';
+import { FundraisingType, getBreadcrumbConfig } from './config';
 import './index.scss';
 import { Page } from '@/components/page';
 import { FunDTable } from './components/fundraising-table';
@@ -16,7 +12,6 @@ type PageProps = {
 };
 
 export default function Fundraising({ params }: PageProps) {
-  const isValidCategory = validFundraisingType(params.category);
   return (
     <Page
       breadcrumbs={getBreadcrumbConfig(params.category)}

@@ -48,10 +48,10 @@ const columns: ColumnsType<IHomeCoin> = [
         <span className='table-header'>
           <div className='flex items-center'>
             <img src={imageSource} alt={value.name} className='w-7 h-7' />
-            <Link href={`/en/detail/${value.symbol}`} className='mx-2'>
+            <Link href={`/en/detail/${value.symbol}`} className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'>
               {value.name}
             </Link>
-            <span className='px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5 coin-code'>
+            <span className='px-2 rounded py-0 bg-grey-200 text-grey-500 leading-5 coin-code'>
               {value.symbol}
             </span>
           </div>
@@ -255,7 +255,7 @@ const Coins = () => {
               getData={_getData}
             />
             <div className='hidden xl:block md:block'>
-              <Button className='ml-1 h-10 '>
+              <Button className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'>
                 <div className='flex'>
                   <IconFilterCoinTab />
                   <span className='ml-1'>Filters</span>
@@ -264,7 +264,7 @@ const Coins = () => {
             </div>
           </div>
           <div className='hidden xl:block md:block'>
-            <Button className='ml-1 h-10 '>
+            <Button className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'>
               <div className='flex'>
                 <IconCustomCointTab />
                 <span className='ml-1'>Customize</span>

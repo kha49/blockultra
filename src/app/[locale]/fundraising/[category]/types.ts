@@ -12,7 +12,7 @@ type IProject = {
 };
 
 export type IBacker = {
-  avatarUrl: string;
+  image: string;
   name: string;
   group: string;
 };

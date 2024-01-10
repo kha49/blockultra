@@ -5,25 +5,33 @@ import './styles.scss';
 import clsx from 'clsx';
 
 import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
-import SearchSelect from '../search-select';
-import { getFundraisingTags } from '../../config';
+import SelectProject from '../select-project';
+import { IeoIdoCategory, getCategoryTags } from '../../config';
 import { useParams, useRouter } from 'next/navigation';
+type ITag = {
+  label: string;
+  value: string;
+};
 
 export default function HeadFilter() {
+  const { category = IeoIdoCategory.upcoming, locale } = useParams<{
+    category: string;
+    locale: string;
+  }>();
+
   const router = useRouter();
-  const params = useParams<{ locale: string; category: string }>();
-  const tags = getFundraisingTags();
+
+  const tags = getCategoryTags();
+
   return (
     <Flex vertical gap={16} className='header-filter'>
       <Flex wrap='wrap' gap={16} className='header-filter__options'>
         {tags.map((tag) => (
           <Button
-            key={tag.value}
             disabled={tag.disabled}
-            className={clsx(params.category === tag.value && 'active')}
-            onClick={() =>
-              router.push(`/${params.locale}/fundraising/${tag.value}`)
-            }
+            key={tag.value}
+            className={clsx(category === tag.value && 'active')}
+            onClick={() => router.push(`/${locale}/ieo-ido/${tag.value}`)}
           >
             {tag.label}
           </Button>
@@ -31,8 +39,8 @@ export default function HeadFilter() {
       </Flex>
 
       <Flex gap={8} wrap='wrap'>
-        <SearchSelect />
-        <Button className='ml-1' size='large'>
+        <SelectProject />
+        <Button size='large' className='ml-1'>
           <Flex className='text-[#333747]'>
             <IconFilterCoinTab />
             <span className='ml-1'>Filters</span>
