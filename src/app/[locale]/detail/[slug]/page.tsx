@@ -1,5 +1,4 @@
 import { FetchUnlockDetail } from '@/usecases/token-unlock';
-import CoinTabInfo from '../coinTabInfo/Index';
 import CoinInformation from '../information';
 import './index.scss';
 import { FetchCoinDetail2 } from '@/usecases/coin-info';
@@ -7,6 +6,9 @@ import { IDetail } from '@/models/IDetail';
 import { isEmpty } from 'lodash';
 import { redirect } from 'next/navigation';
 import { Page } from '@/components/page';
+import dynamic from 'next/dynamic';
+
+const CoinTabInfo = dynamic(() => import('../coinTabInfo/Index'), { ssr: false })
 
 async function fetchTokenDetail(coin_key: string): Promise<IDetail | null> {
   try {
