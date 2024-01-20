@@ -11,7 +11,7 @@ interface IHomeCategory {
   losers: number;
   rankedCoins: IRankedCoin[];
   isIcoList: boolean;
-  marketCap: number;
+  market_cap: number;
   volume24h: number;
   yesterday: IYesterday;
   dominance: number;
@@ -21,6 +21,8 @@ interface IYesterday {
   time: number;
   marketCap: number;
   volume24h: number;
+  marketCapChangeIn24h: number;
+  volumeChangeIn24h: number;
 }
 interface IRankedCoin {
   name: string;

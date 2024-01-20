@@ -1,3 +1,5 @@
+// 'use client';
+
 import {
   IconBell,
   IconCaretDown,
@@ -19,16 +21,24 @@ import IconETH from '@/assets/icons/IconETH';
 import WalletAddress from './popup/wallet/WalletAddress';
 import WalletBrand from './popup/wallet/WalletBrand';
 import Categories from './popup/categories/Categories';
+import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
+import { FetchTokenUnlock, FetchUnlockDetail } from '@/usecases/token-unlock';
+import { IDetail } from '@/models/IDetail';
 
-const CoinInformation = () => {
+export default async function CoinInformation({ data }: { data: IDetail }) {
+  // const priceLast24H = histPrices['24H']?.USD;
+  const priceChange24h = data.price_change_in_24h || 0;
+
+  // const tokenUnlock = await fetchTokenUnlock();
+
   return (
-    <div className='container mx-auto'>
-      <div className='bg-white p-6 coin-detail'>
+    <div>
+      <div className='bg-white py-6 px-2 md:px-6 coin-detail'>
         <div className='flex flex-col md:flex-row justify-between pb-6 border-b border-grey-300'>
           <div className='flex items-center gap-4 mb-4 md:mb-0'>
-            <Popover content={<IntroduceCoin />}>
-              <Image
-                src='/coin-info/logo.png'
+            <Popover content={<IntroduceCoin data={data} />}>
+              <img
+                src={data.image.x150}
                 alt=''
                 width={76}
                 height={76}
@@ -38,11 +48,11 @@ const CoinInformation = () => {
             <div>
               <div className='flex items-center flex-wrap mb-3'>
                 <h1 className='flex items-center text-grey-700 text-2xl font-bold'>
-                  <Popover content={<IntroduceCoin />}>
-                    <span className='font-jb text-2xl'>Coin98</span>
+                  <Popover content={<IntroduceCoin data={data} />}>
+                    <span className='font-jb text-2xl'>{data.name}</span>
                   </Popover>
                   <span className='flex items-center px-2 rounded text-xs text-grey-500 bg-grey-200 font-medium ml-2'>
-                    C98
+                    {data.symbol}
                   </span>
                   <span className='w-0.5 h-6 bg-grey-500 mx-4'></span>
                 </h1>
@@ -56,20 +66,20 @@ const CoinInformation = () => {
                     5.0
                   </span>
                 </div>
-                <span className='w-2 h-2 bg-grey-500 mx-4 rounded-full'></span>
+                {/* <span className='w-2 h-2 bg-grey-500 mx-4 rounded-full'></span>
                 <span className='text-primary-500 text-sm md:text-base'>
                   1.2K Ratings
-                </span>
+                </span> */}
               </div>
               <div className='hidden md:flex gap-2 item-center'>
                 <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200'>
-                  #319
+                  #{data.rank}
                 </span>
                 <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200'>
-                  #8 in Wallet
+                  #{data.wallet} in Wallet
                 </span>
                 <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200'>
-                  <Image
+                  <img
                     src='/coin-info/accumulating.png'
                     alt=''
                     width={12}
@@ -83,13 +93,13 @@ const CoinInformation = () => {
           </div>
           <div className='flex item-center gap-3 md:hidden'>
             <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
-              #319
+              #{data.rank}
             </span>
             <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
-              #8 in Wallet
+              #{data.wallet} in Wallet
             </span>
             <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
-              <Image
+              <img
                 src='/coin-info/accumulating.png'
                 alt=''
                 width={12}
@@ -100,7 +110,7 @@ const CoinInformation = () => {
             </span>
           </div>
           <div className='block mt-4 md:mt-0'>
-            <div className='flex justify-end flex-wrap gap-4 coin__actions mb-3'>
+            <div className='flex justify-start md:justify-end flex-wrap gap-4 coin__actions mb-3'>
               <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
                 <IconSave />
               </button>
@@ -111,7 +121,7 @@ const CoinInformation = () => {
                 <IconBell />
               </button>
             </div>
-            <div className='flex justify-end flex-wrap gap-2'>
+            <div className='flex justify-start md:justify-end flex-wrap gap-2'>
               <span className='text-sm text-grey-500'>Categories</span>
               <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
                 Wallet
@@ -122,7 +132,10 @@ const CoinInformation = () => {
               <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
                 Defi
               </span>
-              <Popover placement='bottomRight' content={<Categories />}>
+              <Popover
+                placement='bottomRight'
+                content={<Categories data={data} />}
+              >
                 <span className='flex items-center px-2 rounded text-xs text-primary-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
                   See All
                 </span>
@@ -136,18 +149,20 @@ const CoinInformation = () => {
               <div>
                 <div className='flex flex-wrap gap-2 md:gap-4 items-center'>
                   <span className='text-xl md:text-3xl font-bold'>
-                    $ 0.0000006269
+                    {nFormatter(data.price.USD, 5, '$')}
                   </span>
                   <span className='text-sp-green-500 text-xs text-base'>
-                    +2.83%
+                    {percentFormat(data.price_change_in_24h)}
                   </span>
                 </div>
                 <div className='flex items-center flex-wrap coin-detail__range text-grey-700'>
-                  <span>$0.0000006057</span>
+                  <span> {currencyFormat(data.atlPrice?.USD || 0, '$')}</span>
                   <div className='price__range'>
                     <div className='price__range--active'></div>
                   </div>
-                  <span className='mr-2'>$0.0000006057</span>
+                  <span className='mr-2'>
+                    {currencyFormat(data.athPrice?.USD || 0, '$')}
+                  </span>
                   <Select
                     defaultValue='24'
                     className='select-time w-[60px]'
@@ -163,39 +178,46 @@ const CoinInformation = () => {
                 <div className='flex items-center mb-1'>
                   <span className='text-grey-500 text-sm'>IDO Price:</span>
                   <span className='text-grey-700 text-sm mr-1 font-jsb font-semibold'>
-                    {' '}
-                    $0.075
+                    {currencyFormat(data.idoPrice, '$')}
                   </span>
-                  <span className='text-xs text-sp-green-500'>(3.05x)</span>
+                  <span className='text-xs text-sp-green-500'>
+                    ({currencyFormat(data.price.USD / data.idoPrice, '')} x)
+                  </span>
                 </div>
                 <div className='flex items-center mb-1'>
                   <span className='text-grey-500 text-sm'>Private Price:</span>
                   <span className='text-grey-700 text-sm mr-1 font-jsb font-semibold'>
-                    {' '}
-                    $0.025
+                    {currencyFormat(data.atlPrice?.USD || 0, '$')}
                   </span>
-                  <span className='text-xs text-sp-green-500'>(9.5x)</span>
+                  <span className='text-xs text-sp-green-500'>
+                    (
+                    {currencyFormat(
+                      data.price.USD / (data.atlPrice?.USD || 0),
+                      ''
+                    )}{' '}
+                    x)
+                  </span>
                 </div>
               </div>
               <div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-y-6 md:gap-y-9 gap-x-[60px]'>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Market Cap</div>
                   <div className='text-grey-700 flex flex-wrap items-center gap-1 font-jsb font-semibold'>
-                    $1,88B
+                    {nFormatter(Number(data.marketCap), 3, '$')}
                     <span className='text-xs text-sp-green-500'>+2.83%</span>
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Volume 24h</div>
                   <div className='text-grey-700 flex flex-wrap items-center gap-1 font-jsb font-semibold'>
-                    $ 1,889 M
+                    {nFormatter(Number(data.volume24h), 2, '')}
                     <span className='text-xs text-sp-green-500'>+2.83%</span>
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Vol/MCap 24h</div>
                   <div className='text-grey-700 font-jsb font-semibold'>
-                    0.689
+                    {data.volMCap24h}
                   </div>
                 </div>
                 <div className='category'>
@@ -206,20 +228,22 @@ const CoinInformation = () => {
                     </Popover>
                   </div>
                   <div className='text-grey-700 font-jsb font-semibold'>
-                    $ 1,88 T
+                    {nFormatter(Number(data.fdv), 3, '$')}
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Circ.Supply</div>
                   <div className='text-grey-700 flex flex-wrap items-center gap-1 font-jsb font-semibold'>
-                    1,515K
-                    <span className='text-grey-500 text-xs'>(69.96%)</span>
+                    {nFormatter(data.circ, 3, '$')}
+                    <span className='text-grey-500 text-xs'>
+                      {percentFormat(Number(data.percentOfCircSupply))}
+                    </span>
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Total Supply</div>
                   <div className='text-grey-700 flex flex-wrap items-center font-jsb font-semibold'>
-                    1,889B
+                    {nFormatter(Number(data.totalSupply), 2, '')}
                   </div>
                 </div>
               </div>
@@ -227,42 +251,7 @@ const CoinInformation = () => {
             <div className='flex items-center gap-4 xl:gap-8 2xl:gap-[110px] flex-wrap'>
               <div className='mt-3 xl:mt-7'>
                 <span className='text-grey-500 text-sm mb-1'>Contracts</span>
-                <div className='flex items-center gap-4 px-3 py-2 bg-grey-200 rounded'>
-                  <IconETH />
-                  <span className='text-sm'>ETH</span>
-                  <Popover content={<WalletAddress />}>
-                    <IconCaretDown />
-                  </Popover>
-                  <span className='text-primary-500 max-w-[62px] lg:max-w-[124px] truncate'>
-                    0x2df3dkdkmskcamksmdcksdmkcsdc8h3h5
-                  </span>
-                  <Popover
-                    content={
-                      <span className='text-grey-700 text-xs'>
-                        Copy address
-                      </span>
-                    }
-                  >
-                    <IconCopy />
-                  </Popover>
-                  <Popover
-                    content={
-                      <span className='text-grey-700 text-xs'>
-                        Add to Metamask
-                      </span>
-                    }
-                  >
-                    <Image
-                      src='/coin-info/fox.png'
-                      width={24}
-                      height={24}
-                      alt='fox'
-                    />
-                  </Popover>
-                  <Popover content={<WalletBrand />}>
-                    <IconCaretDown />
-                  </Popover>
-                </div>
+                <Contracts tokens={data.tokens} />
               </div>
               <div className='flex flex-wrap gap-4 md:gap-8 xl:gap-[110px] xl:mt-7'>
                 <div>
@@ -351,7 +340,8 @@ const CoinInformation = () => {
                     </Popover>
                   </div>
                 </div>
-                <div>
+                <Backers backers={data.backers} />
+                {/* <div>
                   <p className='text-grey-500 text-sm'>Backers</p>
                   <div className='flex gap-4 xl:gap-5 py-[6px]'>
                     <Image
@@ -378,17 +368,46 @@ const CoinInformation = () => {
                       </span>
                     </Popover>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
           <div className='col-span-6 md:col-span-3 xl:col-span-4 2xl:col-span-2'>
-            <InformationUnlock />
+            {<InformationUnlock />}
           </div>
         </div>
       </div>
     </div>
   );
-};
+}
 
-export default CoinInformation;
+function Contracts(props: any) {
+  const tokens = props.tokens || [];
+  if (tokens.length <= 0) return;
+  return (
+    <div className='flex items-center gap-4 px-3 py-2 bg-grey-200 rounded'>
+      <IconETH />
+      <span className='text-sm'>{tokens[0]?.platformName}</span>
+      <Popover content={<WalletAddress tokens={props.tokens} />}>
+        <IconCaretDown />
+      </Popover>
+      <span className='text-primary-500 max-w-[62px] lg:max-w-[124px] truncate'>
+        {tokens[0]?.address}
+      </span>
+      <Popover
+        content={<span className='text-grey-700 text-xs'>Copy address</span>}
+      >
+        <IconCopy />
+      </Popover>
+      <Popover
+        content={<span className='text-grey-700 text-xs'>Add to Metamask</span>}
+      >
+        <Image src='/coin-info/fox.png' width={24} height={24} alt='fox' />
+      </Popover>
+      <Popover content={<WalletBrand />}>
+        <IconCaretDown />
+      </Popover>
+    </div>
+  );
+}
+// export default CoinInformation;

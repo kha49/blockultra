@@ -4,26 +4,30 @@ import './index.scss';
 import { IGlobalSearch, IRecent } from '../SearchInput/props';
 import { nFormatter, percentFormat } from '@/helpers';
 import { IconRecent } from '@/assets/icons/home/IconRecent';
+import { notFound } from 'next/navigation';
+import { get } from 'lodash';
 
 const SearchResult = ({
   data,
   recents,
+  isSearch,
   onClearRecent,
 }: {
   data: IGlobalSearch;
   recents: IRecent[];
+  isSearch: boolean;
   onClearRecent: () => void;
 }) => {
   const _renderTrending = () => {
     const { trendings } = data;
-    if (!trendings || !trendings.length) return;
+    if (!trendings) return null;
 
     const elements: JSX.Element[] = [];
-    trendings.forEach((e, index) => {
+    trendings.forEach((e) => {
       elements.push(
         <div
           className='modal-search-item__list__item hover:rounded cursor-pointer'
-          key={`tre-${index}`}
+          key={`tre-${e.key}`}
         >
           <div className='coin p-2 flex justify-between items-center'>
             <div className='coin-info flex items-center gap-4'>
@@ -118,7 +122,7 @@ const SearchResult = ({
     return (
       <div className='modal-search-item cryptoassets'>
         <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
-          Cryptoassets
+          Coins
         </div>
         <div className='modal-search-item__list'>{elements}</div>
       </div>
@@ -126,14 +130,6 @@ const SearchResult = ({
   };
 
   const _renderRecent = () => {
-    const { coins, trendings } = data;
-    if (
-      (!coins && !trendings) ||
-      (!coins.length && !trendings.length) ||
-      !recents ||
-      !recents.length
-    )
-      return;
     const elements: JSX.Element[] = [];
 
     recents.forEach((r, i) => {
@@ -176,18 +172,143 @@ const SearchResult = ({
   };
 
   const _returnNotFound = () => {
-    const { coins, trendings } = data;
-    if ((!coins && !trendings) || (!coins.length && !trendings.length))
-      return <>No results found </>;
-    return null;
+    return <>No results found </>;
+  };
+
+  const _renderCategory = () => {
+    const elements: JSX.Element[] = [];
+    const { categories } = data;
+    if (!categories.length) return;
+    categories.forEach((c, i) => {
+      elements.push(
+        <div key={c.id} className='pl-4 pr-4 pt-1 pb-1'>
+          <p className='text-sm'>{c.name}</p>
+        </div>
+      );
+    });
+    return (
+      <div className='modal-search-item cryptoassets mb-4 mt-4'>
+        <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
+          Category
+        </div>
+        <div className='modal-search-item__list'>{elements}</div>
+      </div>
+    );
+  };
+
+  const _renderUpcoming = () => {
+    const { upcomings } = data;
+    if (!upcomings || !upcomings.length) return;
+    const elements: JSX.Element[] = [];
+
+    upcomings.forEach((e, index) => {
+      elements.push(
+        <div
+          className='modal-search-item__list__item hover:rounded cursor-pointer'
+          key={`tre-${index}`}
+        >
+          <div className='coin p-2 flex justify-between items-center'>
+            <div className='coin-info flex items-center gap-4'>
+              <div className='coin-info__image'>
+                <img src={e.image} width={32} height={32} alt={e.name} />
+              </div>
+              <div className='coin-info__content'>
+                <div className='coin-info__content__name flex gap-2'>
+                  <div className='coin-name font-medium text-sm font-jm'>
+                    {e.name}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div className='modal-search-item cryptoassets'>
+        <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
+          Upcomings
+        </div>
+        <div className='modal-search-item__list'>{elements}</div>
+      </div>
+    );
+  };
+
+  const _renderFuncraising = () => {
+    const { fundraisings } = data;
+    if (!fundraisings || !fundraisings.length) return;
+    const elements: JSX.Element[] = [];
+
+    fundraisings.forEach((e, index) => {
+      elements.push(
+        <div
+          className='modal-search-item__list__item hover:rounded cursor-pointer'
+          key={`tre-${index}`}
+        >
+          <div className='coin p-2 flex justify-between items-center'>
+            <div className='coin-info flex items-center gap-4'>
+              <div className='coin-info__image'>
+                <img src={e.icon} width={32} height={32} alt={e.name} />
+              </div>
+              <div className='coin-info__content'>
+                <div className='coin-info__content__name flex gap-2'>
+                  <div className='coin-name font-medium text-sm font-jm'>
+                    {e.name}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div className='modal-search-item cryptoassets'>
+        <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
+          Fundraisings
+        </div>
+        <div className='modal-search-item__list'>{elements}</div>
+      </div>
+    );
+  };
+
+  const _renderContent = () => {
+    let isNotfound = true;
+    if (!isSearch) {
+      return (
+        <>
+          {_renderTrending()}
+          {_renderRecent()}
+        </>
+      );
+    }
+
+    Object.keys(data).forEach((k: any) => {
+      if (k === 'trendings') return;
+      const dt = get(data, k, []);
+      if (dt.length) isNotfound = false;
+    });
+
+    if (isNotfound) {
+      return _returnNotFound();
+    }
+
+    return (
+      <>
+        {_renderCrypto()}
+        {_renderUpcoming()}
+        {_renderFuncraising()}
+        {_renderCategory()}
+        {_renderRecent()}
+      </>
+    );
   };
 
   return (
     <div className='modal-search p-4 w-full min-w-[580px] rounded-lg z-10'>
-      {_renderTrending()}
-      {_renderCrypto()}
-      {_renderRecent()}
-      {_returnNotFound()}
+      {_renderContent()}
     </div>
   );
 };

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Checkbox, Pagination, Select, Table, Tag } from 'antd';
 import type { PaginationProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { FetchUpComings } from '../../../usecases/home';
+import { FetchUpComings, SearchUpcomingFilter } from '../../../usecases/home';
 import './style.scss';
 import {
   IOptionCustom,
@@ -16,6 +16,8 @@ import moment from 'moment';
 import FilterCustom from '@/components/FilterCustom';
 import { ORDER } from '@/helpers/constants';
 import Link from 'next/link';
+import { ISearchFilter } from '../coin/props';
+import { useDebounce } from 'usehooks-ts';
 
 const columns: ColumnsType<any> = [
   {
@@ -71,28 +73,28 @@ const columns: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, value) => {
-      return nFormatter(value.raise, 2, '$');
+      return nFormatter(value.totalRaise, 2, '$');
     },
   },
   {
-    key: 'funds',
+    key: 'backers',
     title: 'Backers',
     width: 250,
     align: 'left',
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, value) => {
-      if (!value.funds || isEmpty(value.funds)) return <span>N/A</span>;
-      const image = get(value, 'funds[0].image', '');
-      const name = get(value, 'funds[0].name', '');
+      if (!value.backers || isEmpty(value.backers)) return <span>N/A</span>;
+      const image = get(value, 'backers[0].image', '');
+      const name = get(value, 'backers[0].name', '');
 
       return (
         <p className='inline-flex items-center'>
           <img src={image} className='w-8 h-8' alt={name} width={32} />
           <span className='ml-2'>{name}</span>
-          {value.funds.length > 1 ? (
+          {value.backers.length > 1 ? (
             <div className='text-xs ml-2 bg-gray-200 flex pt-0.5 pb-0.5 text-center pl-2.5 pr-2.5 rounded-sm text-gray-400'>
-              +{value.funds.length - 1}
+              +{value.backers.length - 1}
             </div>
           ) : (
             ''
@@ -109,7 +111,7 @@ const columns: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, value) => {
-      return <p className='textover-ellipsis'>{value.category.name}</p>;
+      return <p className='textover-ellipsis'>{value.category}</p>;
     },
   },
   {
@@ -128,9 +130,9 @@ const columns: ColumnsType<any> = [
         <p className='inline-flex items-center'>
           <img src={image} className='w-8 h-8' alt={name} width={32} />
           <span className='ml-2'>{name}</span>
-          {value.funds.length > 1 ? (
+          {value.launchpads?.length > 1 ? (
             <div className='text-xs ml-2 bg-gray-200 flex pt-0.5 pb-0.5 text-center pl-2.5 pr-2.5 rounded-sm text-gray-400'>
-              +{value.funds.length - 1}
+              +{value.launchpads.length - 1}
             </div>
           ) : (
             ''
@@ -162,6 +164,9 @@ const UpComing = () => {
   });
   const [upcomings, setUpComings] = useState([]);
 
+  const [keyFilter, setKeyFilter] = useState<string[]>([]);
+  const debouncedValue = useDebounce<string[]>(keyFilter, 500);
+
   function getUpComings(params: any) {
     FetchUpComings(params).then((res: any) => {
       setUpComings(res.data);
@@ -173,10 +178,12 @@ const UpComing = () => {
     getUpComings({
       limit: pageSize,
       page: currentPage,
-      sort_order: ORDER[order.order],
+      sort_order: ORDER[order.order as keyof typeof ORDER],
       sort_by: order.columnKey,
+      search_key: debouncedValue.join(','),
+      status: 'upcoming',
     });
-  }, [pageSize, currentPage, order]);
+  }, [pageSize, currentPage, order, debouncedValue]);
 
   const _onChangePage = (page: number) => {
     setCurrentPage(page);
@@ -208,7 +215,7 @@ const UpComing = () => {
   };
 
   const _renderTag = (options: ICustomTagProp) => {
-    const { value, closable, onClose, index } = options;
+    const { value, closable, onClose, index, rawData } = options;
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
       event.preventDefault();
       event.stopPropagation();
@@ -230,21 +237,28 @@ const UpComing = () => {
         onClose={onClose}
         style={{ marginRight: 3 }}
       >
-        {value}
+        {rawData.name || value}
       </Tag>
     );
   };
 
   const _getData = async ({ searchKey }: IOptionAny) => {
-    return [
-      ...Array.from(Array(20).keys()).map(() => ({
-        id: random(1, 100000),
-        name: `name-${searchKey}${random(1, 100000)}`,
-        code: `code-${searchKey}${random(100, 999)}`,
-        thumb: '',
-        isSelected: false,
-      })),
-    ];
+    const res: any = await SearchUpcomingFilter({
+      search_key: searchKey,
+    });
+    if (!res) return [];
+
+    return res.map((e: ISearchFilter) => ({
+      id: e.key,
+      name: e.name,
+      code: e.key,
+      thumb: '',
+      isSelected: false,
+    }));
+  };
+
+  const _onSelectFilter = (value: string[]) => {
+    setKeyFilter(value);
   };
 
   return (
@@ -254,7 +268,7 @@ const UpComing = () => {
           placeholder='Filter Projects'
           renderOption={_renderOption}
           renderTag={_renderTag}
-          onChange={() => {}}
+          onChange={_onSelectFilter}
           getData={_getData}
         />
       </div>

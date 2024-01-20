@@ -4,16 +4,38 @@ import SwitchAllocation from '@/components/SwitchAllocation/SwitchAllocation';
 import './index.scss';
 import { COLOR_CHART } from '@/helpers/constants';
 import ReactECharts from 'echarts-for-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { nFormatter } from '@/helpers';
+import { setDatasets } from 'react-chartjs-2/dist/utils';
 
-interface IAllocation {
-  id?: number;
-  title?: string;
-  isActive?: boolean;
-  activeColor?: string;
-}
+// interface IAllocation {
+//   id?: number;
+//   title?: string;
+//   isActive?: boolean;
+//   activeColor?: string;
+// }
 
-export default function TokenAllocation() {
+export default function TokenAllocation(props: any) {
+  const [allocations, setAllocations] = useState<ITokenomics[]>([]);
+  const [cirChart, setCirChart] = useState([]);
+  
+  useEffect(() => {
+    let cirChartTemp = props.data[0]?.chart  || [];
+    const propAllocation = props.data[0]?.allocations || [];
+    for (let i in propAllocation) {
+      cirChartTemp.push({ value: propAllocation[i].tokens_percent });
+      propAllocation[i].activeColor = COLOR_CHART.MALACHITE;
+      propAllocation[i].isActive = true;
+      // propAllocation[i].name = 'asdsds';
+  // console.log('====================================');
+  // console.log('propAllocation', propAllocation);
+  // console.log('====================================');
+    }
+    setAllocations(propAllocation);
+  
+    setCirChart(cirChartTemp);
+  },[])
+
   const optionPie = {
     color: [
       COLOR_CHART.BITTER_LEMON,
@@ -51,18 +73,7 @@ export default function TokenAllocation() {
         labelLine: {
           show: false,
         },
-        data: [
-          { value: 40 },
-          { value: 20 },
-          { value: 10 },
-          { value: 15 },
-          { value: 15 },
-          { value: 15 },
-          { value: 15 },
-          { value: 15 },
-          { value: 15 },
-          { value: 15 },
-        ],
+        data: cirChart,
       },
     ],
   };
@@ -81,7 +92,7 @@ export default function TokenAllocation() {
       COLOR_CHART.SUNSET_ORANGE,
     ],
     title: {
-      text: 'Vesting Schedule',
+      text: '',
     },
     tooltip: {
       trigger: 'axis',
@@ -238,115 +249,135 @@ export default function TokenAllocation() {
     ],
   };
 
-  const [listAllocation] = useState<IAllocation[]>([
-    {
-      id: 1,
-      title: 'Private',
-      isActive: true,
-      activeColor: COLOR_CHART.BITTER_LEMON,
-    },
-    {
-      id: 2,
-      title: 'Seed Round',
-      isActive: true,
-      activeColor: COLOR_CHART.MALACHITE,
-    },
-    {
-      id: 3,
-      title: 'Strategic Round',
-      isActive: true,
-      activeColor: COLOR_CHART.PAOLO_VERONESE_GREEN,
-    },
-    {
-      id: 4,
-      title: 'Public Round',
-      isActive: true,
-      activeColor: COLOR_CHART.TURQUOISE_SURF,
-    },
-    {
-      id: 5,
-      title: 'Team',
-      isActive: true,
-      activeColor: COLOR_CHART.CERULEAN_FROST,
-    },
-    {
-      id: 6,
-      title: 'Airdrops',
-      isActive: true,
-      activeColor: COLOR_CHART.PLUMP_PURPLE,
-    },
-    {
-      id: 7,
-      title: 'Marketing',
-      isActive: true,
-      activeColor: COLOR_CHART.PURPUREUS,
-    },
-    {
-      id: 8,
-      title: 'Advisors',
-      isActive: true,
-      activeColor: COLOR_CHART.JAZZBERRY_JAM,
-    },
-    {
-      id: 9,
-      title: 'Foundation',
-      isActive: true,
-      activeColor: COLOR_CHART.CERISE,
-    },
-    {
-      id: 10,
-      title: 'Ecosystem',
-      isActive: true,
-      activeColor: COLOR_CHART.SUNSET_ORANGE,
-    },
-  ]);
+  // const [listAllocation] = useState<ITokenomics[]>(allocations);
+
+  // const [listAllocation] = useState<ITokenomics[]>([
+  //   {
+  //     id: 1,
+  //     name: 'Private',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.BITTER_LEMON,
+  //   },
+  //   {
+  //     id: 2,
+  //     title: 'Seed Round',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.MALACHITE,
+  //   },
+  //   {
+  //     id: 3,
+  //     title: 'Strategic Round',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.PAOLO_VERONESE_GREEN,
+  //   },
+  //   {
+  //     id: 4,
+  //     title: 'Public Round',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.TURQUOISE_SURF,
+  //   },
+  //   {
+  //     id: 5,
+  //     title: 'Team',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.CERULEAN_FROST,
+  //   },
+  //   {
+  //     id: 6,
+  //     title: 'Airdrops',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.PLUMP_PURPLE,
+  //   },
+  //   {
+  //     id: 7,
+  //     title: 'Marketing',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.PURPUREUS,
+  //   },
+  //   {
+  //     id: 8,
+  //     title: 'Advisors',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.JAZZBERRY_JAM,
+  //   },
+  //   {
+  //     id: 9,
+  //     title: 'Foundation',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.CERISE,
+  //   },
+  //   {
+  //     id: 10,
+  //     title: 'Ecosystem',
+  //     isActive: true,
+  //     activeColor: COLOR_CHART.SUNSET_ORANGE,
+  //   },
+  // ]);
 
   const handler = (e: { id: string; isActive: boolean }) => {
     console.log('e', e);
   };
 
   return (
-    <div className='token box-shadow-common grid grid-cols-1 lg:grid-cols-2 gap-4 p-6 bg-white rounded-lg'>
-      <div className='allocation flex flex-col lg:flex-row items-center'>
-        <div className='relative'>
-          <ReactECharts option={optionPie} />
-          <div className='absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 flex flex-col justify-center items-center'>
-            <div className='text-grey-700 text-xl font-jm font-medium'>
-              StableCoins
-            </div>
-            <div className='text-grey-500 text-sm font-jm font-medium'>60%</div>
-          </div>
+    <div className='token grid grid-cols-1 lg:grid-cols-2 gap-4'>
+      <div className='allocation'>
+        <div className='text-grey-700 text-sm font-bold font-jb mb-5'>
+          Token Allocation
         </div>
-        <div className='note'>
-          {listAllocation && listAllocation.length > 0
-            ? listAllocation.map((item) => {
-                return (
-                  <div
-                    className='flex items-center justify-between gap-4 mb-6'
-                    key={item.id}
-                  >
-                    <SwitchAllocation
-                      id={item.id}
-                      isActive={item.isActive}
-                      title={item.title}
-                      activeColor={item.activeColor}
-                      onChange={(e: any) => handler(e)}
-                    />
-                    <div className='flex items-center justify-between gap-4'>
-                      <div className='text-grey-700 text-medium text-xs'>
-                        NBIT 1.85B
-                      </div>
-                      <div className='text-grey-500 text-medium text-xs'>
-                        25.32%
+        <div className='flex flex-col lg:flex-row items-center'>
+          <div className='relative'>
+            <ReactECharts option={optionPie} />
+            <div className='absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 flex flex-col justify-center items-center'>
+              <div className='text-grey-700 text-xl font-jm font-medium'>
+                StableCoins
+              </div>
+              <div className='text-grey-500 text-sm font-jm font-medium'>
+                60%
+              </div>
+            </div>
+          </div>
+          <div className='note'>
+            {allocations && allocations.length > 0
+              ? allocations.map((item) => {
+                  console.log('====================================');
+                  console.log(item);
+                  console.log('====================================');
+                  return (
+                    <div
+                      className='flex items-center justify-between gap-4 mb-6'
+                      key={item.id}
+                    >
+                      <SwitchAllocation
+                        id={item.id}
+                        isActive={item.isActive}
+                        title={item.name}
+                        activeColor={item.activeColor}
+                        onChange={(e: any) => handler(e)}
+                      />
+                      <div className='flex items-center justify-between gap-4'>
+                        <div className='text-grey-700 text-medium text-xs'>
+                          {nFormatter(item.tokens, 2, props.tokenInfo.symbol)}
+                        </div>
+                        <div className='text-grey-500 text-medium text-xs'>
+                          {nFormatter(item.tokens_percent, 2, '%')}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })
-            : 'Không có dữ liệu'}
+                  );
+                })
+              : 'Không có dữ liệu'}
+          </div>
         </div>
       </div>
       <div className='vesting-schedule'>
+        <div className='flex items-center justify-between'>
+          <div className='text-grey-700 text-sm font-bold font-jb'>
+            Release Schedule
+          </div>
+          <div className='text-grey-700 text-sm font-bold font-jb'>
+            Today, 21 Apr 2023
+          </div>
+        </div>
         <ReactECharts option={optionStackArea} />
       </div>
     </div>

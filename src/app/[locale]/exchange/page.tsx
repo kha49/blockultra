@@ -1,13 +1,19 @@
 import ExchangeRenderTabs from './ExchangeRenderTabs';
-import CoinInfoRenderTabs from './coinInfoTabs';
+import { Page } from '@/components/page';
 
 export default function Exchange() {
+  const breadcrumbs = [
+    {
+      title: 'Home',
+    },
+    {
+      title: 'Exchanges',
+    },
+  ];
+
   return (
-    <div className='exchange mx-auto max-w-2xl px-4 py-3'>
-      <div className='flex my-6'>
-        <CoinInfoRenderTabs />
-      </div>
-      {/* <div className='flex'><ExchangeRenderTabs /></div> */}
-    </div>
+    <Page breadcrumbs={breadcrumbs}>
+      <ExchangeRenderTabs />
+    </Page>
   );
 }

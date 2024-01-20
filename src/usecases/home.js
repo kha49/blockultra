@@ -2,32 +2,37 @@ import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
 
-const baseUrl = 'api/home/';
+const prefix = 'api/';
 
 export const FetchCoins = (params) => {
-  return apiClient.get(baseUrl + 'coins', params);
+  return apiClient.get(prefix + 'coins', params);
 };
 
 export const SearchCoinsFilter = (params) =>
-  apiClient.get(baseUrl + `coins/search`, params);
+  apiClient.get(prefix + `coins/search`, params);
 
 export const SearchCategoriesFilter = (params) =>
-  apiClient.get(baseUrl + 'categories/search', params);
+  apiClient.get(prefix + 'categories/search', params);
+
+export const SearchFundraisingsFilter = (params) =>
+  apiClient.get(prefix + 'fundraisings/search', params);
+
+export const SearchUpcomingFilter = (params) =>
+  apiClient.get(prefix + 'ieo-ido/upcoming/search', params);
 
 export const FetchCategories = (params) =>
-  apiClient.get(baseUrl + 'categories', params);
+  apiClient.get(prefix + 'categories', params);
 
 export const FetchTrendings = (params) =>
-  apiClient.get(baseUrl + 'trendings', params);
+  apiClient.get(prefix + 'trendings', params);
 
 export const FetchUpComings = (params) =>
-  apiClient.get(baseUrl + 'upcomings', params);
+  apiClient.get(prefix + 'ieo-ido', params);
 
 export const FetchFundraisings = (params) =>
-  apiClient.get(baseUrl + 'fundraisings', params);
+  apiClient.get(prefix + 'funding-rounds', params);
 
 export const FetchGainers = (params) =>
-  apiClient.get(baseUrl + 'gainers', params);
+  apiClient.get(prefix + 'gainers', params);
 
-export const FetchLosers = (params) =>
-  apiClient.get(baseUrl + 'losers', params);
+export const FetchLosers = (params) => apiClient.get(prefix + 'losers', params);

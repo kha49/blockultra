@@ -46,7 +46,7 @@ export default function Doughnut(props: DoughnutProps) {
             strokeWidth={strokeWidth}
             showLabel={false}
             key={itemIndex}
-            value={item.toString()}
+            value={item?.toString()}
             percent={!!percent}
             percentValue={parseFloat(percent.toFixed(1))}
             startAngle={nextAngle}

@@ -8,13 +8,27 @@ import { useDebounce } from 'usehooks-ts';
 import { orderBy, uniqBy } from 'lodash';
 
 const FilterCustom = (props: IFilterCustom) => {
-  const { renderOption, renderTag, onChange, getData, placeholder } = props;
+  const {
+    renderOption,
+    renderTag,
+    onChange,
+    getData,
+    placeholder,
+    isSortSelected,
+    value,
+  } = props;
   const [searchData, setSearchData] = useState<ISearchData[]>([]);
   const [arSelected, setArSelected] = useState<ISearchData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSelected, setIsSelected] = useState<string[]>([]);
   const [textSearch, setTextSearch] = useState('');
   const debouncedValue = useDebounce<string>(textSearch, 500);
+
+  useEffect(() => {
+    if (!value) return;
+    setArSelected(value);
+    setIsSelected(value.map((e) => e.code));
+  }, [value]);
 
   const _getData = async (searchKey?: string) => {
     setIsLoading(true);
@@ -32,7 +46,7 @@ const FilterCustom = (props: IFilterCustom) => {
 
   const _renderOptions = () => {
     const elements: JSX.Element[] = [];
-    orderBy(searchData, (e) => e.selectedTime).forEach((s) => {
+    _convertSelected().forEach((s) => {
       const checked = isSelected.includes(s.code);
       elements.push(renderOption({ ...s, checked }));
     });
@@ -40,16 +54,48 @@ const FilterCustom = (props: IFilterCustom) => {
     return elements;
   };
 
+  const _convertSelected = () => {
+    let arConvert: ISearchData[] = [];
+
+    switch (isSortSelected) {
+      case 'alphabet':
+        arConvert = orderBy(
+          searchData,
+          ['isSelected', 'name'],
+          ['desc', 'asc']
+        );
+        break;
+
+      case 'newToOld':
+        arConvert = orderBy(
+          searchData,
+          ['isSelected', 'selectedTime'],
+          ['desc', 'desc']
+        );
+        break;
+      case 'oldToNew':
+
+      default:
+        arConvert = orderBy(
+          searchData,
+          ['isSelected', 'selectedTime'],
+          ['desc', 'asc']
+        );
+        break;
+    }
+    return arConvert;
+  };
+
   const _onChangeSelect = (value: string[]) => {
-    value = value.reverse();
+    // value = value.reverse();
     searchData.forEach((e) => {
       const index = value.indexOf(e.code);
       e.isSelected = index > -1;
       e.selectedTime = index > -1 ? new Date().getTime() + index : null;
     });
-    setArSelected([...searchData.filter((s) => s.isSelected)]);
+    setArSelected([..._convertSelected().filter((s) => s.isSelected)]);
     setIsSelected(value);
-    onChange(value);
+    onChange(value, [..._convertSelected().filter((s) => s.isSelected)]);
   };
 
   const _tagRender = (props: CustomTagProps) => {
@@ -77,6 +123,7 @@ const FilterCustom = (props: IFilterCustom) => {
         onChange={_onChangeSelect}
         tagRender={_tagRender}
         onSearch={_onSearch}
+        value={arSelected.map((e) => e.code)}
         notFoundContent={<>No results found</>}
         filterOption={(input, option) => {
           if (!option) return false;

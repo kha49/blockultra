@@ -46,11 +46,8 @@ const SearchInput: FC<ISearchInputProps> = ({
 
   const handlerSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
-    // setTimeout(() => {
-    //   setIsTyping(true);
-    // }, 300);
   };
-  // console.log(isTyping, 'isTyping');
+
   useEffect(() => {
     GlobalSearchCoins({ name: debouncedValue }).then((res: any) => {
       setData(res);
@@ -126,8 +123,8 @@ const SearchInput: FC<ISearchInputProps> = ({
             onChange={(e) => handlerSearch(e)}
             onFocus={() => setIsTyping(true)}
             className={
-              'block w-full p-4 pl-14 text-sm text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 outline-none ' +
-              (component === 'banner' ? 'rounded-full' : 'rounded-lg')
+              'block w-full pl-14 text-sm text-gray-900 border border-gray-300 focus:ring-blue-500 focus:border-blue-500 outline-none ' +
+              (component === 'banner' ? 'rounded-full p-4' : 'rounded-lg p-3')
             }
             placeholder='Enter Coin, Token, NFT, Category...'
           />
@@ -156,6 +153,7 @@ const SearchInput: FC<ISearchInputProps> = ({
             }
           >
             <SearchResult
+              isSearch={!!debouncedValue.length}
               data={data}
               recents={recents}
               onClearRecent={_onClearRecent}

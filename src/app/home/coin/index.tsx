@@ -23,7 +23,6 @@ import {
 } from '@/helpers';
 import { IResponseAxios } from '@/models/IResponse';
 import { IHomeCoin, ISearchFilter } from './props';
-import { caculatorAverage24h } from '@/helpers/functions';
 import { ORDER } from '@/helpers/constants';
 import { useDebounce } from 'usehooks-ts';
 
@@ -48,7 +47,10 @@ const columns: ColumnsType<IHomeCoin> = [
         <span className='table-header'>
           <div className='flex items-center'>
             <img src={imageSource} alt={value.name} className='w-7 h-7' />
-            <Link href={`/en/detail/${value.symbol}`} className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'>
+            <Link
+              href={`/en/detail/${value.key}`}
+              className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'
+            >
               {value.name}
             </Link>
             <span className='px-2 rounded py-0 bg-grey-200 text-grey-500 leading-5 coin-code'>
@@ -62,39 +64,28 @@ const columns: ColumnsType<IHomeCoin> = [
     sorter: true,
   },
   {
-    key: 'rate',
-    title: 'Rate',
-    width: 50,
-    align: 'right',
-    render: (_, value) => {
-      return <span>-</span>;
-    },
-    sortIcon: renderSortIcon,
-    sorter: true,
-  },
-  {
     key: 'price',
     title: 'Price',
     width: 200,
     align: 'right',
     render: (_, value) => {
-      return currencyFormat(value.price.USD, '$');
+      const price = value.price['USD'];
+      return currencyFormat(price, '$');
     },
     sortIcon: renderSortIcon,
     sorter: true,
   },
   {
-    key: 'period',
+    key: 'average24h',
     title: '24h %',
     width: 167,
     align: 'right',
     render: (_, value) => {
-      const avg = round(caculatorAverage24h(value.price, value.histPrices), 2);
-      return percentFormat(avg);
+      return percentFormat(value.average24h);
     },
   },
   {
-    key: 'volume',
+    key: 'volume24h',
     title: 'Volume (24h)',
     width: 186,
     align: 'right',
@@ -112,7 +103,7 @@ const columns: ColumnsType<IHomeCoin> = [
     },
   },
   {
-    key: 'graph',
+    key: 'chart',
     title: 'Price Graph (7d)',
     width: 261,
     align: 'right',
@@ -121,7 +112,7 @@ const columns: ColumnsType<IHomeCoin> = [
         return (
           <div className='flex items-center justify-end'>
             <img
-              alt='graph'
+              alt='chart'
               width={200}
               height={52}
               src={`data:image/svg+xml;base64,${value.chart}`}
@@ -152,8 +143,8 @@ const Coins = () => {
       limit: pageSize,
       page: currentPage,
       sort_by: order.columnKey,
-      sort_order: ORDER[order.order],
-      key_search: keyFilter.join(','),
+      sort_order: ORDER[order.order as keyof typeof ORDER],
+      search_key: debouncedValue.join(','),
     });
 
     if (!response) return;
@@ -162,7 +153,7 @@ const Coins = () => {
     setTotal(total!!);
 
     /* #endregion */
-  }, [pageSize, currentPage, order, keyFilter]);
+  }, [pageSize, currentPage, order, debouncedValue]);
 
   useEffect(() => {
     getCoins();
@@ -178,7 +169,7 @@ const Coins = () => {
   };
 
   const _renderTag = (options: ICustomTagProp) => {
-    const { value, closable, onClose, index } = options;
+    const { value, closable, onClose, index, rawData } = options;
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
       event.preventDefault();
       event.stopPropagation();
@@ -200,19 +191,21 @@ const Coins = () => {
         onClose={onClose}
         style={{ marginRight: 3 }}
       >
-        {value}
+        {rawData.name ?? value}
       </Tag>
     );
   };
 
   const _getData = async ({ searchKey }: IOptionAny) => {
-    const res: any = await SearchCoinsFilter(searchKey);
+    const res: any = await SearchCoinsFilter({
+      search_key: searchKey,
+    });
     if (!res) return [];
 
     return res.map((e: ISearchFilter) => ({
       id: e.key,
       name: e.name,
-      code: e.symbol,
+      code: e.key,
       thumb: '',
       isSelected: false,
     }));
@@ -253,6 +246,7 @@ const Coins = () => {
               renderTag={_renderTag}
               onChange={_onSelectFilter}
               getData={_getData}
+              isSortSelected='alphabet'
             />
             <div className='hidden xl:block md:block'>
               <Button className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'>

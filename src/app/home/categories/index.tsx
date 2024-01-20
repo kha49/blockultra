@@ -9,7 +9,7 @@ import {
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
-import { isArray, random, round } from 'lodash';
+import { isArray, round } from 'lodash';
 import {
   nFormatter,
   percentFormat,
@@ -23,6 +23,7 @@ import ReactECharts from 'echarts-for-react';
 import { COLOR_CHART, ORDER } from '@/helpers/constants';
 import { ISearchFilter } from '../coin/props';
 import { useDebounce } from 'usehooks-ts';
+import { useParams, useRouter } from 'next/navigation';
 
 const columns: ColumnsType<IHomeCategory> = [
   {
@@ -41,7 +42,7 @@ const columns: ColumnsType<IHomeCategory> = [
     align: 'left',
     render: (_, value) => {
       const { rankedCoins } = value;
-      const elements: JSX.Element[] = rankedCoins.map((e, index) => {
+      const elements: JSX.Element[] = rankedCoins?.map((e, index) => {
         return (
           <img
             style={{ marginLeft: -index * 5, zIndex: index + 1 }}
@@ -84,8 +85,8 @@ const columns: ColumnsType<IHomeCategory> = [
       const { yesterday } = value;
       return (
         <p className='flex flex-col justify-end'>
-          {nFormatter(value.marketCap, 2, '$')}
-          {increasePercent(yesterday.volume24h, value.marketCap)}
+          {nFormatter(value.market_cap, 2, '$')}
+          {yesterday?.marketCapChangeIn24h}
         </p>
       );
     },
@@ -101,7 +102,7 @@ const columns: ColumnsType<IHomeCategory> = [
       return (
         <p className='flex flex-col justify-end'>
           {nFormatter(value.volume24h, 2, '$')}
-          {increasePercent(yesterday.volume24h, value.volume24h)}
+          {yesterday?.volumeChangeIn24h}
         </p>
       );
     },
@@ -198,6 +199,8 @@ const Categories = () => {
 
   const [keyFilter, setKeyFilter] = useState<string[]>([]);
   const debouncedValue = useDebounce<string[]>(keyFilter, 500);
+  const router = useRouter();
+  const { locale } = useParams();
 
   useEffect(() => {
     _fetchCategories();
@@ -208,8 +211,8 @@ const Categories = () => {
       limit: pageSize,
       page: currentPage,
       sort_by: order.columnKey,
-      sort_order: ORDER[order.order],
-      key_search: keyFilter.join(','),
+      sort_order: ORDER[order.order as keyof typeof ORDER],
+      search_key: debouncedValue.join(','),
     });
     if (!response) return;
     const { data, total } = response;
@@ -226,9 +229,9 @@ const Categories = () => {
     setPageSize(value);
   };
 
-  const _renderOption = ({ name, checked, id }: IOptionCustom) => {
+  const _renderOption = ({ name, checked, id, code }: IOptionCustom) => {
     return (
-      <Select.Option isSelectOption={true} value={id} key={id}>
+      <Select.Option isSelectOption={true} value={code} key={id}>
         <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
           <div className=''>
             <span className='name mx-2'>{name}</span>
@@ -280,7 +283,7 @@ const Categories = () => {
     return res.map((e: ISearchFilter) => ({
       id: e.id,
       name: e.name,
-      code: e.id,
+      code: e.slug,
       thumb: '',
       isSelected: false,
     }));
@@ -308,6 +311,15 @@ const Categories = () => {
           pagination={{ position: ['none'], pageSize }}
           rowKey='id'
           showSorterTooltip={false}
+          onRow={(record) => {
+            return {
+              onClick: () => {
+                console.log('categories.record', record);
+
+                router.push(`/${locale}/categories/${record.id}`);
+              },
+            };
+          }}
           onChange={(_page, _filter, sort) => {
             const itemSort = isArray(sort) ? sort[0] : sort;
             setOrder({

@@ -1,6 +1,11 @@
 @import './base/font.scss';
 @import './base/animate.scss';
 
+:root {
+  --gray-200-color: #eef2f6;
+  --blue-primary-color: #5766ff;
+}
+
 body {
   font-size: 14px;
 }

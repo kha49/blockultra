@@ -40,21 +40,19 @@ const ExchangeRenderTabs = () => {
   ];
 
   return (
-    <div className='exchange-tab flex py-4 rounded-lg'>
-      <div className='flex px-6 mx-auto'>
-        <Tabs
-          defaultActiveKey='1'
-          tabPosition={'top'}
-          items={tabs?.map((tab) => {
-            return {
-              label: tab.label,
-              key: tab.id,
-              disabled: tab.disable,
-              children: tab.component,
-            };
-          })}
-        />
-      </div>
+    <div className='exchange-tab flex rounded-lg'>
+      <Tabs
+        defaultActiveKey='1'
+        tabPosition={'top'}
+        items={tabs?.map((tab) => {
+          return {
+            label: tab.label,
+            key: tab.id,
+            disabled: tab.disable,
+            children: tab.component,
+          };
+        })}
+      />
     </div>
   );
 };

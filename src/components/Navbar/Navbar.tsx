@@ -275,7 +275,7 @@ const Navbar = () => {
     <div className='nav-bar flex text-gray-600 border-gray-900 border-solid gap-12 items-center'>
       <div className='nav-bar-desktop hidden xl:flex text-gray-600 border-gray-900 border-solid gap-12 items-center'>
         <div className='flex items-center logo'>
-          <Link href={'/'}>
+          <Link href={'/'} prefetch={false}>
             <Image src={'/logo.png'} width={131} height={31} alt='Logo' />
           </Link>
         </div>
@@ -285,6 +285,7 @@ const Navbar = () => {
               <div className='menu cursor-pointer relative' key={navItem?.id}>
                 {navItem?.href ? (
                   <Link
+                    prefetch={false}
                     href={`/${params.locale}/${navItem.href}`}
                     className='menu text-base font-semibold font-jb hover:text-primary-500 text-grey-700'
                   >
@@ -304,7 +305,10 @@ const Navbar = () => {
                         <div className='grid grid-cols-2 gap-8'>
                           {navItem?.subCateLevel1.map((sub: any) => (
                             <div className='ingredient' key={sub.id}>
-                              <Link href={`/${params.locale}/${sub.href}`}>
+                              <Link
+                                prefetch={false}
+                                href={`/${params.locale}/${sub.href}`}
+                              >
                                 <div className='ingredient__title text-base font-bold text-grey-700 mb-3'>
                                   {sub.name}
                                 </div>
@@ -344,6 +348,7 @@ const Navbar = () => {
                         <Link
                           className='flex gap-2 p-3 sub-menu-item'
                           key={sub.id}
+                          prefetch={false}
                           href={`/${params.locale}/${sub.href}`}
                         >
                           {sub?.icons}
@@ -406,6 +411,7 @@ const Navbar = () => {
                           <div className='ingredient' key={sub.id}>
                             {sub.href ? (
                               <Link
+                                prefetch={false}
                                 href={`/${params.locale}/${sub.href}`}
                                 className='ingredient__title text-base font-semibold font-jb text-grey-700 mb-3'
                               >
@@ -423,6 +429,7 @@ const Navbar = () => {
                                 {sub?.subCateLevel2.map((sublv2: any) =>
                                   sublv2?.href ? (
                                     <Link
+                                      prefetch={false}
                                       href={`/${params.locale}/${sublv2.href}`}
                                       className='flex gap-2 p-3 sub-menu-item rounded'
                                       key={sublv2.id}
@@ -464,6 +471,7 @@ const Navbar = () => {
                           href={`/${params.locale}/${sub.href}`}
                           className='flex gap-2 p-3 sub-menu-item'
                           key={sub.id}
+                          prefetch={false}
                         >
                           {sub?.icons}
                           <span>{sub.name}</span>

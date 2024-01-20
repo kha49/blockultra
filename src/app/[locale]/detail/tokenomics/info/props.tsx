@@ -1,10 +1,23 @@
 interface ITokenomics {
   id: number;
-  round: IRound;
-  allowcationPercent: string;
-  allowcationToken: string;
-  tgeUnlock: string;
-  tokenReleaseSchedule: string;
+  name: string;
+  tokens_percent: number;
+  tokens: number;
+  unlock_type: string;
+  unlock_frequency_type: string;
+  unlock_frequency_value: number;
+  vesting_duration_type: string;
+  vesting_duration_value: number;
+  round_date: Date;
+  isActive: boolean;
+  activeColor:string
+  batches: [
+    {
+      date: Date;
+      is_tge: boolean;
+      unlock_percent: number;
+    },
+  ];
 }
 
 interface IRound {

@@ -4,20 +4,26 @@ import {
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
+import { IResponseAxios } from '@/models/IResponse';
+import { FetchIeoIdo } from '@/usecases/ieo-ido';
 import { Checkbox, Select, Tag } from 'antd';
 import { random } from 'lodash';
-import React from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { IIeoIdoData, SearchProject } from '../../types';
+import { getIeoIdoApiSearchPath } from '../../config';
 
-export default function SelectProject() {
-  const _renderOption = ({ name, code, checked }: IOptionCustom) => {
+type PropsType = {
+  category: string;
+  onFilterChange: (values: string[]) => void;
+};
+
+export default function SelectProject(props: PropsType) {
+  const _renderOption = ({ name, key, checked, code }: IOptionCustom) => {
     return (
-      <Select.Option isSelectOption={true} value={code} key={name}>
+      <Select.Option isSelectOption={true} value={code} key={code}>
         <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
           <div className=''>
             <span className='name mx-2'>{name}</span>
-            <span className='code px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5'>
-              {code}
-            </span>
           </div>
           <div className='ant-checkbox'>
             {!checked ? (
@@ -58,23 +64,31 @@ export default function SelectProject() {
   };
 
   const _getData = async ({ searchKey }: IOptionAny) => {
-    return [
-      ...Array.from(Array(20).keys()).map(() => ({
-        id: random(1, 100000),
-        name: `name-${searchKey}${random(1, 100000)}`,
-        code: `code-${searchKey}${random(100, 999)}`,
-        thumb: '',
-        isSelected: false,
-      })),
-    ];
+    //@ts-ignore
+    const data: SearchProject[] = await FetchIeoIdo(
+      getIeoIdoApiSearchPath(props.category),
+      {
+        search_key: searchKey || '',
+      }
+    );
+
+    return data.map((searchItem: SearchProject) => ({
+      id: searchItem.key,
+      name: searchItem.name,
+      code: searchItem.key,
+      thumb: '',
+      isSelected: false,
+    }));
   };
 
   return (
     <FilterCustom
-      placeholder='Filter Categories'
+      placeholder='Search'
       renderOption={_renderOption}
       renderTag={_renderTag}
-      onChange={() => {}}
+      onChange={(keys) => {
+        props.onFilterChange(keys);
+      }}
       getData={_getData}
     />
   );

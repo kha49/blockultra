@@ -29,7 +29,15 @@ import IconCategories from './IconCategories';
 import IconGainers from './IconGainers';
 import IconLosers from './IconLosers';
 import IconTrending from './IconTrending';
+import IconTelegram from './IconTelegram';
+import IconGithub from './IconGithub';
+import IconFile from './IconFile';
+import IconMedium from './IconMedium';
+import { IconDiscord } from './IconDiscord';
+import IconExport from './IconExport';
 
+import IconInfo from './IconInfo';
+import IconHexagon from './IconHexagon';
 export {
   IconBell,
   IconCaretDown,
@@ -62,4 +70,12 @@ export {
   IconGainers,
   IconLosers,
   IconTrending,
+  IconTelegram,
+  IconGithub,
+  IconFile,
+  IconMedium,
+  IconDiscord,
+  IconExport,
+  IconInfo,
+  IconHexagon,
 };

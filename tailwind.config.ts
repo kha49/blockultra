@@ -30,8 +30,9 @@ const config: Config = {
         'blue-500': '#547AFF',
         'indigo-900': '#4551DE',
         orange: {
-          '500': '#F7931A'
-        }
+          '400': '#F89152',
+          '500': '#F7931A',
+        },
       },
       maxWidth: {
         sm: '640px',
@@ -39,6 +40,9 @@ const config: Config = {
         lg: '1024px',
         xl: '1280px',
         '2xl': '1408px',
+      },
+      boxShadow: {
+        primary: '0px 0px 16px 0px rgba(51, 55, 71, 0.08)',
       },
     },
     container: {

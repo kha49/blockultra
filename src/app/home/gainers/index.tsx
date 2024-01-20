@@ -27,7 +27,7 @@ const Gainers = () => {
       time: filterTime,
       coin: filterCoin,
       sort_by: orderGainer.columnKey,
-      sort_order: ORDER[orderGainer['order']],
+      sort_order: ORDER[orderGainer['order'] as keyof typeof ORDER],
     }).then((res: any) => {
       res.data.map((item: any) => {
         const average24 = caculatorAverage24h(item.price, item.histPrices);
@@ -43,7 +43,7 @@ const Gainers = () => {
       time: filterTime,
       coin: filterCoin,
       sort_by: orderLoser.columnKey,
-      sort_order: ORDER[orderLoser['order']],
+      sort_order: ORDER[orderLoser['order'] as keyof typeof ORDER],
     }).then((res: any) => {
       res.data.map((item: any) => {
         const average24 = caculatorAverage24h(item.price, item.histPrices);

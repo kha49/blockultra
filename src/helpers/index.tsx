@@ -2,6 +2,11 @@ import { IconDown } from '@/assets/icons/home/IconDown';
 import { IconUp } from '@/assets/icons/home/IconUp';
 import { round } from 'lodash';
 
+interface IoptionCurrencyFormat {
+  isAutoZero?: boolean;
+  numberRound?: number;
+}
+
 export const sleep = (time: number) => {
   return new Promise((resolve) => {
     setTimeout(() => {
@@ -16,16 +21,34 @@ export const renderSortIcon = (props: any) => {
   return props.sortOrder === 'ascend' ? <IconUp /> : <IconDown />;
 };
 
-export const currencyFormat = (value: number, currencySymbol: string) => {
-  const price = new Intl.NumberFormat('en-US', {
+export const currencyFormat = (
+  value: number,
+  currencySymbol: string,
+  options?: IoptionCurrencyFormat
+) => {
+  if (value === 0) return 0;
+
+  let price = 0;
+  let roundNumber = options?.numberRound ?? 2;
+  do {
+    price = round(value, roundNumber);
+
+    if (price === 0 && options?.isAutoZero) {
+      roundNumber += 1;
+    }
+  } while (price === 0 && options?.isAutoZero);
+
+  const priceFomat = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
+    minimumFractionDigits: roundNumber,
   })
-    .format(round(value, 2))
+    .format(round(price, roundNumber))
     .replace('$', '');
+
   return (
     <span className='whitespace-nowrap'>
-      {currencySymbol} {price}
+      {currencySymbol} {priceFomat}
     </span>
   );
 };
@@ -105,4 +128,17 @@ export const renderRangePaging = (
       {start} - {end} from {total}
     </span>
   );
+};
+
+export const fancyTimeFormat = (duration: number) => {
+  // Hours, minutes and seconds
+  const hrs = ~~(duration / 3600);
+  const mins = ~~((duration % 3600) / 60);
+  const secs = ~~duration % 60;
+
+  return {
+    hrs,
+    mins,
+    secs,
+  };
 };

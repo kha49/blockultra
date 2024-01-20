@@ -84,15 +84,20 @@ class APIClient {
     let paramKeys = [];
     if (params) {
       Object.keys(params).map((key) => {
-        paramKeys.push(key + '=' + params[key]);
+        if (params[key]) {
+          paramKeys.push(key + '=' + params[key]);
+        }
         return paramKeys;
       });
       const queryString =
         paramKeys && paramKeys.length ? paramKeys.join('&') : '';
       response = api.get(`${url}?${queryString}`, params);
+      // console.log('Request url params: ', `${url}?${queryString}`);
     } else {
       response = api.get(`${url}`, params);
     }
+    console.log('Request url: ', url, params);
+    // console.log(response);
     return response;
   };
 

@@ -1,12 +1,12 @@
 import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
 import Image from 'next/image';
 
-const IntroduceCoin = () => {
+const IntroduceCoin = (props: any) => {
   return (
     <div className='introduce-coin w-full md:w-[380px] font-jm'>
       <div className='flex items-center gap-3 pb-4 mb-4 border-b border-grey-300'>
-        <Image
-          src='/coin-info/logo.png'
+        <img
+          src={props.data?.image?.native}
           alt=''
           width={76}
           height={76}
@@ -14,11 +14,11 @@ const IntroduceCoin = () => {
         />
         <div className='info'>
           <div className='flex gap-1'>
-            <span className='font-bold text-grey-700'>Nanobit</span>
+            <span className='font-bold text-grey-700'>{props.data?.name}</span>
             <IconCheckedCompleted />
           </div>
           <a className='text-primary-500' href='#'>
-            @nanobit
+            @{props.data?.name}
           </a>
         </div>
       </div>

@@ -30,9 +30,12 @@ const CoinInfoRenderTabs = () => {
 
   return (
     <div>
-      <CoinInformation />
-      <div className='coinInfo-tab py-4 mt-2 rounded-lg'>
-        <div className='flex px-6 mx-auto'>
+      <div className='detail px-8 py-2'>
+        <CoinInformation />
+      </div>
+
+      <div className='coinInfo-tab px-8 pt-2 pb-17'>
+        <div className='flex mx-auto p-6 bg-white rounded-lg shadow'>
           <Tabs
             defaultActiveKey='1'
             tabPosition={'top'}

@@ -1,44 +1,16 @@
 export interface IHomeCoin {
   _id: string;
-  created_at: string;
-  updated_at: string;
   key: string;
   rank: number;
   name: string;
-  hasFundingRounds: boolean;
   symbol: string;
-  type: string;
-  rankHistory: RankHistory;
-  athMarketCap: AthMarketCap;
-  lifeCycle: string;
-  maxSupply?: string;
-  unlimitedSupply: boolean;
-  totalSupply: string;
-  percentOfCircSupply: string;
   image: Image;
-  tokens: Token[];
   category?: string;
-  categoryId?: string;
-  tagIds: number[];
-  interest?: any;
-  isTraded: boolean;
-  marketDataNotAvailable: boolean;
-  vesting?: Vesting;
-  hasVesting: boolean;
-  listingDate: string;
-  athPrice: AthPrice;
-  icoData: IcoData;
   icon?: any;
-  fullyDilutedMarketCap: string;
-  availableSupply: string;
-  marketCap: string;
-  volume24h: string;
-  noData: boolean;
-  volatility: Volatility;
   price: Price;
-  histPrices: HistPrices;
-  atlPrice: AtlPrice;
-  average24?: any;
+  average24h?: any;
+  volume24h: string;
+  marketCap: string;
   chart: string;
 }
 
@@ -50,6 +22,8 @@ export interface ISearchFilter {
   image: Image;
   price: Price;
   id?: string;
+  slug?: string;
+  [key: string]: any;
 }
 
 interface AtlPrice {

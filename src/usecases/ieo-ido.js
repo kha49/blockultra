@@ -2,11 +2,16 @@ import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
 
-const baseUrl = 'api/ieo-ido';
-
 export const FetchIeoIdo = (path, params) =>
   apiClient.get(`api/${path}`, params);
 
-export const FetchIeoIdoUpcoming = (params) => apiClient.get(baseUrl, params);
+export const FetchIeoIdoUpcoming = (params) =>
+  apiClient.get('api/ieo-ido', params);
 export const FetchUnlockDetail = (params) =>
-  apiClient.get(`${baseUrl}/${params}`);
+  apiClient.get(`api/ieo-ido/${params}`);
+export const IeoIdoSearch = (params) =>
+  apiClient.get('api/ieo-ido/search', params);
+export const TopIdoLaunchPadSearch = (params) =>
+  apiClient.get('api/ieo-ido/top-ido-launch-pad/search', params);
+export const TopIdoLaunchPadDetail = (key) =>
+  apiClient.get(`api/launch-pad-detail?key=${key}`);

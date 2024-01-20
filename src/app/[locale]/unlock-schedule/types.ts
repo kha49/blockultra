@@ -53,3 +53,41 @@ export type IUnlockData = {
     };
   };
 };
+
+export interface IUnlock {
+  key: string;
+  symbol: string;
+  image: string;
+  name: string;
+  price: string;
+  marketcap: string;
+  marketCap: number;
+  nextunlocks: Nextunlock[];
+  launchpads?: Launchpad[];
+  roi?: string;
+  unlockThisWeek: number;
+  unlockNextWeek: number;
+  priceChangeIn24h: number;
+  nextTokenPrice?: number;
+  nextTokenPricePercent?: number;
+  nextUnlockDate?: string;
+}
+
+export interface Nextunlock {
+  date: string;
+  allocationTokens: number;
+  allocationName: string;
+  tokens: number;
+}
+
+export interface Launchpad {
+  key: string;
+  name: string;
+  image: string;
+}
+
+export interface INextUnlock {
+  nextTokenPrice?: number;
+  nextTokenPricePercent?: number;
+  nextUnlockDate?: string;
+}

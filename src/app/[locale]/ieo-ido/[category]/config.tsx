@@ -7,12 +7,24 @@ import LaunchpadModal from './components/launchpad-modal';
 import { nFormatter } from '@/helpers';
 import { formatDate } from '@/helpers/datetime';
 import Doughnut from '@/components/DoughnutChart';
+import IconWeb from '@/assets/icons/IconWeb';
+import {
+  IconDiscord,
+  IconFile,
+  IconGithub,
+  IconMedium,
+  IconTelegram,
+  IconTwitter,
+} from '@/assets/icons';
+import { IconFacebook } from '@/assets/icons/IconFacebook';
+import { ReactNode } from 'react';
+import { COLOR_CHART } from '@/helpers/constants';
 
 export const IeoIdoCategory = {
   upcoming: 'upcoming',
   ongoing: 'ongoing',
   ended: 'ended',
-  topIeoLaunchpads: 'top-ieo-launchpads',
+  topIeoLaunchpads: 'top-ieo/launchpads',
   topIdoLaunchpads: 'top-ido-launchpads',
   overview: 'overview',
 };
@@ -20,10 +32,24 @@ export const IeoIdoCategory = {
 export const IeoIdoApiPath = {
   [IeoIdoCategory.upcoming]: 'ieo-ido',
   [IeoIdoCategory.ongoing]: 'ieo-ido',
-  [IeoIdoCategory.ended]: 'ieo-ido-ended',
+  [IeoIdoCategory.ended]: 'ieo-ido',
   [IeoIdoCategory.topIeoLaunchpads]: 'ieo-ido',
-  [IeoIdoCategory.topIdoLaunchpads]: 'ieo-ido-top-launch-pad',
+  [IeoIdoCategory.topIdoLaunchpads]: 'ieo-ido/top-launch-pad',
   [IeoIdoCategory.overview]: 'ieo-ido',
+};
+
+export const IeoIdoStatus = {
+  [IeoIdoCategory.upcoming]: 'upcoming',
+  [IeoIdoCategory.ended]: 'past',
+};
+
+export const IeoIdoApiSearchPath = {
+  [IeoIdoCategory.upcoming]: 'ieo-ido/upcoming/search',
+  // [IeoIdoCategory.ongoing]: 'ieo-ido',
+  [IeoIdoCategory.ended]: 'ieo-ido/ended/search',
+  // [IeoIdoCategory.topIeoLaunchpads]: 'ieo-ido',
+  [IeoIdoCategory.topIdoLaunchpads]: 'ieo-ido/top-ido-launch-pad/search',
+  // [IeoIdoCategory.overview]: 'ieo-ido',
 };
 
 const TEMP_DISABLED_TAGS = [
@@ -45,27 +71,29 @@ export const IeoIdoCategoryPath = {
   [IeoIdoCategory.upcoming]: 'upcoming',
   [IeoIdoCategory.ongoing]: 'ongoing',
   [IeoIdoCategory.ended]: 'ended',
-  [IeoIdoCategory.topIeoLaunchpads]: 'top-ieo-launchpads',
-  [IeoIdoCategory.topIdoLaunchpads]: 'top-ido-launchpads',
+  [IeoIdoCategory.topIeoLaunchpads]: 'top-ieo/launchpads',
+  [IeoIdoCategory.topIdoLaunchpads]: 'top-ido/launchpads',
   [IeoIdoCategory.overview]: 'overview',
 };
 
 const columnsUpcoming: ColumnsType<any> = [
   {
+    title: '#',
+    render: (_text, _record, index) => `${index + 1}`,
+  },
+  {
     title: 'Project',
     dataIndex: 'project',
     key: 'project',
     fixed: true,
-    render: (_, { name, image, tag, isSponsored }) => (
+    render: (project, { symbol, image, isHot }) => (
       <Flex wrap='wrap' gap={8}>
         <Image src={image} alt={'icon'} width={24} height={24} />
-        <span>{name}</span>
+        <span>{project}</span>
         <Tag className={'bg-[#F1F4F7]'} bordered={false}>
-          {tag}
+          {symbol}
         </Tag>
-        {isSponsored && (
-          <Image alt='hot' src={'/hot.svg'} width={12} height={12} />
-        )}
+        {isHot && <Image alt='hot' src={'/hot.svg'} width={12} height={12} />}
       </Flex>
     ),
   },
@@ -85,9 +113,9 @@ const columnsUpcoming: ColumnsType<any> = [
     title: 'Backers',
     dataIndex: 'backers',
     key: 'backers',
-    render: (_, { funds }) => (
-      <BankersModal data={funds}>
-        {({ onOpen }) => <DataGroup data={funds} onClick={onOpen} />}
+    render: (backers) => (
+      <BankersModal data={backers}>
+        {({ onOpen }) => <DataGroup data={backers} onClick={onOpen} />}
       </BankersModal>
     ),
   },
@@ -95,7 +123,7 @@ const columnsUpcoming: ColumnsType<any> = [
     title: 'Category',
     dataIndex: 'category',
     key: 'category',
-    render: (_, { category }) => <>{category.name}</>,
+    render: (category) => `${category}`,
   },
   {
     title: 'Launchpad',
@@ -117,13 +145,17 @@ const columnsUpcoming: ColumnsType<any> = [
 
 const columnsEnded: ColumnsType<any> = [
   {
+    title: '#',
+    render: (_text, _record, index) => `${index + 1}`,
+  },
+  {
     title: 'Project',
     dataIndex: 'project',
     key: 'project',
-    render: (_, { name, image, tag }) => (
+    render: (_, { project, image, tag }) => (
       <Flex align={'center'} gap={8}>
         <Image src={image} alt={'icon'} width={24} height={24} />
-        <span>{name}</span>
+        <span>{project}</span>
         <Tag className={'bg-[#F1F4F7]'} bordered={false}>
           {tag}
         </Tag>
@@ -138,9 +170,9 @@ const columnsEnded: ColumnsType<any> = [
   },
   {
     title: 'Total Raise',
-    dataIndex: 'raise',
-    key: 'raise',
-    render: (_, { raise }) => nFormatter(raise, 2, '$'),
+    dataIndex: 'totalRaise',
+    key: 'totalRaise',
+    render: (totalRaise) => nFormatter(totalRaise, 2, '$'),
   },
   {
     title: 'ROI',
@@ -150,9 +182,9 @@ const columnsEnded: ColumnsType<any> = [
   },
   {
     title: 'ATH ROI',
-    dataIndex: 'athRoi',
-    key: 'athRoi',
-    render: (_, { athRoi }) => nFormatter(athRoi, 2, '$'),
+    dataIndex: 'auth_roi',
+    key: 'auth_roi',
+    render: (_, { auth_roi }) => nFormatter(auth_roi, 2, '$'),
   },
   {
     title: 'Launchpad',
@@ -174,6 +206,10 @@ const columnsEnded: ColumnsType<any> = [
 
 const columnsTopIdoLaunchpads: ColumnsType<any> = [
   {
+    title: '#',
+    render: (_text, _record, index) => `${index + 1}`,
+  },
+  {
     title: 'Name',
     dataIndex: 'project',
     key: 'project',
@@ -189,54 +225,54 @@ const columnsTopIdoLaunchpads: ColumnsType<any> = [
   },
   {
     title: 'Tier',
-    dataIndex: 'initialCap',
-    key: 'initialCap',
-    render: (_, { initialCap }) => nFormatter(initialCap, 2, '$'),
+    dataIndex: 'tier',
+    key: 'tier',
   },
   {
     title: 'ROI',
-    dataIndex: 'totalRaise',
-    key: 'totalRaise',
-    render: (_, { totalRaise }) => nFormatter(totalRaise, 2, '$'),
+    dataIndex: 'roi',
+    key: 'roi',
+    render: (value) => `${value.toFixed(2)}x`,
   },
   {
     title: 'ATH ROI',
-    dataIndex: 'totalRaise',
-    key: 'totalRaise',
-    render: (_, { totalRaise }) => nFormatter(totalRaise, 2, '$'),
+    dataIndex: 'athRoi',
+    key: 'athRoi',
+    render: (value) => `${value.toFixed(2)}x`,
   },
   {
     title: 'IDOs',
-    dataIndex: 'totalRaise',
-    key: 'totalRaise',
-    render: (_, { totalRaise }) => nFormatter(totalRaise, 2, '$'),
+    dataIndex: 'idos',
+    key: 'idos',
   },
   {
     title: 'Sum Market Cap',
-    dataIndex: 'totalRaise',
-    key: 'totalRaise',
-    render: (_, { totalRaise }) => nFormatter(totalRaise, 2, '$'),
+    dataIndex: 'sumMarketCap',
+    key: 'sumMarketCap',
+    render: (_, { sumMarketCap }) => nFormatter(sumMarketCap, 2, '$'),
   },
   {
     title: 'Entry',
-    dataIndex: 'totalRaise',
-    key: 'totalRaise',
-    render: (_, { totalRaise }) => nFormatter(totalRaise, 2, '$'),
+    dataIndex: 'entry',
+    key: 'entry',
+    render: (_, { entry }) => nFormatter(entry, 2, '$'),
   },
   {
     title: 'Gainers',
-    dataIndex: 'gainers',
-    key: 'gainers',
-    render: (_, {}) => (
+    dataIndex: 'gainer',
+    key: 'gainer',
+    render: (value, {}) => (
       <div className='flex gap-3 items-center'>
         <Doughnut
-          data={[30, 100 - 30]}
+          data={[Number(value || 0), 100 - Number(value || 0)]}
           colors={['green', 'red']}
           radius={24}
           hole={14}
           stroke={1}
         />
-        <div className='text-sm font-semibold text-[#333747]'>{30}%</div>
+        <div className='text-sm font-semibold text-[#333747]'>
+          {value || 0}%
+        </div>
       </div>
     ),
   },
@@ -282,7 +318,29 @@ export const getIeoIdoColumns = (category: string) => {
   }
 };
 
-export const getCategoryTags = () => {
+export const getCategoryTags = (
+  { isDetail }: { isDetail?: boolean } = { isDetail: false }
+) => {
+  if (isDetail) {
+    return [
+      {
+        label: IeoIdoCategory.ended,
+        value: IeoIdoCategory.ended,
+        disabled: false,
+      },
+      {
+        label: IeoIdoCategory.ongoing,
+        value: IeoIdoCategory.ongoing,
+        disabled: true,
+      },
+      {
+        label: IeoIdoCategory.upcoming,
+        value: IeoIdoCategory.upcoming,
+        disabled: false,
+      },
+    ];
+  }
+
   return Object.values(IeoIdoCategory).map((category) => ({
     label: IeoIdoCategoryLabel[category],
     value: category,
@@ -293,3 +351,38 @@ export const getCategoryTags = () => {
 export const getIeoIdoApiPath = (category: string) => {
   return IeoIdoApiPath[category] || IeoIdoApiPath[IeoIdoCategory.upcoming];
 };
+
+export const getIeoIdoApiSearchPath = (category: string) => {
+  return (
+    IeoIdoApiSearchPath[category] ||
+    IeoIdoApiSearchPath[IeoIdoCategory.upcoming]
+  );
+};
+
+export const getIconLink = (type: string) => {
+  const icons: { [key: string]: ReactNode } = {
+    web: <IconWeb />,
+    twitter: <IconTwitter />,
+    telegram: <IconTelegram />,
+    gitbook: <IconFile />,
+    medium: <IconMedium />,
+    github: <IconGithub />,
+    discord: <IconDiscord />,
+    facebook: <IconFacebook />,
+  };
+
+  return icons[type] || icons.web;
+};
+
+export const colorChart = [
+  COLOR_CHART.BITTER_LEMON,
+  COLOR_CHART.MALACHITE,
+  COLOR_CHART.PAOLO_VERONESE_GREEN,
+  COLOR_CHART.TURQUOISE_SURF,
+  COLOR_CHART.CERULEAN_FROST,
+  COLOR_CHART.PLUMP_PURPLE,
+  COLOR_CHART.PURPUREUS,
+  COLOR_CHART.JAZZBERRY_JAM,
+  COLOR_CHART.CERISE,
+  COLOR_CHART.SUNSET_ORANGE,
+];

@@ -4,6 +4,8 @@ export const showToast = (
   type: 'info' | 'success' | 'warning' | 'error',
   message: string
 ) => {
-  toast.dismiss();
-  toast[type](message);
+  if (typeof window !== 'undefined') {
+    toast.dismiss();
+    toast[type](message);
+  }
 };

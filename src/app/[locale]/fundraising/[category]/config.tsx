@@ -1,12 +1,10 @@
 import { ColumnsType } from 'antd/es/table';
-import { IFundingRoundsData } from './types';
-import { Avatar, Flex, Tag } from 'antd';
+import { Flex } from 'antd';
 import Image from 'next/image';
-import moment from 'moment';
 import BackersModal from './components/backers-modal';
 import DataGroup from '@/components/DataGroup';
 import { formatDate } from '@/helpers/datetime';
-import { nFormatter } from '@/helpers';
+import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
 
 export const FundraisingCategory = {
   FundingRounds: 'funding-rounds',
@@ -132,24 +130,26 @@ const topBackersColumns: ColumnsType<any> = [
   },
   {
     title: 'Country',
-    dataIndex: 'country',
-    key: 'country',
-    render: (_, { location }) => <>{location}</>,
+    dataIndex: 'location',
+    key: 'location',
+    render: (_, { country }) => <>{country}</>,
   },
   {
     title: 'Investments',
     dataIndex: 'investments',
     key: 'investments',
-    render: (_, { totalInvestments }) => <>{totalInvestments}</>,
+    render: (_, { investments }) => <>{investments}</>,
   },
   {
     title: 'Market Cap',
     dataIndex: 'marketCap',
     key: 'marketCap',
-    render: (_, { market_cap }) => (
+    render: (_, { marketCap, mCapChangeIn24h }) => (
       <Flex vertical className='font-bold'>
-        <span>${market_cap}M</span>
-        <span className={'text-[#1AB369]'}>{market_cap}%</span>
+        <span>{nFormatter(marketCap, 2, '$')}</span>
+        <span className={'text-[#1AB369]'}>
+          {percentFormat(mCapChangeIn24h)}
+        </span>
       </Flex>
     ),
   },

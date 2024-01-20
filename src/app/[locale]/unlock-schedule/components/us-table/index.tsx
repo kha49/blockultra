@@ -1,8 +1,17 @@
 'use client';
-import { Avatar, Flex, Pagination, Progress, Table, Tag, Tooltip } from 'antd';
+import {
+  Avatar,
+  Flex,
+  Modal,
+  Pagination,
+  Progress,
+  Table,
+  Tag,
+  Tooltip,
+} from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { UsHeader } from './us-header';
-import { IUnlockData } from '../../types';
+import { IUnlock, IUnlockData, Launchpad } from '../../types';
 import Image from 'next/image';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -10,164 +19,118 @@ import SelectItemTable from '@/components/SelectItemTable';
 import { IResponseAxios } from '@/models/IResponse';
 import { FetchTokenUnlock } from '@/usecases/token-unlock';
 import { ORDER } from '@/helpers/constants';
-
-const columns: ColumnsType<any> = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    render: (_, { name, image }) => {
-      return (
-        <Flex align={'center'} gap={8}>
-          <Image src={name.icon} alt={'icon'} width={24} height={24} />
-          <span>{name}</span>
-          <Tag className={'bg-[#F1F4F7]'} bordered={false}>
-            {name.tag}
-          </Tag>
-        </Flex>
-      );
-    },
-  },
-  {
-    title: 'Price',
-    dataIndex: 'price',
-    key: 'price',
-    render: (_, { price }) => {
-      return (
-        <Flex vertical align={'center'} gap={8}>
-          <span>{price}</span>
-          <span
-            className={clsx(
-              'font-bold',
-              price > 0 ? 'text-green-500' : 'text-red-500'
-            )}
-          >
-            {price}%
-          </span>
-        </Flex>
-      );
-    },
-  },
-  {
-    title: 'Market Cap',
-    dataIndex: 'marketCap',
-    key: 'marketCap',
-    render: (_, { marketCap }) => <>${marketCap}B</>,
-  },
-  // {
-  //   title: 'Launchpad',
-  //   dataIndex: 'launchpadList',
-  //   key: 'launchpadList',
-  //   render: (_, { launchpadList }) => (
-  //     <>
-  //       <Avatar.Group
-  //         maxCount={3}
-  //         maxPopoverTrigger='click'
-  //         size='large'
-  //         maxStyle={{
-  //           color: '#f56a00',
-  //           backgroundColor: '#fde3cf',
-  //           cursor: 'pointer',
-  //         }}
-  //       >
-  //         {launchpadList.map((item) => (
-  //           <Avatar src={item.avatarUrl} key={item.avatarUrl} />
-  //         ))}
-  //       </Avatar.Group>
-  //     </>
-  //   ),
-  // },
-  {
-    title: 'IDO/IEO ROI',
-    dataIndex: 'roi',
-    key: 'roi',
-    render: (_, { roi }) => <>{roi ? `${roi}x` : 'N/A'}</>,
-  },
-  // {
-  //   title: 'Unlock Progress',
-  //   dataIndex: 'process',
-  //   key: 'process',
-  //   render: (_, { process }) => (
-  //     <Tooltip
-  //       title={
-  //         <Flex vertical className={'text-[#333747]'}>
-  //           <Flex align={'center'} gap={8}>
-  //             <span>Unlocked</span>
-  //             <span>{process.unlock.ratio}%</span>
-  //             <span className={'text-[#9FA4B7]'}>
-  //               {process.unlock.name} {process.unlock.value}M
-  //             </span>
-  //           </Flex>
-  //           <Flex align={'center'} gap={8}>
-  //             <span>Locked</span>
-  //             <span>{process.lock.ratio}%</span>
-  //             <span className={'text-[#9FA4B7]'}>
-  //               {process.lock.name} {process.lock.value}M
-  //             </span>
-  //           </Flex>
-  //         </Flex>
-  //       }
-  //       color={'white'}
-  //     >
-  //       <span>{process.value}%</span>
-  //       <Progress percent={process.value} showInfo={false} />
-  //     </Tooltip>
-  //   ),
-  // },
-  // {
-  //   title: 'Next Unlock',
-  //   dataIndex: 'nextUnlock',
-  //   key: 'nextUnlock',
-  //   render: (_, { nextUnlock }) => (
-  //     <Flex gap={44}>
-  //       <Flex className={'text-md'} vertical gap={8}>
-  //         <span className={'font-semibold text-[#333747]'}>
-  //           ${nextUnlock.value}M
-  //         </span>
-  //         <span className={'text-[#9FA4B7]'}>
-  //           {nextUnlock.ratio} of {nextUnlock.name}
-  //         </span>
-  //       </Flex>
-
-  //       <Flex className={'text-md'} gap={8}>
-  //         <Flex vertical align={'center'} className={'w-[42px]'}>
-  //           <Tag bordered={false} className={'text-black mr-0'}>
-  //             {nextUnlock.time.d}
-  //           </Tag>
-  //           <span className={'text-[#9FA4B7]'}>D</span>
-  //         </Flex>
-
-  //         <span>:</span>
-
-  //         <Flex vertical align={'center'} className={'w-[42px]'}>
-  //           <Tag
-  //             bordered={false}
-  //             className={'text-black w-full text-center mr-0'}
-  //           >
-  //             {nextUnlock.time.h}
-  //           </Tag>
-  //           <span className={'text-[#9FA4B7]'}>H</span>
-  //         </Flex>
-
-  //         <span>:</span>
-
-  //         <Flex vertical align={'center'} className={'w-[42px]'}>
-  //           <Tag
-  //             bordered={false}
-  //             className={'text-black w-full text-center mr-0'}
-  //           >
-  //             {nextUnlock.time.m}
-  //           </Tag>
-  //           <span className={'text-[#9FA4B7]'}>M</span>
-  //         </Flex>
-  //       </Flex>
-  //     </Flex>
-  //   ),
-  // },
-];
+import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
+import NextUnlock from '../nextUnlock';
 
 export const UsTable = () => {
-  const [data, setData] = useState<IUnlockData[]>([]);
+  const columns: ColumnsType<IUnlock> = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      fixed: true,
+      render: (_, value) => {
+        return (
+          <Flex align={'center'} gap={8}>
+            {value.image ? (
+              <img src={value.image} alt={'icon'} width={24} height={24} />
+            ) : (
+              ''
+            )}
+            <span>{value.name}</span>
+            <Tag className={'bg-[#F1F4F7]'} bordered={false}>
+              {value.symbol}
+            </Tag>
+          </Flex>
+        );
+      },
+    },
+    {
+      title: 'Price',
+      dataIndex: 'price',
+      key: 'price',
+      align: 'right',
+      render: (_, { price, priceChangeIn24h }) => {
+        return (
+          <Flex vertical align={'center'} gap={8}>
+            <span>
+              {currencyFormat(Number(price), '$', { isAutoZero: true })}
+            </span>
+            {percentFormat(priceChangeIn24h)}
+          </Flex>
+        );
+      },
+    },
+    {
+      title: 'Market Cap',
+      dataIndex: 'marketCap',
+      key: 'marketCap',
+      render: (_, { marketCap }) => {
+        return nFormatter(marketCap, 2, '$');
+      },
+    },
+
+    {
+      title: 'Launchpad',
+      dataIndex: 'launchpadList',
+      key: 'launchpadList',
+      align: 'right',
+      render: (_, { launchpads }) => {
+        if (!launchpads) return null;
+        return (
+          <Avatar.Group
+            maxCount={3}
+            maxPopoverTrigger='click'
+            size={24}
+            maxStyle={{
+              color: '#333747',
+              backgroundColor: '#E5E6EB',
+              cursor: 'pointer',
+              fontSize: 10,
+            }}
+          >
+            {launchpads?.map((item) => (
+              <Avatar
+                onClick={(_e) => _openModal(launchpads)}
+                src={item.image}
+                key={item.key}
+              />
+            ))}
+          </Avatar.Group>
+        );
+      },
+    },
+    {
+      title: 'IDO/IEO ROI',
+      dataIndex: 'roi',
+      key: 'roi',
+      render: (_, { roi }) => {
+        if (!roi) return '-';
+        return <>{currencyFormat(Number(roi), '', { isAutoZero: true })}x</>;
+      },
+    },
+    {
+      title: 'Next Unlock',
+      dataIndex: 'nextTokenPrice',
+      key: 'nextTokenPrice',
+      width: '300px',
+      align: 'center',
+      render: (
+        _,
+        { nextTokenPrice, nextTokenPricePercent, nextUnlockDate }
+      ) => {
+        return (
+          <NextUnlock
+            nextTokenPrice={nextTokenPrice}
+            nextTokenPricePercent={nextTokenPricePercent}
+            nextUnlockDate={nextUnlockDate}
+          />
+        );
+      },
+    },
+  ];
+
+  const [data, setData] = useState<IUnlock[]>([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
@@ -176,12 +139,16 @@ export const UsTable = () => {
     order: '',
   });
 
+  const [filter, setFilter] = useState<any[]>([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState<Launchpad[]>([]);
   const getTokenUnlock = useCallback(async () => {
-    const response: IResponseAxios<IUnlockData> = await FetchTokenUnlock({
+    const response: IResponseAxios<IUnlock> = await FetchTokenUnlock({
       limit: pageSize,
       page: currentPage,
       sort_by: order.columnKey,
-      sort_order: ORDER[order.order],
+      sort_order: ORDER[order.order as keyof typeof ORDER],
+      search_key: filter.map((e) => e.code),
     });
 
     if (!response) return;
@@ -190,7 +157,7 @@ export const UsTable = () => {
     setTotal(total!!);
 
     /* #endregion */
-  }, [pageSize, currentPage, order]);
+  }, [pageSize, currentPage, order, filter]);
 
   const _onChangePage = (page: number) => {
     setCurrentPage(page);
@@ -199,6 +166,11 @@ export const UsTable = () => {
   const _onChangeSize = (value: number) => {
     setCurrentPage(1);
     setPageSize(value);
+  };
+
+  const _openModal = (ar: any[]) => {
+    setModalData(ar);
+    setIsModalOpen(true);
   };
 
   const _renderRange = () => {
@@ -213,16 +185,30 @@ export const UsTable = () => {
 
   useEffect(() => {
     getTokenUnlock();
-  }, [getTokenUnlock, pageSize, currentPage, order]);
+  }, [getTokenUnlock, pageSize, currentPage, order, filter]);
+
+  const _setFilter = (value: any[]) => {
+    setFilter(value);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   return (
     <div className={'us-table'}>
-      <UsHeader />
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={{ position: ['none'], pageSize }}
-      />
+      <UsHeader onFilter={_setFilter} />
+      <div className='overflow-x-auto'>
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={{ position: ['none'], pageSize }}
+        />
+      </div>
       <div className='pt-6 flex items-center justify-center table-pagination pagination-mobile'>
         <Pagination
           total={total}
@@ -249,6 +235,28 @@ export const UsTable = () => {
           <SelectItemTable onChange={_onChangeSize} />
         </div>
       </div>
+
+      <Modal
+        title='Launchpads'
+        open={isModalOpen}
+        onCancel={handleCancel}
+        footer={null}
+        width={350}
+      >
+        <div className='w-full overflow-y-auto h-60'>
+          {modalData.map((e, index) => {
+            return (
+              <div
+                className='flex items-center mt-2 mb-2'
+                key={`modal-index-${index}`}
+              >
+                <img src={e.image} className='w-6 h-6 mr-3' />
+                <p className=''>{e.name}</p>
+              </div>
+            );
+          })}
+        </div>
+      </Modal>
     </div>
   );
 };

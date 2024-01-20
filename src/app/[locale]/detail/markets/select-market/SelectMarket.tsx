@@ -71,7 +71,7 @@ export default function SelectMarket() {
 
   return (
     <FilterCustom
-      placeholder='Filter Categories'
+      placeholder='Filter Exchanges'
       renderOption={_renderOption}
       renderTag={_renderTag}
       onChange={() => {}}

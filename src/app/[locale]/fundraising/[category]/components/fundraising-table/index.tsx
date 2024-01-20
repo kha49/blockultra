@@ -5,12 +5,14 @@ import SelectItemTable from '@/components/SelectItemTable';
 import './styles.scss';
 import HeadFilter from '../head-filter';
 import { getColumnsFundraising, getFundraisingPathApi } from '../../config';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { IResponseAxios } from '@/models/IResponse';
 import { FetchFundraising } from '@/usecases/fundraising';
 import { ORDER } from '@/helpers/constants';
+import BaseTable from '@/components/BaseTable';
 
 export const FunDTable = () => {
+  const router = useRouter();
   const params = useParams<{ locale: string; category: string }>();
 
   const [data, setData] = useState<any[]>([]);
@@ -34,23 +36,13 @@ export const FunDTable = () => {
 
   const columns = getColumnsFundraising(params.category);
 
-  const _renderRange = () => {
-    const start = (currentPage - 1) * pageSize + 1;
-    const end = start + data.length - 1;
-    return (
-      <span className='table-total'>
-        {start} - {end} from {total}
-      </span>
-    );
-  };
-
   const getTopbacker = useCallback(async () => {
     const url = getFundraisingPathApi(params.category);
     const response: IResponseAxios<any> = await FetchFundraising(url, {
       limit: pageSize,
       page: currentPage,
       sort_by: order.columnKey,
-      sort_order: ORDER[order.order],
+      sort_order: ORDER.ascend,
     });
 
     if (!response) return;
@@ -66,37 +58,25 @@ export const FunDTable = () => {
   return (
     <Flex vertical gap={16} className={'fundraising'}>
       <HeadFilter />
-      <Table
-        columns={columns as any}
-        dataSource={data as any}
-        pagination={false}
-        className='overflow-x-auto overflow-y-hidden'
+      <BaseTable
+        columns={columns}
+        data={data}
+        pageSize={pageSize}
+        currentPage={currentPage}
+        total={total}
+        _onChangePage={_onChangePage}
+        _onChangeSize={_onChangeSize}
+        onRow={(record: any) => {
+          return {
+            onClick: () => {
+              router.push(
+                `/${params.locale}/fundraising/${params.category}/detail/${record.id}?name=${record.name}`
+              );
+              console.log('record', record);
+            },
+          };
+        }}
       />
-      <div className='pt-6 flex items-center justify-center table-pagination pagination-mobile'>
-        <Pagination
-          total={total}
-          pageSize={pageSize}
-          current={currentPage}
-          onChange={_onChangePage}
-          showSizeChanger={false}
-        />
-      </div>
-
-      <div className='pt-6 flex flex-wrap gap-6 items-center justify-between table-pagination'>
-        <div>{_renderRange()}</div>
-        <div className='pagination-desktop'>
-          <Pagination
-            total={total}
-            pageSize={pageSize}
-            current={currentPage}
-            onChange={_onChangePage}
-            showSizeChanger={false}
-          />
-        </div>
-        <div>
-          <SelectItemTable onChange={_onChangeSize} />
-        </div>
-      </div>
     </Flex>
   );
 };

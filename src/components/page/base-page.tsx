@@ -6,14 +6,22 @@ import clsx from 'clsx';
 type Props = PropsWithChildren<{
   breadcrumbs: ItemType[];
   classnames?: string;
+  contentClassnames?: string;
 }>;
 
 export default function BasePage(props: Props) {
-  const { breadcrumbs, children, classnames } = props;
+  const {
+    breadcrumbs,
+    children,
+    classnames,
+    contentClassnames = 'px-3 py-8',
+  } = props;
   return (
-    <div className={clsx('mx-auto max-w-2xl px-4 py-3', classnames)}>
-      <Breadcrumb items={breadcrumbs} />
-      <div className={'px-3 py-8'}>{children}</div>
+    <div className={clsx('mx-auto container px-4 py-3', classnames)}>
+      <div className='px-4 md:px-0'>
+        <Breadcrumb items={breadcrumbs} />
+      </div>
+      <div className={contentClassnames}>{children}</div>
     </div>
   );
 }

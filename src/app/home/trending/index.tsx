@@ -179,7 +179,7 @@ const Trending = () => {
     getTrendings({
       limit: pageSize,
       page: currentPage,
-      sort_order: ORDER[order.order],
+      sort_order: ORDER[order.order as keyof typeof ORDER],
       sort_by: order.columnKey,
     });
   }, [pageSize, currentPage, order]);

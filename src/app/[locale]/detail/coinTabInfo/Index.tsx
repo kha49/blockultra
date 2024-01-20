@@ -8,20 +8,21 @@ import { Fundraising } from '../fundraising';
 import './index.scss';
 import Markets from '../markets';
 import Unlock from '../unlock';
+import IEOIDODetail from '../ieoido';
 
-const CoinTabInfo = () => {
+const CoinTabInfo = (props: any) => {
   const tabs = [
     {
       id: '1',
       disable: false,
       label: 'Overview',
-      component: <Overview />,
+      component: <Overview data={props.data} />,
     },
     {
       id: '2',
       disable: false,
       label: 'Markets',
-      component: <Markets />,
+      component: <Markets data={props.data} slug={props.slug} />,
     },
     {
       id: '3',
@@ -37,15 +38,15 @@ const CoinTabInfo = () => {
     },
     {
       id: '5',
-      disable: true,
+      disable: false,
       label: 'IDO/IEO',
-      component: '',
+      component: <IEOIDODetail />,
     },
     {
       id: '6',
       disable: false,
       label: 'Tokenomics',
-      component: <Tokenomics />,
+      component: <Tokenomics tokenInfo={props.data} />,
     },
     {
       id: '7',
@@ -74,7 +75,7 @@ const CoinTabInfo = () => {
   ];
   return (
     <div className='detail-tab'>
-      <div className='container mx-auto'>
+      <div>
         <Tabs
           defaultActiveKey='1'
           tabPosition={'top'}

@@ -2,34 +2,50 @@ import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
 
-const baseUrl = 'api/coin-info/';
+const prefix = 'api/';
 
 export const FetchFundraisings = (params) =>
-  apiClient.get(baseUrl + 'fundraisings', params);
+  apiClient.get(prefix + 'fundraisings', params);
 
 export const FetchMarkets = (params) =>
-  apiClient.get(baseUrl + 'markets', params);
+  apiClient.get(prefix + 'markets', params);
 
 export const FetchOverviews = (params) =>
-  apiClient.get(baseUrl + 'overviews', params);
+  apiClient.get(prefix + 'overviews', params);
 
 export const FetchProfiles = (params) =>
-  apiClient.get(baseUrl + 'profiles', params);
+  apiClient.get(prefix + 'profiles', params);
 
 export const FetchSocials = (params) =>
-  apiClient.get(baseUrl + 'socials', params);
+  apiClient.get(prefix + 'socials', params);
 
 export const FetchSumaries = (params) =>
-  apiClient.get(baseUrl + 'sumaries', params);
+  apiClient.get(prefix + 'sumaries', params);
 
 export const FetchTokenomics = (params) =>
-  apiClient.get(baseUrl + 'tokenomics', params);
+  apiClient.get(prefix + 'tokenomics', params);
 
 export const FetchUnlocks = (params) =>
-  apiClient.get(baseUrl + 'unlocks', params);
+  apiClient.get(prefix + 'unlocks', params);
 
 export const FetchUpComings = (params) =>
-  apiClient.get(baseUrl + 'upcomings', params);
+  apiClient.get(prefix + 'upcomings', params);
 
 export const FetchCoinDetail = (params) =>
-  apiClient.get(`${baseUrl}coin-info/detail/${params}`, params);
+  apiClient.get(`${prefix}coin/${params}`, params);
+
+export const FetchCoinDetail2 = (params) =>
+  apiClient.get(`${prefix}coin/detail`, params);
+
+export const FetchHistoricals = (params) =>
+  apiClient.get(`${prefix}market/historicals`, params);
+
+export const FetchSpot = (params) =>
+  apiClient.get(`${prefix}market/spots`, params);
+
+export const FetchUnlockToken = (params) =>
+  apiClient.get(`${prefix}coin-unlock`, params);
+export const FetchCoinTokenomics = (params) =>
+  apiClient.get(`${prefix}coin-tokenomic`, params);
+
+

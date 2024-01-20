@@ -3,7 +3,10 @@ import './style.scss';
 import { Checkbox, Pagination, Select, Table, Tag } from 'antd';
 import type { PaginationProps } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { FetchFundraisings } from '../../../usecases/home';
+import {
+  FetchFundraisings,
+  SearchFundraisingsFilter,
+} from '../../../usecases/home';
 import { IFundraising } from './props';
 import { nFormatter, renderRangePaging, renderSortIcon } from '@/helpers';
 import moment from 'moment';
@@ -17,6 +20,8 @@ import {
   IOptionCustom,
 } from '@/components/FilterCustom/props';
 import Link from 'next/link';
+import { ISearchFilter } from '../coin/props';
+import { useDebounce } from 'usehooks-ts';
 
 const columns: ColumnsType<IFundraising> = [
   {
@@ -149,6 +154,9 @@ const Fundraising = () => {
     order: '',
   });
 
+  const [keyFilter, setKeyFilter] = useState<string[]>([]);
+  const debouncedValue = useDebounce<string[]>(keyFilter, 500);
+
   function getFundraisings(params: any) {
     FetchFundraisings(params).then((res: any) => {
       setFundraisings(res.data);
@@ -160,10 +168,11 @@ const Fundraising = () => {
     getFundraisings({
       limit: pageSize,
       page: currentPage,
-      sort_order: ORDER[order.order],
+      sort_order: ORDER[order.order as keyof typeof ORDER],
       sort_by: order.columnKey,
+      search_key: debouncedValue.join(','),
     });
-  }, [pageSize, currentPage, order]);
+  }, [pageSize, currentPage, order, debouncedValue]);
 
   const _onChangePage = (page: number) => {
     setCurrentPage(page);
@@ -195,7 +204,7 @@ const Fundraising = () => {
   };
 
   const _renderTag = (options: ICustomTagProp) => {
-    const { value, closable, onClose, index } = options;
+    const { value, closable, onClose, index, rawData } = options;
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
       event.preventDefault();
       event.stopPropagation();
@@ -217,21 +226,28 @@ const Fundraising = () => {
         onClose={onClose}
         style={{ marginRight: 3 }}
       >
-        {value}
+        {rawData?.name ?? value}
       </Tag>
     );
   };
 
   const _getData = async ({ searchKey }: IOptionAny) => {
-    return [
-      ...Array.from(Array(20).keys()).map(() => ({
-        id: random(1, 100000),
-        name: `name-${searchKey}${random(1, 100000)}`,
-        code: `code-${searchKey}${random(100, 999)}`,
-        thumb: '',
-        isSelected: false,
-      })),
-    ];
+    const res: any = await SearchFundraisingsFilter({
+      search_key: searchKey,
+    });
+    if (!res) return [];
+
+    return res.map((e: ISearchFilter) => ({
+      id: e.key,
+      name: e.name,
+      code: e.key,
+      thumb: '',
+      isSelected: false,
+    }));
+  };
+
+  const _onSelectFilter = (value: string[]) => {
+    setKeyFilter(value);
   };
 
   return (
@@ -241,7 +257,7 @@ const Fundraising = () => {
           placeholder='Filter Projects'
           renderOption={_renderOption}
           renderTag={_renderTag}
-          onChange={() => {}}
+          onChange={_onSelectFilter}
           getData={_getData}
         />
       </div>

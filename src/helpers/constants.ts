@@ -83,7 +83,7 @@ export const COLOR_CHART = {
   RADICAL_RED: '#FA3363',
 };
 
-export const ORDER: any = {
+export const ORDER = {
   descend: 'desc',
   ascend: 'asc',
   '': '',
