@@ -1,9 +1,12 @@
 import { unstable_setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { locales } from '../../config';
-import RenderTabs from '../home/RenderTabs/RenderTabs';
-import Banner from '../home/banner';
-import Introduce from '../home/introduce';
+import dynamic from 'next/dynamic';
+
+const Banner = dynamic(() => import('../home/banner'), { ssr: false })
+const RenderTabs = dynamic(() => import('../home/RenderTabs/RenderTabs'), { ssr: false })
+const Introduce = dynamic(() => import('../home/introduce'), { ssr: false })
+
 type Props = {
   params: { locale: string };
 };
