@@ -25,7 +25,7 @@ import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
 import { FetchTokenUnlock, FetchUnlockDetail } from '@/usecases/token-unlock';
 import { IDetail } from '@/models/IDetail';
 
-export default async function CoinInformation({ data }: { data: IDetail }) {
+export default async function CoinInformation({ data }: any) {
   // const priceLast24H = histPrices['24H']?.USD;
   const priceChange24h = data.price_change_in_24h || 0;
 
