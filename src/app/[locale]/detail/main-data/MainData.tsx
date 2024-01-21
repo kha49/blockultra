@@ -1,6 +1,6 @@
 'use client'
 
-import { FetchCoinDetail2 } from '@/usecases/coin-info';
+import { FetchCoinDetail } from '@/usecases/coin-info';
 import dynamic from 'next/dynamic';
 import { redirect } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -13,7 +13,7 @@ const MainData = ({slug} : any) => {
 
   const getData = async () => {
     try {
-      const res: any = await FetchCoinDetail2({
+      const res: any = await FetchCoinDetail({
         coin_key: slug,
       });
       if (!res.name) return null;
