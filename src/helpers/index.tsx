@@ -54,6 +54,9 @@ export const currencyFormat = (
 };
 
 export const percentFormat = (value: number, className?: string) => {
+  if (value) {
+    return 0
+  }
   try {
     const roundValue = round(value, 2);
     let textStyle = 'text-gray-10';
@@ -77,6 +80,9 @@ export const percentFormat = (value: number, className?: string) => {
 };
 
 export const nFormatter = (num: number, digits: number, symbol: string, positionSymbolEnd?:boolean) => {
+  if (num) {
+    return 0
+  }
   const lookup = [
     { value: 1, symbol: '' },
     { value: 1e3, symbol: 'K' },
