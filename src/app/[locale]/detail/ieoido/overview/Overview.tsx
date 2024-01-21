@@ -1,6 +1,16 @@
+import { nFormatter } from '@/helpers';
 import React from 'react';
 
-const Overview = () => {
+const Overview = (props: any) => {
+  const data = props.data;
+
+  let totalRaise = 0, totalePrice = 0 , totalTokens = 0;
+
+  for (let i in data) {
+    totalRaise += data[i].raise?.USD | 0
+    totalePrice += data[i].price?.USD |0
+    totalTokens += data[i].tokensForSale | 0;
+  }
   return (
     <div className='mb-6'>
       <div className='text-grey-700 text-xl font-bold font-jb mb-2'>
@@ -20,7 +30,7 @@ const Overview = () => {
                   Total Raise
                 </div>
                 <div className='text-grey-700 text-base font-semibold font-jsb'>
-                  $200,000,000
+                  {nFormatter(totalRaise, 2, '$')}
                 </div>
               </div>
               <div className='text-center'>
@@ -28,7 +38,7 @@ const Overview = () => {
                   Avg Price
                 </div>
                 <div className='text-grey-700 text-base font-semibold font-jsb'>
-                  $0.75
+                  {nFormatter(totalePrice / data.length,10,'$')}
                 </div>
               </div>
               <div className='text-center'>
@@ -36,7 +46,7 @@ const Overview = () => {
                   Total Tokens Offered
                 </div>
                 <div className='text-grey-700 text-base font-semibold font-jsb'>
-                  NBIT 50,000,000 (5.00%)
+                {nFormatter(totalTokens,2,"XXX")}
                 </div>
               </div>
             </div>

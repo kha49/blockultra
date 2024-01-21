@@ -1,15 +1,8 @@
 import Doughnut from '@/components/DoughnutChart';
-import { Flex, Select } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
-import GraphLine from '../graph-line';
-import { faker } from '@faker-js/faker';
-import { FetchDetailCategoriesOverview } from '@/usecases/detail-category';
-import { ICategoryOverview } from './types';
 import { nFormatter, percentFormat } from '@/helpers';
-import {
-  LaunchPadInfomationDataChart,
-  LaunchPadInfomationType,
-} from '../../types';
+import { Flex, Select } from 'antd';
+import { LaunchPadInfomationType } from '../../types';
+import GraphLine from '../graph-line';
 
 const filterData = [
   {

@@ -8,8 +8,9 @@ import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
 import SearchSelect from '../search-select';
 import { getFundraisingTags } from '../../config';
 import { useParams, useRouter } from 'next/navigation';
+import { IHeaderFilter } from '../../types';
 
-export default function HeadFilter() {
+export default function HeadFilter({ onChange, layout }: IHeaderFilter) {
   const router = useRouter();
   const params = useParams<{ locale: string; category: string }>();
   const tags = getFundraisingTags();
@@ -31,7 +32,7 @@ export default function HeadFilter() {
       </Flex>
 
       <Flex gap={8} wrap='wrap'>
-        <SearchSelect />
+        <SearchSelect layout={layout} onChange={onChange} />
         <Button className='ml-1' size='large'>
           <Flex className='text-[#333747]'>
             <IconFilterCoinTab />

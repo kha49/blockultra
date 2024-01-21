@@ -9,10 +9,6 @@ import SelectProject from '../select-project';
 import { IeoIdoCategory, getCategoryTags } from '../../config';
 import { useParams, useRouter } from 'next/navigation';
 import { IIeoIdoFilterType } from '../../types';
-type ITag = {
-  label: string;
-  value: string;
-};
 
 type PropsType = {
   onFilter: (filter: IIeoIdoFilterType) => void;

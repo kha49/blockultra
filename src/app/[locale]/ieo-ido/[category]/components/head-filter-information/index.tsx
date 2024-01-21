@@ -1,32 +1,21 @@
 'use client';
 import { Button, Flex, Segmented } from 'antd';
-import React, { useState } from 'react';
-import './styles.scss';
 import clsx from 'clsx';
+import './styles.scss';
 
-import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
-import SelectProject from '../select-project';
-import { IeoIdoCategory, getCategoryTags } from '../../config';
 import { useParams, usePathname, useRouter } from 'next/navigation';
+import { IeoIdoCategory, getCategoryTags } from '../../config';
 import { IIeoIdoFilterType } from '../../types';
-type ITag = {
-  label: string;
-  value: string;
-};
+import SelectProject from '../select-project';
 
 type PropsType = {
   onFilter: (filter: IIeoIdoFilterType) => void;
 };
 
 export default function HeadFilterInformation(props: PropsType) {
-  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const pathname = usePathname();
 
-  const {
-    category: _category = IeoIdoCategory.upcoming,
-    locale,
-    slug,
-  } = useParams<{
+  const { category: _category = IeoIdoCategory.upcoming, slug } = useParams<{
     category: string;
     locale: string;
     slug: string[];
@@ -47,10 +36,12 @@ export default function HeadFilterInformation(props: PropsType) {
             key={tag.value}
             className={clsx(category === tag.value && 'active')}
             onClick={() => {
+              const _target = `/${tag.value}`;
+
               router.push(
                 slug && slug[1]
-                  ? pathname.replace(/\/([^/]+)$/, `/${tag.value}`)
-                  : `${pathname}/${tag.value}`,
+                  ? pathname.replace(/\/([^/]+)$/, _target)
+                  : `${pathname}${_target}`,
                 {
                   scroll: false,
                 }

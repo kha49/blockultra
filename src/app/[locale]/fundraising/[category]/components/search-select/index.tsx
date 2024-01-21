@@ -5,10 +5,15 @@ import {
   IOptionCustom,
 } from '@/components/FilterCustom/props';
 import { Checkbox, Select, Tag } from 'antd';
-import { random } from 'lodash';
 import React from 'react';
+import { IHeaderFilter } from '../../types';
+import { ISearchFilter } from '@/app/home/coin/props';
+import {
+  FetchSearchTopBanker,
+  FundraisingSearch,
+} from '@/usecases/fundraising';
 
-export default function SearchSelect() {
+export default function SearchSelect({ onChange, layout }: IHeaderFilter) {
   const _renderOption = ({ name, code, checked }: IOptionCustom) => {
     return (
       <Select.Option isSelectOption={true} value={code} key={name}>
@@ -58,15 +63,23 @@ export default function SearchSelect() {
   };
 
   const _getData = async ({ searchKey }: IOptionAny) => {
-    return [
-      ...Array.from(Array(20).keys()).map(() => ({
-        id: random(1, 100000),
-        name: `name-${searchKey}${random(1, 100000)}`,
-        code: `code-${searchKey}${random(100, 999)}`,
-        thumb: '',
-        isSelected: false,
-      })),
-    ];
+    const isFun = layout === 'funding-rounds';
+    const api = isFun ? FundraisingSearch : FetchSearchTopBanker;
+
+    const res: any = await api({
+      slug: searchKey,
+      key: searchKey,
+    });
+
+    if (!res) return [];
+
+    return res.map((e: ISearchFilter) => ({
+      id: isFun ? e.key : e.slug,
+      name: e.name,
+      code: isFun ? e.key : e.slug,
+      thumb: '',
+      isSelected: false,
+    }));
   };
 
   return (
@@ -74,7 +87,7 @@ export default function SearchSelect() {
       placeholder='Search'
       renderOption={_renderOption}
       renderTag={_renderTag}
-      onChange={() => {}}
+      onChange={onChange}
       getData={_getData}
     />
   );

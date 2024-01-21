@@ -1,14 +1,17 @@
 import React from 'react';
-import Profile from '../profile/Profile';
 import { Socials } from '../socials';
 import { Overview } from '../overview';
-import Tokenomics from '../tokenomics';
 import { Tabs } from 'antd';
-import { Fundraising } from '../fundraising';
 import './index.scss';
-import Markets from '../markets';
-import Unlock from '../unlock';
-import IEOIDODetail from '../ieoido';
+import dynamic from 'next/dynamic';
+
+const IEOIDODetail = dynamic(() => import('../ieoido'), { ssr: false })
+const Unlock = dynamic(() => import('../unlock'), { ssr: false })
+const Markets = dynamic(() => import('../markets'), { ssr: false })
+const Tokenomics = dynamic(() => import('../tokenomics'), { ssr: false })
+const Profile = dynamic(() => import('../profile/Profile'), { ssr: false })
+const Fundraising = dynamic(() => import('../fundraising/Fundraising'), { ssr: false })
+
 
 const CoinTabInfo = (props: any) => {
   const tabs = [

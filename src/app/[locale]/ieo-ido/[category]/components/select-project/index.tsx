@@ -4,13 +4,11 @@ import {
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
-import { IResponseAxios } from '@/models/IResponse';
 import { FetchIeoIdo } from '@/usecases/ieo-ido';
 import { Checkbox, Select, Tag } from 'antd';
-import { random } from 'lodash';
-import React, { useCallback, useEffect, useState } from 'react';
-import { IIeoIdoData, SearchProject } from '../../types';
+import React from 'react';
 import { getIeoIdoApiSearchPath } from '../../config';
+import { SearchProject } from '../../types';
 
 type PropsType = {
   category: string;

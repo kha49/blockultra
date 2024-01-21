@@ -1,8 +1,12 @@
 export type TTopCoin = {
-  icon: string;
-  name: string;
   money: string;
   date: string;
+  key: string;
+  symbol: string;
+  image: string;
+  name: string;
+  price: number;
+  marketcap: string | number;
 };
 
 export type TUnlockTime = {

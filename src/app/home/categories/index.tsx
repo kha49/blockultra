@@ -82,11 +82,11 @@ const columns: ColumnsType<IHomeCategory> = [
     width: 190,
     align: 'right',
     render: (_, value) => {
-      const { yesterday } = value;
+      const { marketCapChangeIn24h } = value;
       return (
         <p className='flex flex-col justify-end'>
           {nFormatter(value.market_cap, 2, '$')}
-          {yesterday?.marketCapChangeIn24h}
+          {percentFormat(marketCapChangeIn24h)}
         </p>
       );
     },
@@ -98,11 +98,11 @@ const columns: ColumnsType<IHomeCategory> = [
     title: 'Volume (24h)',
     align: 'right',
     render: (_, value) => {
-      const { yesterday } = value;
+      const { volumeChangeIn24h } = value;
       return (
         <p className='flex flex-col justify-end'>
           {nFormatter(value.volume24h, 2, '$')}
-          {yesterday?.volumeChangeIn24h}
+          {percentFormat(volumeChangeIn24h)}
         </p>
       );
     },

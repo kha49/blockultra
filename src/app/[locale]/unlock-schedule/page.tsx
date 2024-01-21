@@ -14,10 +14,10 @@ const breadcrumbConfig = [
 ];
 
 export default function UnlockSchedule() {
-  const { unlockTimeData } = useUnlockTime();
+  // const { unlockTimeData } = useUnlockTime();
   return (
     <Page breadcrumbs={breadcrumbConfig} classnames='unlock-schedule'>
-      <UnlockTimeTop data={unlockTimeData} />
+      <UnlockTimeTop />
       <UsTable />
     </Page>
   );

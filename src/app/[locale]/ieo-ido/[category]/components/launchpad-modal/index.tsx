@@ -4,6 +4,7 @@ import React from 'react';
 import { IIeoIdoData } from '../../types';
 import { IeoIdoCategory } from '../../config';
 import { useParams } from 'next/navigation';
+import { IEO_IDO_CONSTANTS } from '../../../enums';
 
 type IChildrenCallback = {
   onOpen: () => void;
@@ -14,10 +15,11 @@ type IChildrenCallback = {
 type LaunchpadProps = {
   children: (props: IChildrenCallback) => React.ReactNode;
   data: IIeoIdoData['launchpadList'];
+  platformId: string;
 };
 
 export default function LaunchpadModal(props: LaunchpadProps) {
-  const { children, data } = props;
+  const { children, data, platformId } = props;
   const {
     category: _category = IeoIdoCategory.upcoming,
     locale,
@@ -59,7 +61,7 @@ export default function LaunchpadModal(props: LaunchpadProps) {
         }}
       >
         <Flex vertical gap={16} className='mt-6'>
-          {data.map((item, index) => (
+          {data?.map((item, index) => (
             <Link
               href={`/${locale}/ieo-ido/${IeoIdoCategory.topIdoLaunchpads}/${item.key}/${category}`}
               key={index}

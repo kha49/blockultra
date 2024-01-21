@@ -6,7 +6,12 @@ import IconBinStarter from '@/assets/icons/IconBinStarter';
 import IconDWFLabs from '@/assets/icons/IconDWFLabs';
 import IconFTXIEOs from '@/assets/icons/IconFTXIEOs';
 import IconGateio from '@/assets/icons/IconGateio';
-import React, { useState } from 'react';
+import { nFormatter } from '@/helpers';
+import { FetchCoinFundraising } from '@/usecases/coin-info';
+import { AxiosResponse } from 'axios';
+import React, { useEffect, useState } from 'react';
+import Backers from './Backers';
+
 
 const Fundraising = () => {
   const [items, setItems] = useState([
@@ -14,6 +19,26 @@ const Fundraising = () => {
     { id: 2, isVisible: false },
     // ... other items
   ]);
+  const [overView, setOverview] = useState<any>([]);
+  const [fundraisings, setFundraisings] = useState<IFundraisings[]>([]);
+
+  useEffect(() => {
+    const res = fetchFundraising();
+  }, []);
+
+  async function fetchFundraising() {
+    const res: any = await FetchCoinFundraising({
+      coin_key: 'optimism',
+      limit: 100,
+    });
+    setOverview(res?.overview);
+    setFundraisings(res?.fundraisings);
+    // setFundraisings(fundraisings)
+    console.log('====================================');
+    console.log('fetchFundraising', overView, fundraisings);
+    console.log('====================================');
+    return res;
+  }
 
   const handleToggle = (itemId: any) => {
     setItems((prevItems) => {
@@ -39,7 +64,7 @@ const Fundraising = () => {
                     Total Funds Raised
                   </p>
                   <h2 className='text-grey-700 text-base font-semibold'>
-                    $ 200,000,000
+                    {nFormatter(overView?.totalFundRaised | 0, 2, '$')}
                   </h2>
                 </div>
                 <div className='text-center'>
@@ -47,20 +72,24 @@ const Fundraising = () => {
                     AVG Price
                   </p>
                   <h2 className='text-grey-700 text-base font-semibold'>
-                    $ 0.75
+                    {nFormatter(overView?.avgPrice | 0, 2, '$')}
                   </h2>
                 </div>
                 <div className='text-center'>
                   <p className='text-grey-500 font-medium text-xs mb-2'>
                     Rounds
                   </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>5</h2>
+                  <h2 className='text-grey-700 text-base font-semibold'>
+                    {overView?.round_number}
+                  </h2>
                 </div>
                 <div className='text-center'>
                   <p className='text-grey-500 font-medium text-xs mb-2'>
                     Lead Backers
                   </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>21</h2>
+                  <h2 className='text-grey-700 text-base font-semibold'>
+                    {overView?.leadBackers}
+                  </h2>
                 </div>
               </div>
             </div>
@@ -78,7 +107,7 @@ const Fundraising = () => {
                     Private
                   </p>
                   <h2 className='text-grey-700 text-base font-semibold'>
-                    $ 0.0...0123
+                    {nFormatter(overView?.pricePerRoundPrice, 2, '$')}
                   </h2>
                 </div>
                 <div className='text-center'>
@@ -86,21 +115,21 @@ const Fundraising = () => {
                     Strategic
                   </p>
                   <h2 className='text-grey-700 text-base font-semibold'>
-                    $ 0.55
-                  </h2>
-                </div>
-                <div className='text-center'>
-                  <p className='text-grey-500 font-medium text-xs mb-2'>
-                    Strategic
-                  </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>
-                    $ 0.55
+                    {nFormatter(overView?.strategic, 2, '$')}
                   </h2>
                 </div>
                 <div className='text-center'>
                   <p className='text-grey-500 font-medium text-xs mb-2'>Seed</p>
                   <h2 className='text-grey-700 text-base font-semibold'>
-                    $ 0.55
+                    {nFormatter(overView?.seed, 2, '$')}
+                  </h2>
+                </div>
+                <div className='text-center'>
+                  <p className='text-grey-500 font-medium text-xs mb-2'>
+                    Pre-Seed
+                  </p>
+                  <h2 className='text-grey-700 text-base font-semibold'>
+                    {nFormatter(overView?.pre_seed, 2, '$')}
                   </h2>
                 </div>
               </div>
@@ -111,10 +140,14 @@ const Fundraising = () => {
         <div className='flex flex-col gap-2 bg-white rounded-lg box-shadow-common'>
           <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
             <h1 className='text-grey-700 text-base font-bold'>
-              Backer <span className='text-grey-500 ml-1'>20</span>
+              Backer{' '}
+              <span className='text-grey-500 ml-1'>
+                {overView.backers?.length}
+              </span>
             </h1>
           </div>
-          <div className='w-full p-6 flex flex-wrap items-center justify-between gap-4'>
+          <Backers backers={overView.backers} />
+          {/* <div className='w-full p-6 flex flex-wrap items-center justify-between gap-4'>
             <div className='flex justify-center items-center gap-2'>
               <div className='w-12 h-12'>
                 <IconA16ZCrypto />
@@ -183,7 +216,7 @@ const Fundraising = () => {
             <div className='flex justify-center items-center'>
               <p className='text-primary-500 text-xs font-medium'>+15Backers</p>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className='w-full flex items-center justify-start'>
@@ -191,7 +224,7 @@ const Fundraising = () => {
             Details of Fundraising Rounds
           </h1>
         </div>
-        {items.map((item, index) => (
+        {fundraisings.map((item, index) => (
           <div
             key={index}
             className='box-shadow-common p-4 flex items-center justify-between flex-wrap gap-6 mb-6'
@@ -199,76 +232,92 @@ const Fundraising = () => {
             <div className='flex flex-col gap-6 item-center'>
               <div className='flex items-center gap-2'>
                 <img src='/Dao.svg' alt='dao' />
-                <div className='text-sm text-grey-700 font-bold'>DAO Maker</div>
-              </div>
-              {item.isVisible ? (
-                <div className='text-primary-500 text-sm font-semibold'>
-                  01 May 2023 - 05 May 2023
+                <div className='text-sm text-grey-700 font-bold'>
+                  {item.type}
                 </div>
-              ) : (
+              </div>
+              {/* {item.isVisible ? ( */}
+              <div className='text-primary-500 text-sm font-semibold'>
+                {new Date(item.date || Date.now()).toLocaleDateString()}
+              </div>
+              {/* ) : (
                 ''
-              )}
+              )} */}
             </div>
             <div className='flex flex-col gap-6 item-center'>
               <div className='text-center'>
                 <div className='text-grey-500 text-sm mb-2'>Price</div>
                 <div className='text-grey-700 text-sm font-semibold'>
-                  $0.075
+                  {nFormatter(item.price || 0, 2, '$')}
                 </div>
               </div>
-              {item.isVisible ? (
-                <div className='text-grey-500 text-sm'>
-                  Valuation:<span className='font-semibold'>$3.75M</span>
-                </div>
-              ) : (
+              {/* {item.isVisible ? ( */}
+              <div className='text-grey-500 text-sm'>
+                Valuation:
+                <span className='font-semibold'>
+                  {nFormatter(item.valuation || 0, 2, '$')}
+                </span>
+              </div>
+              {/* ) : (
                 ''
-              )}
+              )} */}
             </div>
             <div className='flex flex-col gap-6 item-center'>
               <div className='text-center'>
                 <div className='text-grey-500 text-sm mb-2'>Raise</div>
                 <div className='text-grey-700 text-sm font-semibold'>
-                  $50.00M
+                  {nFormatter(item.raised | 0, 2, '$')}
                 </div>
               </div>
-              {item.isVisible ? (
-                <div className='text-grey-500 text-sm'>
-                  Tokens Offered:
-                  <span className='font-semibold'>50M NBIT (5%)</span>
-                </div>
-              ) : (
+              {/* {item.isVisible ? ( */}
+              <div className='text-grey-500 text-sm'>
+                Tokens Offered:{' '}
+                <span className='font-semibold'>
+                  {nFormatter(item.tokensOffered || 0, 2, '$')}(
+                  {nFormatter(item.percenOfTokens || 0, 2, '%', true)})
+                </span>
+              </div>
+              {/* ) : (
                 ''
-              )}
+              )} */}
             </div>
             <div className='flex flex-col gap-6 item-center'>
               <div className='text-center'>
                 <div className='text-grey-500 text-sm mb-2'>ROI</div>
-                <div className='text-grey-700 text-sm font-semibold'>1.2x</div>
-              </div>
-              {item.isVisible ? (
-                <div className='text-grey-500 text-sm'>
-                  ATH ROI:<span className='font-semibold'>100x</span>
+                <div className='text-grey-700 text-sm font-semibold'>
+                  {nFormatter(item.roi || 0, 2, 'x', true)}
                 </div>
-              ) : (
+              </div>
+              {/* {item.isVisible ? ( */}
+              <div className='text-grey-500 text-sm'>
+                ATH ROI:
+                <span className='font-semibold'>
+                  {nFormatter(item.athROI || 0, 2, 'x', true)}
+                </span>
+              </div>
+              {/* ) : (
                 ''
-              )}
+              )} */}
             </div>
             <div className='flex flex-col gap-6 item-center'>
               <div className='text-center'>
                 <div className='text-grey-500 text-sm mb-2'>Unlocked</div>
                 <div className='text-grey-700 text-sm font-semibold'>
-                  82.21%
+                  {nFormatter(item.unlockedPercent | 0, 2, '%', true)}
                 </div>
               </div>
-              {item.isVisible ? (
-                <div className='text-grey-500 text-sm'>
-                  NBIT 618.22M~<span className='font-semibold'>$87.83M</span>
-                </div>
-              ) : (
+              {/* {item.isVisible ? ( */}
+              <div className='text-grey-500 text-sm'>
+                {nFormatter(item.unlockedTokens || 0, 2, 'BIT')}~
+                <span className='font-semibold'>
+                  {nFormatter(item.unlockedValue || 0, 2, 'BIT')}
+                </span>
+              </div>
+              {/* ) : (
                 ''
-              )}
+              )} */}
             </div>
-            <div
+            {/* <div
               className={
                 'min-w-[100px] flex items-start justify-center ' +
                 (item.isVisible ? 'rotate-180' : '')
@@ -276,7 +325,7 @@ const Fundraising = () => {
               onClick={() => handleToggle(item.id)}
             >
               <IconArrowDown />
-            </div>
+            </div> */}
           </div>
         ))}
       </div>

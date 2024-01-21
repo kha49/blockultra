@@ -1,21 +1,22 @@
 'use client';
-import { Flex, Pagination, Table } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
 import SelectItemTable from '@/components/SelectItemTable';
-import './styles.scss';
-import HeadFilter from '../head-filter';
-import { IIeoIdoData, IIeoIdoFilterType } from '../../types';
-import { IResponseAxios } from '@/models/IResponse';
 import { ORDER } from '@/helpers/constants';
-import { FetchIeoIdo } from '@/usecases/ieo-ido';
+import { IResponseAxios } from '@/models/IResponse';
+import { FetchIeoIdo, FetchLaunchPadProjects } from '@/usecases/ieo-ido';
+import { Flex, Pagination, Table } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import {
   IeoIdoCategory,
   IeoIdoStatus,
   getIeoIdoApiPath,
   getIeoIdoColumns,
+  getIeoIdoColumnsDetail,
 } from '../../config';
+import { IIeoIdoData, IIeoIdoFilterType } from '../../types';
+import HeadFilter from '../head-filter';
 import HeadFilterInformation from '../head-filter-information';
+import './styles.scss';
 
 export const IeoIdoTable = () => {
   const {
@@ -63,17 +64,22 @@ export const IeoIdoTable = () => {
 
   const getIeoIdoUpComing = useCallback(
     async (filter: IIeoIdoFilterType = {}) => {
-      const response: IResponseAxios<IIeoIdoData> = await FetchIeoIdo(
-        getIeoIdoApiPath(category),
-        {
-          limit: pageSize,
-          page: currentPage,
-          sort_by: order.columnKey,
-          sort_order: ORDER[order.order as keyof typeof ORDER],
-          status: IeoIdoStatus[category] || '',
-          ...filter,
-        }
-      );
+      const _params: { [key: string]: string | number | string[] } = {
+        limit: pageSize,
+        page: currentPage,
+        sort_by: order.columnKey,
+        sort_order: ORDER[order.order],
+        status: IeoIdoStatus[category] || '',
+        ...filter,
+      };
+
+      if (slug) {
+        _params.key = slug[0];
+      }
+
+      const response: IResponseAxios<IIeoIdoData> = slug
+        ? await FetchLaunchPadProjects(_params)
+        : await FetchIeoIdo(getIeoIdoApiPath(category), _params);
 
       if (!response) return;
       const { data, total } = response;
@@ -108,7 +114,9 @@ export const IeoIdoTable = () => {
               }
             : undefined
         }
-        columns={getIeoIdoColumns(category)}
+        columns={
+          slug ? getIeoIdoColumnsDetail(category) : getIeoIdoColumns(category)
+        }
         dataSource={data}
         pagination={false}
         className='overflow-x-auto overflow-y-hidden'

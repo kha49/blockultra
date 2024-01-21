@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { TUnlockTime } from '../../types';
+import { currencyFormat } from '@/helpers';
 
 type UnlockTimeProps = TUnlockTime;
 
@@ -22,9 +23,11 @@ export const UnlockTime = (props: UnlockTimeProps) => {
       >
         {coins.map((item, index) => (
           <div className={'coin-item space-x-2'} key={index}>
-            <Image src={item.icon} width={24} height={24} alt={'coin-icon'} />
+            <img src={item.image} width={24} height={24} alt={'coin-icon'} />
             <div className={'coin-item__name'}>{item.name}</div>
-            <div className={'coin-item__money'}>{item.money}</div>
+            <div className={'coin-item__money'}>
+              {currencyFormat(Number(item.marketcap), '$')}
+            </div>
             <div className={'coin-item__time'}>{item.date}</div>
           </div>
         ))}

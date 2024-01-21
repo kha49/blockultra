@@ -10,9 +10,10 @@ import { IResponseAxios } from '@/models/IResponse';
 import { FetchFundraising } from '@/usecases/fundraising';
 import { ORDER } from '@/helpers/constants';
 import BaseTable from '@/components/BaseTable';
+import { useDebounce } from 'usehooks-ts';
+import { isArray } from 'lodash';
 
 export const FunDTable = () => {
-  const router = useRouter();
   const params = useParams<{ locale: string; category: string }>();
 
   const [data, setData] = useState<any[]>([]);
@@ -24,6 +25,9 @@ export const FunDTable = () => {
     columnKey: '',
     order: '',
   });
+
+  const [keyFilter, setKeyFilter] = useState<string[]>([]);
+  const debouncedValue = useDebounce<string[]>(keyFilter, 500);
 
   const _onChangePage = (page: number) => {
     setCurrentPage(page);
@@ -42,22 +46,27 @@ export const FunDTable = () => {
       limit: pageSize,
       page: currentPage,
       sort_by: order.columnKey,
-      sort_order: ORDER.ascend,
+      sort_order: ORDER[order.order as keyof typeof ORDER],
+      search_key: debouncedValue.join(','),
     });
 
     if (!response) return;
     const { data, total } = response;
     setData(data);
     setTotal(total!!);
-  }, [pageSize, currentPage, order, params.category]);
+  }, [pageSize, currentPage, order, params.category, debouncedValue]);
 
   useEffect(() => {
     getTopbacker();
   }, [getTopbacker]);
 
+  const _onChangeFilter = (keys: string[]) => {
+    setKeyFilter(keys);
+  };
+
   return (
-    <Flex vertical gap={16} className={'fundraising'}>
-      <HeadFilter />
+    <Flex vertical gap={16}>
+      <HeadFilter layout={params.category} onChange={_onChangeFilter} />
       <BaseTable
         columns={columns}
         data={data}
@@ -66,15 +75,13 @@ export const FunDTable = () => {
         total={total}
         _onChangePage={_onChangePage}
         _onChangeSize={_onChangeSize}
-        onRow={(record: any) => {
-          return {
-            onClick: () => {
-              router.push(
-                `/${params.locale}/fundraising/${params.category}/detail/${record.id}?name=${record.name}`
-              );
-              console.log('record', record);
-            },
-          };
+        showSorterTooltip={false}
+        onChange={(_page: any, _filter: any, sort: any[]) => {
+          const itemSort = isArray(sort) ? sort[0] : sort;
+          setOrder({
+            columnKey: itemSort.columnKey ? itemSort.columnKey.toString() : '',
+            order: itemSort.order ? itemSort.order.toString() : '',
+          });
         }}
       />
     </Flex>

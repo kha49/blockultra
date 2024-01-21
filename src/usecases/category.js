@@ -4,3 +4,6 @@ const apiClient = new APIClient();
 
 export const FetchCategoryDetail = (params) =>
   apiClient.get(`api/category`, params);
+
+export const FetchCategoryCoins = (params) =>
+  apiClient.get(`api/coins`, params);

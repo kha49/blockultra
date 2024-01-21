@@ -15,6 +15,8 @@ interface IHomeCategory {
   volume24h: number;
   yesterday: IYesterday;
   dominance: number;
+  volumeChangeIn24h: number;
+  marketCapChangeIn24h: number;
 }
 
 interface IYesterday {

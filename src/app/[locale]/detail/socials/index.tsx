@@ -17,7 +17,7 @@ export const Socials = () => {
     },
     series: [
       {
-        data: [820, 932, 1901, 934, 1290, 2330, 1720],
+        data: [820, 932, 1901, 934, 2, 2330, 1720],
         type: 'line',
         smooth: true,
         symbol: 'none',
@@ -44,14 +44,14 @@ export const Socials = () => {
             <div className='content'>
               <div className='params'>
                 <span className='mr-2 font-bold text-xs leading-normal font-jeb'>
-                  12345
+                  -
                 </span>
                 <span className='increment font-medium text-xs leading-normal font-jm'>
-                  (6%)
+                  (-)
                 </span>
               </div>
               <div className='time text-right font-medium text-xs leading-normal font-jm text-grey-500'>
-                1 month
+                -
               </div>
             </div>
           </div>
@@ -62,7 +62,7 @@ export const Socials = () => {
                   Total Visits Last 1 Month
                 </div>
                 <div className='visit__number font-bold text-xl leading-normal font-jm'>
-                  5,454,334
+                  -
                 </div>
               </div>
               <div className='visit-chart'>
@@ -70,12 +70,12 @@ export const Socials = () => {
               </div>
             </div>
             <div className='traffic flex justify-between items-center pt-5'>
-              <div className='top-traffic'>99%</div>
+              <div className='top-traffic'>-</div>
               <a
                 href='https://coin98.net/'
                 className='font-medium text-sm leading-normal font-jm text-grey-500'
               >
-                https://coin98.net
+                -
               </a>
             </div>
           </div>
@@ -96,14 +96,14 @@ export const Socials = () => {
             <div className='content'>
               <div className='params'>
                 <span className='mr-2 font-bold text-xs leading-normal font-jeb'>
-                  12345
+                  -
                 </span>
                 <span className='increment font-medium text-xs leading-normal font-jm'>
-                  (6%)
+                  (-)
                 </span>
               </div>
               <div className='time text-right font-medium text-xs leading-normal font-jm text-grey-500'>
-                1 month
+               -
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@ export const Socials = () => {
                   Followers
                 </div>
                 <div className='visit__number font-bold text-xl leading-normal font-jm'>
-                  5,454,334
+                 -
                 </div>
               </div>
               <div className='visit-chart'>
@@ -127,7 +127,7 @@ export const Socials = () => {
                   View
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                  642,489,999
+                 -
                 </div>
               </div>
               <div className='interact'>
@@ -135,7 +135,7 @@ export const Socials = () => {
                   Interact
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                  642,489,999
+                  -
                 </div>
               </div>
             </div>
@@ -157,14 +157,14 @@ export const Socials = () => {
             <div className='content'>
               <div className='params'>
                 <span className='mr-2 font-bold text-xs leading-normal font-jeb'>
-                  12345
+                  -
                 </span>
                 <span className='increment font-medium text-xs leading-normal font-jm'>
-                  (6%)
+                  (-)
                 </span>
               </div>
               <div className='time text-right font-medium text-xs leading-normal font-jm text-grey-500'>
-                1 month
+                -
               </div>
             </div>
           </div>
@@ -175,7 +175,7 @@ export const Socials = () => {
                   Members
                 </div>
                 <div className='visit__number font-bold text-xl leading-normal font-jm'>
-                  5,454,334
+                  -
                 </div>
               </div>
               <div className='visit-chart'>
@@ -188,7 +188,7 @@ export const Socials = () => {
                   View
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                  642,489,999
+                  -
                 </div>
               </div>
               <div className='interact'>
@@ -196,7 +196,7 @@ export const Socials = () => {
                   Interact
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                  642,489,999
+                  -
                 </div>
               </div>
             </div>
@@ -218,14 +218,14 @@ export const Socials = () => {
             <div className='content'>
               <div className='params'>
                 <span className='mr-2 font-bold text-xs leading-normal font-jeb'>
-                  12345
+                  -
                 </span>
                 <span className='increment font-medium text-xs leading-normal font-jm'>
-                  (6%)
+                  (-)
                 </span>
               </div>
               <div className='time text-right font-medium text-xs leading-normal font-jm text-grey-500'>
-                1 month
+                -
               </div>
             </div>
           </div>
@@ -236,7 +236,7 @@ export const Socials = () => {
                   Total Visits Last 1 Month
                 </div>
                 <div className='visit__number font-bold text-xl leading-normal font-jm'>
-                  5,454,334
+                  -
                 </div>
               </div>
               <div className='visit-chart'>
@@ -249,7 +249,7 @@ export const Socials = () => {
                   View
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                  642,489,999
+                  -
                 </div>
               </div>
               <div className='interact'>
@@ -257,7 +257,7 @@ export const Socials = () => {
                   Interact
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                  642,489,999
+                  -
                 </div>
               </div>
             </div>
@@ -279,14 +279,14 @@ export const Socials = () => {
             <div className='content'>
               <div className='params'>
                 <span className='mr-2 font-bold text-xs leading-normal font-jeb'>
-                  12345
+                  -
                 </span>
                 <span className='increment font-medium text-xs leading-normal font-jm'>
-                  (6%)
+                  (-)
                 </span>
               </div>
               <div className='time text-right font-medium text-xs leading-normal font-jm text-grey-500'>
-                1 month
+                -
               </div>
             </div>
           </div>
@@ -297,7 +297,7 @@ export const Socials = () => {
                   Followers
                 </div>
                 <div className='visit__number font-bold text-xl leading-normal font-jm'>
-                  5,454,334
+                  -
                 </div>
               </div>
               <div className='visit-chart'>
@@ -310,7 +310,7 @@ export const Socials = () => {
                   View
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                  642,489,999
+                 -
                 </div>
               </div>
               <div className='interact'>
@@ -318,7 +318,7 @@ export const Socials = () => {
                   Interact
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                  642,489,999
+                 -
                 </div>
               </div>
             </div>
@@ -345,7 +345,7 @@ export const Socials = () => {
                   Recent activity
                 </div>
                 <div className='visit__number font-bold text-xl leading-normal font-jm'>
-                  3 hours ago
+                  -
                 </div>
               </div>
               <Image

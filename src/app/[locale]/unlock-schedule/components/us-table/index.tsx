@@ -21,6 +21,7 @@ import { FetchTokenUnlock } from '@/usecases/token-unlock';
 import { ORDER } from '@/helpers/constants';
 import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
 import NextUnlock from '../nextUnlock';
+import Link from 'next/link';
 
 export const UsTable = () => {
   const columns: ColumnsType<IUnlock> = [
@@ -29,18 +30,24 @@ export const UsTable = () => {
       dataIndex: 'name',
       key: 'name',
       fixed: true,
+      width: '200px',
       render: (_, value) => {
         return (
           <Flex align={'center'} gap={8}>
-            {value.image ? (
-              <img src={value.image} alt={'icon'} width={24} height={24} />
-            ) : (
-              ''
-            )}
-            <span>{value.name}</span>
-            <Tag className={'bg-[#F1F4F7]'} bordered={false}>
-              {value.symbol}
-            </Tag>
+            <Link
+              href={`/en/detail/${value.key}`}
+              className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'
+            >
+              {value.image ? (
+                <img src={value.image} alt={'icon'} width={24} height={24} />
+              ) : (
+                ''
+              )}
+              <span>{value.name}</span>
+              <Tag className={'bg-[#F1F4F7]'} bordered={false}>
+                {value.symbol}
+              </Tag>
+            </Link>
           </Flex>
         );
       },
@@ -209,6 +216,7 @@ export const UsTable = () => {
           pagination={{ position: ['none'], pageSize }}
         />
       </div>
+
       <div className='pt-6 flex items-center justify-center table-pagination pagination-mobile'>
         <Pagination
           total={total}
@@ -216,6 +224,7 @@ export const UsTable = () => {
           current={currentPage}
           onChange={_onChangePage}
           showSizeChanger={false}
+          size='small'
         />
       </div>
 
@@ -228,7 +237,6 @@ export const UsTable = () => {
             current={currentPage}
             onChange={_onChangePage}
             showSizeChanger={false}
-            size='small'
           />
         </div>
         <div>

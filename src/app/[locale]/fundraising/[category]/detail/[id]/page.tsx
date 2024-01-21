@@ -4,6 +4,9 @@ import Link from 'next/link';
 import FundraisingDetailOverview from './components/fundraising-detail-overview';
 import FundraisingDetailTable from './components/fundraising-detail-table';
 import './index.scss';
+import CommonPage from '@/components/page/common-page';
+import { FetchDetailBanker } from '@/usecases/fundraising';
+import { IBankerData } from '../../types';
 type PageProps = {
   params: {
     locale: 'vi' | 'en';
@@ -13,9 +16,23 @@ type PageProps = {
   searchParams: any;
 };
 
-export default function FundraisingDetail({ params, searchParams }: PageProps) {
-  console.log('params.x');
+async function fetchDetail(backer_id: string) {
+  try {
+    const res: any = await FetchDetailBanker({
+      backer_id,
+    });
+    return res as IBankerData;
+  } catch (error) {
+    return null;
+  }
+}
+
+export default async function FundraisingDetail({
+  params,
+  searchParams,
+}: PageProps) {
   const { category, locale, id } = params;
+  const response = await fetchDetail(id);
 
   const breadcrumbs = [
     {
@@ -40,14 +57,17 @@ export default function FundraisingDetail({ params, searchParams }: PageProps) {
     },
   ];
 
+  const _renderInfo = () => {
+    if (!response) return null;
+    return <FundraisingDetailOverview data={response} />;
+  };
+
   return (
-    <Page breadcrumbs={breadcrumbs}>
-      <div className='container-shadow'>
-        <FundraisingDetailOverview />
-      </div>
+    <CommonPage breadcrumbs={breadcrumbs}>
+      <div className='container-shadow mt-3'>{_renderInfo()}</div>
       <div className='container-shadow'>
         <FundraisingDetailTable />
       </div>
-    </Page>
+    </CommonPage>
   );
 }

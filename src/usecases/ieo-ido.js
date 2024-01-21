@@ -4,6 +4,8 @@ const apiClient = new APIClient();
 
 export const FetchIeoIdo = (path, params) =>
   apiClient.get(`api/${path}`, params);
+export const FetchLaunchPadProjects = (params) =>
+  apiClient.get(`api/launch-pad-projects`, params);
 
 export const FetchIeoIdoUpcoming = (params) =>
   apiClient.get('api/ieo-ido', params);

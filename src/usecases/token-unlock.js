@@ -11,3 +11,7 @@ export const FetchSearchTokenUnlock = (params) =>
 
 export const FetchUnlockDetail = (params) =>
   apiClient.get(`${baseUrl}/${params}`);
+
+export const FetchUnlockHeader = () => {
+  return apiClient.get(`api/token-unlock-head`);
+};

@@ -7,7 +7,7 @@ import { nFormatter } from '@/helpers';
 import BackersModal from '../../components/backers-modal';
 import DataGroup from '@/components/DataGroup';
 
-const roundsColumns: ColumnsType<any> = [
+export const roundsColumns: ColumnsType<any> = [
   {
     title: 'Project',
     dataIndex: 'name',
@@ -30,6 +30,7 @@ const roundsColumns: ColumnsType<any> = [
     title: 'Amount Raised',
     dataIndex: 'raise',
     key: 'raise',
+    align: 'right',
     render: (raise) => nFormatter(raise, 2, '$'),
   },
   {

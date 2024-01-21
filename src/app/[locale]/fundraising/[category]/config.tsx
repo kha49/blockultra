@@ -4,7 +4,7 @@ import Image from 'next/image';
 import BackersModal from './components/backers-modal';
 import DataGroup from '@/components/DataGroup';
 import { formatDate } from '@/helpers/datetime';
-import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
+import { nFormatter, percentFormat, renderSortIcon } from '@/helpers';
 
 export const FundraisingCategory = {
   FundingRounds: 'funding-rounds',
@@ -57,7 +57,7 @@ const roundsColumns: ColumnsType<any> = [
     dataIndex: 'name',
     key: 'name',
     fixed: true,
-    render: (_, { name, icon }) => (
+    render: (_, { name, icon, _id }) => (
       <Flex align={'center'} gap={8}>
         <Image src={icon} alt={'icon'} width={24} height={24} />
         <span>{name}</span>
@@ -68,29 +68,40 @@ const roundsColumns: ColumnsType<any> = [
     title: 'Date',
     dataIndex: 'date',
     key: 'date',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (value) => formatDate(value),
   },
   {
     title: 'Amount Raised',
     dataIndex: 'raise',
     key: 'raise',
+    align: 'right',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (raise) => nFormatter(raise, 2, '$'),
   },
   {
     title: 'Round',
     dataIndex: 'stage',
     key: 'stage',
+    sortIcon: renderSortIcon,
+    sorter: true,
   },
   {
     title: 'Valuation',
     dataIndex: 'raise',
     key: 'raise',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { raise }) => nFormatter(raise, 2, '$'),
   },
   {
     title: 'Backers',
     dataIndex: 'funds',
     key: 'funds',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { funds }) => (
       <BackersModal data={funds}>
         {({ onOpen }) => <DataGroup data={funds} onClick={onOpen} />}
@@ -101,6 +112,8 @@ const roundsColumns: ColumnsType<any> = [
     title: 'Category',
     dataIndex: 'category',
     key: 'category',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { category }) => category?.name,
   },
 ];
@@ -111,79 +124,60 @@ const topBackersColumns: ColumnsType<any> = [
     dataIndex: 'name',
     key: 'name',
     fixed: true,
-    render: (_, { name, logo }) => (
-      <Flex align={'center'} gap={8}>
-        <Image src={logo} alt={'icon'} width={24} height={24} />
-        <span>{name}</span>
-      </Flex>
+    sortIcon: renderSortIcon,
+    sorter: true,
+    render: (_, { name, logo, id }) => (
+      <a href={`funding-rounds/detail/${id}?name=${name}`}>
+        <Flex align={'center'} gap={8}>
+          <Image src={logo} alt={'icon'} width={24} height={24} />
+          <span>{name}</span>
+        </Flex>
+      </a>
     ),
   },
   {
     title: 'Tier',
     dataIndex: 'tier',
     key: 'tier',
+    sortIcon: renderSortIcon,
+    sorter: true,
   },
   {
     title: 'Type',
     dataIndex: 'type',
     key: 'type',
+    sortIcon: renderSortIcon,
+    sorter: true,
   },
   {
     title: 'Country',
     dataIndex: 'location',
     key: 'location',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { country }) => <>{country}</>,
   },
   {
     title: 'Investments',
     dataIndex: 'investments',
     key: 'investments',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { investments }) => <>{investments}</>,
   },
   {
     title: 'Market Cap',
     dataIndex: 'marketCap',
     key: 'marketCap',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { marketCap, mCapChangeIn24h }) => (
-      <Flex vertical className='font-bold'>
+      <Flex vertical>
         <span>{nFormatter(marketCap, 2, '$')}</span>
-        <span className={'text-[#1AB369]'}>
-          {percentFormat(mCapChangeIn24h)}
-        </span>
+        {percentFormat(mCapChangeIn24h)}
       </Flex>
     ),
   },
-  // {
-  //   title: 'Resources',
-  //   dataIndex: 'resources',
-  //   key: 'resources',
-  //   render: (_, { resources }) => (
-  //     <>
-  //       <Avatar.Group maxCount={3}>
-  //         {resources.map((resource: any) => (
-  //           <Avatar key={resource.icon} src={resource.icon} alt={'resource'} />
-  //         ))}
-  //       </Avatar.Group>
-  //     </>
-  //   ),
-  // },
-  // {
-  //   title: 'Gainers',
-  //   dataIndex: 'gainers',
-  //   key: 'gainers',
-  //   render: (_, { gainers }) => (
-  //     <div className='flex gap-3 items-center'>
-  //       <Doughnut
-  //         data={[gainers, 100 - gainers]}
-  //         colors={['green', 'red']}
-  //         radius={24}
-  //         hole={14}
-  //         stroke={1}
-  //       />
-  //       <div className='text-sm font-semibold text-[#333747]'>{gainers}%</div>
-  //     </div>
-  //   ),
-  // },
 ];
 
 export const getColumnsFundraising = (category: string) => {

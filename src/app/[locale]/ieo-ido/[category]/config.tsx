@@ -113,8 +113,8 @@ const columnsUpcoming: ColumnsType<any> = [
     title: 'Backers',
     dataIndex: 'backers',
     key: 'backers',
-    render: (backers) => (
-      <BankersModal data={backers}>
+    render: (backers, { ido_platform_id }) => (
+      <BankersModal data={backers} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={backers} onClick={onOpen} />}
       </BankersModal>
     ),
@@ -129,8 +129,75 @@ const columnsUpcoming: ColumnsType<any> = [
     title: 'Launchpad',
     dataIndex: 'launchpads',
     key: 'launchpads',
-    render: (_, { launchpads }) => (
-      <LaunchpadModal data={launchpads}>
+    render: (_, { launchpads, ido_platform_id }) => (
+      <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
+        {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
+      </LaunchpadModal>
+    ),
+  },
+  {
+    title: 'Start Date',
+    dataIndex: 'startedDate',
+    key: 'startedDate',
+    render: (_, { start_date }) => formatDate(start_date),
+  },
+];
+
+const columnsUpcomingDetail: ColumnsType<any> = [
+  {
+    title: '#',
+    render: (_text, _record, index) => `${index + 1}`,
+  },
+  {
+    title: 'Project',
+    dataIndex: 'project',
+    key: 'project',
+    fixed: true,
+    render: (project, { symbol, image, isHot }) => (
+      <Flex wrap='wrap' gap={8}>
+        <Image src={image} alt={'icon'} width={24} height={24} />
+        <span>{project}</span>
+        <Tag className={'bg-[#F1F4F7]'} bordered={false}>
+          {symbol}
+        </Tag>
+        {isHot && <Image alt='hot' src={'/hot.svg'} width={12} height={12} />}
+      </Flex>
+    ),
+  },
+  {
+    title: 'Initial Cap',
+    dataIndex: 'initialCap',
+    key: 'initialCap',
+    render: (_, { initialCap }) => nFormatter(initialCap, 2, '$'),
+  },
+  {
+    title: 'Total Raise',
+    dataIndex: 'totalRaise',
+    key: 'totalRaise',
+    render: (_, { totalRaise }) => nFormatter(totalRaise, 2, '$'),
+  },
+  {
+    title: 'Backers',
+    dataIndex: 'backers',
+    key: 'backers',
+    render: (backers, { ido_platform_id }) => (
+      <BankersModal data={backers} platformId={ido_platform_id}>
+        {({ onOpen }) => <DataGroup data={backers} onClick={onOpen} />}
+      </BankersModal>
+    ),
+  },
+  {
+    title: 'Category',
+    dataIndex: 'category',
+    key: 'category',
+    render: (category) => `${category}`,
+  },
+  {
+    title: 'Launchpad',
+    dataIndex: 'launchpads',
+    key: 'launchpads',
+    render: (_, { launchpads, ido_platform_id }) => (
+      <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
       </LaunchpadModal>
     ),
@@ -190,8 +257,8 @@ const columnsEnded: ColumnsType<any> = [
     title: 'Launchpad',
     dataIndex: 'launchpadList',
     key: 'launchpadList',
-    render: (_, { launchpads }) => (
-      <LaunchpadModal data={launchpads}>
+    render: (_, { launchpads, ido_platform_id }) => (
+      <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
       </LaunchpadModal>
     ),
@@ -201,6 +268,67 @@ const columnsEnded: ColumnsType<any> = [
     dataIndex: 'updated_at',
     key: 'updated_at',
     render: (_, { updated_at }) => formatDate(updated_at),
+  },
+];
+
+const columnsEndedDetail: ColumnsType<any> = [
+  {
+    title: '#',
+    render: (_text, _record, index) => `${index + 1}`,
+  },
+  {
+    title: 'Project',
+    dataIndex: 'project',
+    key: 'project',
+    render: (_, { project, icon, symbol }) => (
+      <Flex align={'center'} gap={8}>
+        <Image src={icon} alt={'icon'} width={24} height={24} />
+        <span>{project}</span>
+        <Tag className={'bg-[#F1F4F7]'} bordered={false}>
+          {symbol}
+        </Tag>
+      </Flex>
+    ),
+  },
+  {
+    title: 'Current Price',
+    dataIndex: 'currentPrice',
+    key: 'currentPrice',
+    render: (value) => nFormatter(value, 2, '$'),
+  },
+  {
+    title: 'Total Raise',
+    dataIndex: 'totalRaised',
+    key: 'totalRaised',
+    render: (value) => nFormatter(value, 2, '$'),
+  },
+  {
+    title: 'ROI',
+    dataIndex: 'roi',
+    key: 'roi',
+    render: (_, { roi }) => nFormatter(roi, 2, '$'),
+  },
+  {
+    title: 'ATH ROI',
+    dataIndex: 'athRoi',
+    key: 'athRoi',
+    render: (value) => nFormatter(value, 2, '$'),
+  },
+  {
+    title: 'Launchpad',
+    dataIndex: 'launchpadList',
+    key: 'launchpadList',
+    render: (_, { launchpads, ido_platform_id }) => (
+      <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
+        {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
+      </LaunchpadModal>
+    ),
+  },
+  {
+    title: 'End Date',
+    dataIndex: 'endDate',
+    key: 'endDate',
+    render: (value) => formatDate(value),
   },
 ];
 
@@ -315,6 +443,15 @@ export const getIeoIdoColumns = (category: string) => {
       return columnsUpcoming;
     default:
       return columnsUpcoming;
+  }
+};
+
+export const getIeoIdoColumnsDetail = (category?: string) => {
+  switch (category) {
+    case IeoIdoCategory.upcoming:
+      return columnsUpcomingDetail;
+    default:
+      return columnsEndedDetail;
   }
 };
 

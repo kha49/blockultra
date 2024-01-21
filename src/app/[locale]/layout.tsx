@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation';
 import { ReactNode } from 'react';
-import Header from '@/components/CommonLayouts/Header/Index';
-import Footer from '@/components/CommonLayouts/Footer/Index';
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
+import dynamic from 'next/dynamic';
+
+const Header = dynamic(() => import('@/components/CommonLayouts/Header/Index'), { ssr: false })
+const Footer = dynamic(() => import('@/components/CommonLayouts/Footer/Index'), { ssr: false })
 
 // Can be imported from a shared config
 const locales = ['en', 'vn'];

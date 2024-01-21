@@ -14,13 +14,12 @@ type PageProps = {
 };
 
 export default function CategoryPage(props: PageProps) {
-  const { params } = props;
   const breadcrumbs = getBreadcrumbConfig();
 
-  const [category, setCategory] = useState({});
+  const [category, setCategory] = useState<any>({});
 
-  const getCategoryDetail = (id: any) => {
-    const response = FetchCategoryDetail({ id });
+  const getCategoryDetail = async (id: any) => {
+    const response = await FetchCategoryDetail({ id });
     setCategory(response);
   };
 

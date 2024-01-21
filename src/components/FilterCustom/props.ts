@@ -22,6 +22,7 @@ export interface IFilterCustom {
   isSelectAll?: boolean;
   isSortSelected?: 'alphabet' | 'oldToNew' | 'newToOld';
   value?: any[];
+  resetValue?: () => void;
 }
 
 export interface ICustomTagProp extends CustomTagProps {

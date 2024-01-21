@@ -15,7 +15,10 @@ export default function HeadFilter() {
       <div className='flex'>
         <SearchSelect />
         <div className='hidden xl:block md:block'>
-          <Button className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'>
+          <Button
+            disabled
+            className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'
+          >
             <div className='flex'>
               <IconFilterCoinTab />
               <span className='ml-1'>Filters</span>
@@ -24,7 +27,10 @@ export default function HeadFilter() {
         </div>
       </div>
       <div className='hidden xl:block md:block'>
-        <Button className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'>
+        <Button
+          disabled
+          className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'
+        >
           <div className='flex'>
             <IconFilterCoinTab />
             <span className='ml-1'>Customize</span>

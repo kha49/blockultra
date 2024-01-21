@@ -45,7 +45,17 @@ export const FetchSpot = (params) =>
 
 export const FetchUnlockToken = (params) =>
   apiClient.get(`${prefix}coin-unlock`, params);
+
 export const FetchCoinTokenomics = (params) =>
   apiClient.get(`${prefix}coin-tokenomic`, params);
+
+export const FetchCoinFundraising = (params) =>
+  apiClient.get(`${prefix}coin-fundraising`, params);
+
+export const FetchCoinIDOIEO = (params) =>
+  apiClient.get(`${prefix}coin-ieoido`, params);
+
+
+
 
 

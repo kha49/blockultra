@@ -1,23 +1,16 @@
 'use client';
 
-import Image from 'next/image';
-import Allocation from '../allocation';
-import './index.scss';
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Avatar, Flex, Modal, Popover } from 'antd';
-import Link from 'next/link';
-import { ICoinInfo, CoinAllocation } from '../coinInfoTabs/props';
 import { nFormatter, percentFormat } from '@/helpers';
-import { FetchInfomationCoin } from '@/usecases/exchange';
-import { round } from 'lodash';
-import { COLOR_CHART } from '@/helpers/constants';
-import IconWeb from '@/assets/icons/IconWeb';
-import { IconTwitter } from '@/assets/icons';
-import { IconTikTok } from '@/assets/icons/IconTikTok';
-import { CategoryDistribution, LaunchPadInfomationType } from '../../types';
-import { IeoIdoCategory, getIconLink } from '../../config';
-import MainCategories from '../main-categories';
+import { Avatar, Flex, Modal, Popover } from 'antd';
+import Image from 'next/image';
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { IeoIdoCategory, getIconLink } from '../../config';
+import { LaunchPadInfomationType } from '../../types';
+import Allocation from '../allocation';
+import MainCategories from '../main-categories';
+import './index.scss';
 
 type PropsType = {
   info: LaunchPadInfomationType;
@@ -36,71 +29,10 @@ const CoinInformation = (props: PropsType) => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalSupportedOpen, setIsModalSupportedOpen] = useState(false);
-  const [coinsData, setCoinsData] = useState<ICoinInfo>();
-  const [key, setKey] = useState('binance');
-  const [totalVolume, setTotalVolume] = useState<number>(9999);
-  const [listTopCoin, setListTopCoin] = useState<CoinAllocation[]>([]);
-
-  const getData = useCallback(async () => {
-    const responses: any = await FetchInfomationCoin({ key: key });
-    setCoinsData(responses);
-    setTotalVolume(await responses.totalusdVolume);
-    setListTopCoin(await responses.allocation);
-  }, [key]);
-
-  useEffect(() => {
-    getData();
-  }, [getData]);
 
   const toggleModal = () => {
     setIsModalOpen(true);
   };
-
-  const _caculateCoin = (i: number) => {
-    let rate = round((listTopCoin[i]?.usdVolume / totalVolume) * 100, 2);
-    let name = listTopCoin[i]?.coinName;
-    let volumes = listTopCoin.slice(0, 9).map((item) => item?.usdVolume);
-    let otherSum =
-      totalVolume - volumes.reduce((total, volume) => total + volume, 0);
-    let otherRate = round((otherSum / totalVolume) * 100, 2);
-    if (i < 9) {
-      return (
-        <div className='flex index__detail'>
-          <span className='mr-1'>{name + ': '}</span>
-          <span>{rate + '%'}</span>
-        </div>
-      );
-    } else {
-      return (
-        <div className='flex index__detail'>
-          <span className='mr-1'>Other:</span>
-          <span>{otherRate + '%'}</span>
-        </div>
-      );
-    }
-  };
-
-  // const _renderLinePopup = (i: number) => {
-  //   let _color = colorChart[i];
-  //   return (
-  //     <div className='popup__contents-index hover:cursor-pointer flex'>
-  //       <div>
-  //         <svg
-  //           className='w-4.5 h-5 hover:w-5.5 hover:h-6'
-  //           viewBox='0 0 18 20'
-  //           fill='none'
-  //           xmlns='http://www.w3.org/2000/svg'
-  //         >
-  //           <path
-  //             d='M8 0.57735C8.6188 0.220085 9.3812 0.220085 10 0.57735L16.6603 4.42265C17.2791 4.77992 17.6603 5.44017 17.6603 6.1547V13.8453C17.6603 14.5598 17.2791 15.2201 16.6603 15.5774L10 19.4226C9.3812 19.7799 8.6188 19.7799 8 19.4226L1.33975 15.5774C0.720943 15.2201 0.339746 14.5598 0.339746 13.8453V6.1547C0.339746 5.44017 0.720943 4.77992 1.33975 4.42265L8 0.57735Z'
-  //             fill={_color}
-  //           />
-  //         </svg>
-  //       </div>
-  //       {_caculateCoin(i)}
-  //     </div>
-  //   );
-  // };
 
   return (
     <>
@@ -287,11 +219,7 @@ const CoinInformation = (props: PropsType) => {
             className='lg:col-span-2 lg:border lg:border-l-gray-300 lg:border-t-0 lg:border-r-0 lg:border-b-0'
             onClick={toggleModal}
           >
-            <Allocation
-              data={_sortedCategories}
-              list={listTopCoin}
-              total={totalVolume}
-            />
+            <Allocation data={_sortedCategories} />
           </div>
         </div>
       </Flex>

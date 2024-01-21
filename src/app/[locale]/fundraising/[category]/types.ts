@@ -55,3 +55,61 @@ export type IIeoIdoData = {
   launchpadList: TLaunchpad[];
   startedDate: string;
 };
+
+export interface IHeaderFilter {
+  onChange: (...args: any) => void;
+  layout: string;
+}
+
+export interface IBankerData {
+  id: number;
+  logo: string;
+  slug: string;
+  name: string;
+  type: string;
+  tier: number;
+  location: string;
+  leadRounds: number;
+  raised: string;
+  unicorns: number;
+  gainers: number;
+  links: Link[];
+  introduction: string;
+  invesmentCategories: string;
+  totalInvesments: number;
+  categories: ItemCategoryBanker[];
+}
+
+export interface ItemCategoryBanker {
+  id: number;
+  name: string;
+  slug: string;
+  count: number;
+}
+
+interface Link {
+  type: string;
+  value: string;
+}
+
+export interface IBankerDetail {
+  data: IBankerData;
+}
+
+export interface IPortfolios {
+  id: string;
+  logo: Logo;
+  name: string;
+  ticker: string;
+  rating?: any;
+  price: number;
+  price24hPercent: number;
+  volume24h: string;
+  marketCap: string;
+}
+interface Logo {
+  native: string;
+  icon: string;
+  x60: string;
+  x150: string;
+}

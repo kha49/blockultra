@@ -1,15 +1,13 @@
 'use client';
 
-import React from 'react';
-import { getIeoIdoBreadcrumbs } from '../config';
 import { Page } from '@/components/page';
-import CoinInfoRenderTabs from './coinInfoTabs';
-import CoinInformation from './coinInfo';
-import { LaunchPadInfomationType } from '../types';
 import { Flex } from 'antd';
-import TierSystem from '../components/tier-system';
 import CategoryOverview from '../components/category-overview';
 import { IeoIdoTable } from '../components/ieo-ido-table';
+import TierSystem from '../components/tier-system';
+import { getIeoIdoBreadcrumbs } from '../config';
+import { LaunchPadInfomationType } from '../types';
+import CoinInformation from './coinInfo';
 
 type PropsType = {
   category: string;

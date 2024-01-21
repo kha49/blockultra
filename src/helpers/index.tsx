@@ -76,7 +76,7 @@ export const percentFormat = (value: number, className?: string) => {
   }
 };
 
-export const nFormatter = (num: number, digits: number, symbol: string) => {
+export const nFormatter = (num: number, digits: number, symbol: string, positionSymbolEnd?:boolean) => {
   const lookup = [
     { value: 1, symbol: '' },
     { value: 1e3, symbol: 'K' },
@@ -98,7 +98,7 @@ export const nFormatter = (num: number, digits: number, symbol: string) => {
     : '0';
   return (
     <span className='whitespace-nowrap'>
-      {symbol} {price}
+      {positionSymbolEnd?price +' '+symbol:  symbol+ ' '+ price  }
     </span>
   );
 };
@@ -142,3 +142,5 @@ export const fancyTimeFormat = (duration: number) => {
     secs,
   };
 };
+
+export * from './countryFlag';

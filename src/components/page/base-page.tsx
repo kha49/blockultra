@@ -1,15 +1,8 @@
 import { Breadcrumb } from 'antd';
-import { ItemType } from 'antd/es/breadcrumb/Breadcrumb';
-import { PropsWithChildren } from 'react';
 import clsx from 'clsx';
+import { PageProps } from './props';
 
-type Props = PropsWithChildren<{
-  breadcrumbs: ItemType[];
-  classnames?: string;
-  contentClassnames?: string;
-}>;
-
-export default function BasePage(props: Props) {
+export default function BasePage(props: PageProps) {
   const {
     breadcrumbs,
     children,

@@ -1,6 +1,5 @@
 import { IconExport } from '@/assets/icons';
-import { Button, Flex } from 'antd';
-import React from 'react';
+import { Button } from 'antd';
 
 const TierSystem = () => {
   const data = [

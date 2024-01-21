@@ -31,3 +31,18 @@ body {
 .box-shadow-common {
   box-shadow: 0px 0px 16px 0px rgba(51, 55, 71, 0.08);
 }
+
+
+.pagination-mobile {
+  display: none !important;
+}
+
+@media screen and (max-width: 768px) {
+  .pagination-desktop {
+    display: none;
+  }
+
+  .pagination-mobile {
+    display: flex !important;
+  }
+}

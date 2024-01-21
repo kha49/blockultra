@@ -1,8 +1,6 @@
 import { TopIdoLaunchPadDetail } from '@/usecases/ieo-ido';
-import LaunchPadInfomation from './LaunchPadInfomation';
-import { AxiosError } from 'axios';
 import { LaunchPadInfomationType } from '../types';
-import { IResponseAxios } from '@/models/IResponse';
+import LaunchPadInfomation from './LaunchPadInfomation';
 
 type PropsType = {
   params: {

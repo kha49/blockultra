@@ -1,33 +1,27 @@
 import { Flex, Pagination, Table } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import HeadFilter from '../HeadFilter';
 import { categoryColumns } from './config';
 import { useParams } from 'next/navigation';
 import SelectItemTable from '@/components/SelectItemTable';
 import { faker } from '@faker-js/faker';
-
-const mockData = [
-  {
-    id: 1,
-    name: 'Bitcoin',
-    symbol: 'BTC',
-    icon: 'https://img.cryptorank.io/coins/150x150.bitcoin1524754012028.png',
-    rate: 4.8,
-    price: 10000,
-    hours: 5.5,
-    volume24h: 1000000,
-    marketCap: 1000000,
-    priceGraph: [...Array(20)].map(() => faker.number.int({ min: 0, max: 60 })),
-  },
-];
+import { FetchCategoryCoins } from '@/usecases/category';
+import { CategoryCoinsFilterType, CategoryCoinsType } from '../../types';
+import { IResponseAxios } from '@/models/IResponse';
+import { ORDER } from '@/helpers/constants';
 
 export default function CategoryTable() {
   const params = useParams<{ locale: string; id: string }>();
+  const categoryId = params.id;
 
-  const [data, setData] = useState<any[]>(mockData);
+  const [data, setData] = useState<any[]>([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
+  const [order, setOrder] = useState({
+    columnKey: '',
+    order: '',
+  });
 
   const _onChangePage = (page: number) => {
     setCurrentPage(page);
@@ -47,6 +41,32 @@ export default function CategoryTable() {
       </span>
     );
   };
+
+  const getCategoryCoins = useCallback(
+    async (filter: CategoryCoinsFilterType = {}) => {
+      const _params: CategoryCoinsFilterType = {
+        category_id: categoryId,
+        limit: pageSize,
+        page: currentPage,
+        sort_by: order.columnKey,
+        sort_order: ORDER[order.order],
+        ...filter,
+      };
+
+      const response: IResponseAxios<CategoryCoinsType> =
+        await FetchCategoryCoins(_params);
+
+      if (!response) return;
+      const { data, total } = response;
+      setData(data);
+      setTotal(total!!);
+    },
+    [pageSize, currentPage, categoryId]
+  );
+
+  useEffect(() => {
+    getCategoryCoins();
+  }, [getCategoryCoins]);
 
   return (
     <div className='mt-4 category-table'>
