@@ -38,7 +38,7 @@ export default async function CoinInformation({ data }: { data: IDetail }) {
           <div className='flex items-center gap-4 mb-4 md:mb-0'>
             <Popover content={<IntroduceCoin data={data} />}>
               <img
-                src={data.image.x150}
+                src={data?.image?.x150}
                 alt=''
                 width={76}
                 height={76}

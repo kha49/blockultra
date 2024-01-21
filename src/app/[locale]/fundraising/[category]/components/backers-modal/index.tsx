@@ -51,11 +51,11 @@ export default function BackersModal(props: BackersModalProps) {
         <Flex vertical gap={24} className='mt-6'>
           {_.map(mappedData, (value, key) => {
             return (
-              <Flex vertical gap={16}>
+              <Flex vertical gap={16} key={key}>
                 <h4 className='font-bold text-sm text-[#333747]'>{key}</h4>
                 <Flex vertical gap={16}>
                   {value.map((item) => (
-                    <Flex align='center' gap={8}>
+                    <Flex align='center' gap={8} key={item.name}>
                       <Avatar src={item.image} alt='avatar' size={32} />
                       <span className='text-sm font-normal text-[#333747]'>
                         {item.name}

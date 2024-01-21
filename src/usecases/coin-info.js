@@ -31,11 +31,7 @@ export const FetchUnlocks = (params) =>
 export const FetchUpComings = (params) =>
   apiClient.get(prefix + 'upcomings', params);
 
-export const FetchCoinDetail = (params) =>
-  apiClient.get(`${prefix}coin/${params}`, params);
-
-export const FetchCoinDetail2 = (params) =>
-  apiClient.get(`${prefix}coin/detail`, params);
+export const FetchCoinDetail = (params) => apiClient.get(`${prefix}coin/detail`, params);
 
 export const FetchHistoricals = (params) =>
   apiClient.get(`${prefix}market/historicals`, params);

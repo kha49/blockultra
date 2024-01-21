@@ -48,7 +48,7 @@ export default function LaunchpadModal(props: LaunchpadProps) {
       >
         <Flex vertical gap={16} className='mt-6'>
           {data.map((item) => (
-            <Flex align='center' gap={8}>
+            <Flex align='center' gap={8} key={item.name}>
               <Avatar src={item.avatarUrl} alt='avatar' size={32} />
               <span className='text-sm font-normal text-[#333747]'>
                 {item.name}

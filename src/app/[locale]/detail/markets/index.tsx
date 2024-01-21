@@ -8,7 +8,6 @@ import Image from 'next/image';
 import SelectItemTable from '@/components/SelectItemTable';
 import { currencyFormat, percentFormat } from '@/helpers';
 import {
-  FetchCoinDetail2,
   FetchHistoricals,
   FetchSpot,
 } from '@/usecases/coin-info';

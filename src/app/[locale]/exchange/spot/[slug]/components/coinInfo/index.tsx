@@ -19,22 +19,20 @@ const CoinInformation = () => {
   const params = useParams<{ locale: string; slug: string }>();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [coinsData, setCoinsData] = useState<ICoinInfo>();
-  const [key, setKey] = useState('binance');
   const [totalVolume, setTotalVolume] = useState<number>(9999);
   const [listTopCoin, setListTopCoin] = useState<CoinAllocation[]>([]);
 
-  const getData = useCallback(async () => {
-    setKey(params.slug);
-    const responses: any = await FetchInfomationCoin({ key: key });
+  const getData = async () => {
+    const responses: any = await FetchInfomationCoin({ key: params.slug });
     if (!responses) return;
     setCoinsData(responses);
     setTotalVolume(await responses.totalUsdVolume);
     setListTopCoin(await responses.tokenAllocation);
-  }, [key]);
+  };
 
   useEffect(() => {
     getData();
-  }, [getData]);
+  }, [params.slug]);
 
   const colorChart = [
     COLOR_CHART.BITTER_LEMON,

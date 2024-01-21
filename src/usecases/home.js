@@ -15,7 +15,7 @@ export const SearchCategoriesFilter = (params) =>
   apiClient.get(prefix + 'categories/search', params);
 
 export const SearchFundraisingsFilter = (params) =>
-  apiClient.get(prefix + 'fundraisings/search', params);
+  apiClient.get(prefix + 'funding-rounds/search', params);
 
 export const SearchUpcomingFilter = (params) =>
   apiClient.get(prefix + 'ieo-ido/upcoming/search', params);

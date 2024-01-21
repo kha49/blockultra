@@ -2,12 +2,7 @@ import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
 const prefix = 'api/';
-// {{domain}}:{{port}}/api/top-backers?sort_by&sort_order&limit&page&search_key
-// {{domain}}:{{port}}/api/funding-rounds?sort_by&sort_order&limit&page&search_key
-// {{domain}}:{{port}}/api/top-backers?sort_by&sort_order&limit&page&search_key
-// {{domain}}:{{port}}/api/top-backers?sort_by&sort_order&limit&page&search_key
-// {{domain}}:{{port}}/api/fundraisings/backer?backer_id=c04a961c-b57b-4208-8172-1ab216d1bfed
-// {{domain}}:{{port}}/api/fundraisings/search
+
 export const FetchFundraising = (path, params) =>
   apiClient.get(`${prefix + path}`, params);
 
