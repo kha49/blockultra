@@ -25,7 +25,7 @@ const CoinTabInfo = (props: any) => {
       id: '2',
       disable: false,
       label: 'Markets',
-      component: <Markets data={props.data} slug={props.slug} />,
+      component: <Markets slug={props.slug} />,
     },
     {
       id: '3',

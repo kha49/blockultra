@@ -54,7 +54,7 @@ export const currencyFormat = (
 };
 
 export const percentFormat = (value: number, className?: string) => {
-  if (value) {
+  if (!value) {
     return 0
   }
   try {
@@ -80,7 +80,7 @@ export const percentFormat = (value: number, className?: string) => {
 };
 
 export const nFormatter = (num: number, digits: number, symbol: string, positionSymbolEnd?:boolean) => {
-  if (num) {
+  if (!num) {
     return 0
   }
   const lookup = [
