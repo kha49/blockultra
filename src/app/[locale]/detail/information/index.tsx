@@ -34,7 +34,7 @@ export default function CoinInformation({ data }: any) {
           <div className='flex items-center gap-4 mb-4 md:mb-0'>
             <Popover content={<IntroduceCoin data={newData} />}>
               <img
-                src={newData.image?.x150}
+                src={newData?.image?.x150}
                 alt=''
                 width={76}
                 height={76}
@@ -45,10 +45,10 @@ export default function CoinInformation({ data }: any) {
               <div className='flex items-center flex-wrap mb-3'>
                 <h1 className='flex items-center text-grey-700 text-2xl font-bold'>
                   <Popover content={<IntroduceCoin data={newData} />}>
-                    <span className='font-jb text-2xl'>{newData.name}</span>
+                    <span className='font-jb text-2xl'>{newData?.name}</span>
                   </Popover>
                   <span className='flex items-center px-2 rounded text-xs text-grey-500 bg-grey-200 font-medium ml-2'>
-                    {newData.symbol}
+                    {newData?.symbol}
                   </span>
                   <span className='w-0.5 h-6 bg-grey-500 mx-4'></span>
                 </h1>
@@ -69,10 +69,10 @@ export default function CoinInformation({ data }: any) {
               </div>
               <div className='hidden md:flex gap-2 item-center'>
                 <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200'>
-                  #{newData.rank}
+                  #{newData?.rank}
                 </span>
                 <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200'>
-                  #{newData.wallet} in Wallet
+                  #{newData?.wallet} in Wallet
                 </span>
                 <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200'>
                   <img
@@ -89,10 +89,10 @@ export default function CoinInformation({ data }: any) {
           </div>
           <div className='flex item-center gap-3 md:hidden'>
             <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
-              #{newData.rank}
+              #{newData?.rank}
             </span>
             <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
-              #{newData.wallet} in Wallet
+              #{newData?.wallet} in Wallet
             </span>
             <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap'>
               <img
@@ -146,20 +146,20 @@ export default function CoinInformation({ data }: any) {
                 <div className='flex flex-wrap gap-2 md:gap-4 items-center'>
                   <span className='text-xl md:text-3xl font-bold'>
                     {
-                      newData.price?.USD ? nFormatter(newData.price?.USD, 5, '$') : ''
+                      newData?.price?.USD ? nFormatter(newData?.price?.USD, 5, '$') : ''
                     }
                   </span>
                   <span className='text-sp-green-500 text-xs text-base'>
-                    {percentFormat(newData.price_change_in_24h)}
+                    {percentFormat(newData?.price_change_in_24h)}
                   </span>
                 </div>
                 <div className='flex items-center flex-wrap coin-detail__range text-grey-700'>
-                  <span> {currencyFormat(newData.atlPrice?.USD || 0, '$')}</span>
+                  <span> {currencyFormat(newData?.atlPrice?.USD || 0, '$')}</span>
                   <div className='price__range'>
                     <div className='price__range--active'></div>
                   </div>
                   <span className='mr-2'>
-                    {currencyFormat(newData.athPrice?.USD || 0, '$')}
+                    {currencyFormat(newData?.athPrice?.USD || 0, '$')}
                   </span>
                   <Select
                     defaultValue='24'
@@ -176,24 +176,24 @@ export default function CoinInformation({ data }: any) {
                 <div className='flex items-center mb-1'>
                   <span className='text-grey-500 text-sm'>IDO Price:</span>
                   <span className='text-grey-700 text-sm mr-1 font-jsb font-semibold'>
-                    {currencyFormat(newData.idoPrice, '$')}
+                    {currencyFormat(newData?.idoPrice, '$')}
                   </span>
                   <span className='text-xs text-sp-green-500'>
                     ({
-                      newData.price?.USD ? currencyFormat(newData.price.USD / newData.idoPrice, '') : 0
+                      newData?.price?.USD ? currencyFormat(newData?.price.USD / newData?.idoPrice, '') : 0
                     } x)
                   </span>
                 </div>
                 <div className='flex items-center mb-1'>
                   <span className='text-grey-500 text-sm'>Private Price:</span>
                   <span className='text-grey-700 text-sm mr-1 font-jsb font-semibold'>
-                    {currencyFormat(newData.atlPrice?.USD || 0, '$')}
+                    {currencyFormat(newData?.atlPrice?.USD || 0, '$')}
                   </span>
                   <span className='text-xs text-sp-green-500'>
                     (
                       {
-                        newData.price?.USD ? currencyFormat(
-                          newData.price.USD / (newData.atlPrice?.USD || 0),
+                        newData?.price?.USD ? currencyFormat(
+                          newData?.price.USD / (newData?.atlPrice?.USD || 0),
                           ''
                         ) : 0
                       }
@@ -205,21 +205,21 @@ export default function CoinInformation({ data }: any) {
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Market Cap</div>
                   <div className='text-grey-700 flex flex-wrap items-center gap-1 font-jsb font-semibold'>
-                    {nFormatter(Number(newData.marketCap), 3, '$')}
+                    {nFormatter(Number(newData?.marketCap), 3, '$')}
                     <span className='text-xs text-sp-green-500'>+2.83%</span>
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Volume 24h</div>
                   <div className='text-grey-700 flex flex-wrap items-center gap-1 font-jsb font-semibold'>
-                    {nFormatter(Number(newData.volume24h), 2, '')}
+                    {nFormatter(Number(newData?.volume24h), 2, '')}
                     <span className='text-xs text-sp-green-500'>+2.83%</span>
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Vol/MCap 24h</div>
                   <div className='text-grey-700 font-jsb font-semibold'>
-                    {newData.volMCap24h}
+                    {newData?.volMCap24h}
                   </div>
                 </div>
                 <div className='category'>
@@ -230,22 +230,22 @@ export default function CoinInformation({ data }: any) {
                     </Popover>
                   </div>
                   <div className='text-grey-700 font-jsb font-semibold'>
-                    {nFormatter(Number(newData.fdv), 3, '$')}
+                    {nFormatter(Number(newData?.fdv), 3, '$')}
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Circ.Supply</div>
                   <div className='text-grey-700 flex flex-wrap items-center gap-1 font-jsb font-semibold'>
-                    {nFormatter(newData.circ, 3, '$')}
+                    {nFormatter(newData?.circ, 3, '$')}
                     <span className='text-grey-500 text-xs'>
-                      {percentFormat(Number(newData.percentOfCircSupply))}
+                      {percentFormat(Number(newData?.percentOfCircSupply))}
                     </span>
                   </div>
                 </div>
                 <div className='category'>
                   <div className='text-grey-500 text-sm'>Total Supply</div>
                   <div className='text-grey-700 flex flex-wrap items-center font-jsb font-semibold'>
-                    {nFormatter(Number(newData.totalSupply), 2, '')}
+                    {nFormatter(Number(newData?.totalSupply), 2, '')}
                   </div>
                 </div>
               </div>
@@ -253,7 +253,7 @@ export default function CoinInformation({ data }: any) {
             <div className='flex items-center gap-4 xl:gap-8 2xl:gap-[110px] flex-wrap'>
               <div className='mt-3 xl:mt-7'>
                 <span className='text-grey-500 text-sm mb-1'>Contracts</span>
-                <Contracts tokens={newData.tokens} />
+                <Contracts tokens={newData?.tokens} />
               </div>
               <div className='flex flex-wrap gap-4 md:gap-8 xl:gap-[110px] xl:mt-7'>
                 <div>
@@ -342,7 +342,7 @@ export default function CoinInformation({ data }: any) {
                     </Popover>
                   </div>
                 </div>
-                <Backers backers={newData.backers} />
+                <Backers backers={newData?.backers} />
                 {/* <div>
                   <p className='text-grey-500 text-sm'>Backers</p>
                   <div className='flex gap-4 xl:gap-5 py-[6px]'>
