@@ -9,6 +9,7 @@ import { FetchUnlockToken } from '@/usecases/coin-info';
 import { useEffect, useState } from 'react';
 import { currencyFormat } from '@/helpers';
 import { IUnlock } from '../../unlock-schedule/types';
+import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
 
 // export interface IUnlock {
 //   date: Date;
@@ -19,24 +20,24 @@ import { IUnlock } from '../../unlock-schedule/types';
 //   nextUnlockPercent: number;
 // }
 
-export default function InformationUnlock() {
-  const [data, setData] = useState<ITotalUnlockProgress>({
-    totalRemainingTime: new Date(),
-    totalUnlockedPercent: 0,
-    totalUnlockedToken: 0,
-    totalUnlockedValue: 0,
-    totalLockedPercent: 0,
-    totalLockedToken: 0,
-    totalLockedValue: 0,
-    totalNextUnlockPercent: 0,
-    totalNextUnlockToken: 0,
-    totalNextUnlockValue: 0,
-    remainingTime: new Date(),
-    percentOfMarketCap: 0,
-  });
+export default function InformationUnlock({data} : any) {
+  // const [data, setData] = useState<ITotalUnlockProgress>({
+  //   totalRemainingTime: new Date(),
+  //   totalUnlockedPercent: 0,
+  //   totalUnlockedToken: 0,
+  //   totalUnlockedValue: 0,
+  //   totalLockedPercent: 0,
+  //   totalLockedToken: 0,
+  //   totalLockedValue: 0,
+  //   totalNextUnlockPercent: 0,
+  //   totalNextUnlockToken: 0,
+  //   totalNextUnlockValue: 0,
+  //   remainingTime: new Date(),
+  //   percentOfMarketCap: 0,
+  // });
 
   async function fetchUnlock() {
-    let data: any = await FetchUnlockToken({ coin_key: 'avalanche' });
+    // let data: any = await FetchUnlockToken({ coin_key: 'avalanche' });
     //   const tokenUnlock: any = fetchUnlock() || {};
     //   const lockedTokens = tokenUnlock.lockedTokens;
     //   const lockedTokensPercent = tokenUnlock.lockedTokensPercent;
@@ -44,14 +45,15 @@ export default function InformationUnlock() {
     //   const nextUnlockPercent = tokenUnlock.nextUnlockPercent;
     //   const dateNextUnlock = tokenUnlock.date;
     //  const totalToken = (lockedTokens * 100) / lockedTokensPercent;
-    setData(data);
+    // setData(data);
   }
 
-  useEffect(() => {
-    fetchUnlock();
-  }, []);
+  // useEffect(() => {
+  //   fetchUnlock();
+  // }, []);
 
-  const countDownTime = new Date(data.remainingTime);
+  const countDownTime = data?.nextUnlock ? new Date(data?.nextUnlock[data?.nextUnlock?.length -1]?.date) : new Date();
+
   const option = {
     color: [
       new graphic.LinearGradient(0, 0, 0, 1, [
@@ -89,17 +91,11 @@ export default function InformationUnlock() {
           focus: false,
           scale: false,
         },
-        data: [
-          { value: data.totalUnlockedPercent, name: 'Unlock' },
-          { value: data.totalNextUnlockPercent, name: 'Next unlock' },
-          {
-            value:
-              1 -
-              parseFloat(data.totalUnlockedPercent + '') -
-              parseFloat(data.totalNextUnlockPercent + ''),
-            name: 'Block',
-          },
-        ],
+        data: data?.chart ? [
+          { value: data?.chart?.unlockedTokensPercent, name: 'Unlock' },
+          { value: data?.chart?.nextUnlockPercent, name: 'Next unlock' },
+          { value:data?.chart?.lockedTokensPercent, name: 'Block' },
+        ] : [{ value: 100, name: 'Unlock'}],
       },
     ],
   };
@@ -110,16 +106,25 @@ export default function InformationUnlock() {
         <div className='chart__unlock'>
           <IconUnLock />
           <div className='percent'>
-            {currencyFormat(data.totalLockedPercent, '')}%
+            {data?.chart ? currencyFormat(data?.chart?.unlockedTokensPercent, '') : 100}%
           </div>
         </div>
         <ReactECharts option={option} />
       </div>
 
-      <CountdownTimer
-        countDownName={'Next Unlock'}
-        targetDate={countDownTime}
-      />
+      {
+        data?.chart ? (
+          <CountdownTimer
+            countDownName={'Next Unlock'}
+            targetDate={countDownTime}
+          />
+        ) : (
+          <div className='flex items-center justify-center gap-2'>
+            Fully Vested <IconCheckedCompleted />
+          </div>
+        )
+      }
+      
     </div>
   );
 }

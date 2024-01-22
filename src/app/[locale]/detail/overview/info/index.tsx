@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './index.scss';
 import dynamic from 'next/dynamic';
 import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
@@ -15,18 +15,28 @@ const AdvancedRealTimeChart = dynamic(
 );
 
 export default async function InfoCharts(props: any) {
-  const listingDate = props.data?.listingDate;
-  const launchDate = new Date(listingDate);
+  const [data, setData] = useState(props.data)
+  const launchDate = new Date(data?.listingDate);
+
+  useEffect(() => {
+    setData(props?.data)
+  }, [props])
+  
 
   return (
     <div className='info-charts'>
       <div className='info-charts__wrapper grid grid-cols-1 xl:grid-cols-3 gap-4'>
         <div className='chart xl:col-span-2'>
-          <AdvancedRealTimeChart
-            symbol={props.data?.symbol + 'USD'}
-            interval={'60'}
-            autosize
-          ></AdvancedRealTimeChart>
+          {
+            data?.symbol ? (
+              <AdvancedRealTimeChart
+                symbol={data?.symbol + 'USD'}
+                interval={'60'}
+                autosize
+              ></AdvancedRealTimeChart>
+            ) : ''
+          }
+         
         </div>
         <div className='info p-6'>
           <div className='info__item pb-5 mb-5 flex item-center justify-between'>
@@ -35,9 +45,9 @@ export default async function InfoCharts(props: any) {
             </div>
             <div className='value font-medium text-base font-jm'>
               <span className='price font-semibold mr-1'>
-                {nFormatter(props.data?.totalSupply, 3, '$')}
+                {nFormatter(data?.totalSupply, 3, '$')}
               </span>
-              <span className='tag'>{props.data?.symbol}</span>
+              <span className='tag'>{data?.symbol}</span>
             </div>
           </div>
           <div className='info__item pb-5 mb-5 flex item-center justify-between'>
@@ -47,7 +57,7 @@ export default async function InfoCharts(props: any) {
             </div>
             <div className='value font-medium text-base font-jm'>
               <div className='price font-semibold'>
-                {currencyFormat(props.data?.priceLast24H, '$')}
+                {currencyFormat(data?.priceLast24H, '$')}
               </div>
               <div className='percent-increment text-sm text-right'>
                 {percentFormat(props?.data?.priceChange24h)}
@@ -57,16 +67,16 @@ export default async function InfoCharts(props: any) {
           <div className='info__item pb-5 mb-5 flex item-center justify-between'>
             <div className='label font-medium text-base font-jm'>
               <div>All Time High</div>
-              <div className='time text-xs'>{props.data?.athPrice?.date}</div>
+              <div className='time text-xs'>{data?.athPrice?.date}</div>
             </div>
             <div className='value font-medium text-base font-jm'>
               <div className='price font-semibold'>
-                {currencyFormat(props.data?.athPrice?.USD, '$')}
+                {currencyFormat(data?.athPrice?.USD, '$')}
               </div>
               <div className='percent-increment text-sm text-right'>
                 {percentFormat(
-                  ((props.data?.price.USD - props.data?.athPrice?.USD) * 100) /
-                    props.data?.athPrice?.USD
+                  ((data?.price.USD - data?.athPrice?.USD) * 100) /
+                    data?.athPrice?.USD
                 )}
               </div>
             </div>
@@ -75,17 +85,17 @@ export default async function InfoCharts(props: any) {
             <div className='label font-medium text-base font-jm'>
               <div>All Time Low</div>
               <div className='time text-xs'>
-                {props.data?.atlPrice?.dateUSD}
+                {data?.atlPrice?.dateUSD}
               </div>
             </div>
             <div className='value font-medium text-base font-jm'>
               <div className='price font-semibold'>
-                {currencyFormat(props.data?.atlPrice?.USD, '$')}
+                {currencyFormat(data?.atlPrice?.USD, '$')}
               </div>
               <div className='percent-increment text-sm text-right'>
                 {percentFormat(
-                  (props.data?.price?.USD - props.data?.atlPrice?.USD) /
-                    props.data?.atlPrice?.USD
+                  (data?.price?.USD - data?.atlPrice?.USD) /
+                    data?.atlPrice?.USD
                 )}
               </div>
             </div>
@@ -96,7 +106,7 @@ export default async function InfoCharts(props: any) {
             </div>
             <div className='value font-medium text-base font-jm'>
               {currencyFormat(
-                (props.data?.marketCap * 100) /
+                (data?.marketCap * 100) /
                   props?.data?.header.totalMarketCap,
                 ''
               )}

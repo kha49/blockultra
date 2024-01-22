@@ -375,7 +375,7 @@ export default function CoinInformation({ data }: any) {
             </div>
           </div>
           <div className='col-span-6 md:col-span-3 xl:col-span-4 2xl:col-span-2'>
-            {<InformationUnlock />}
+            {<InformationUnlock data={newData} />}
           </div>
         </div>
       </div>
