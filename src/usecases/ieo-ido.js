@@ -15,5 +15,5 @@ export const IeoIdoSearch = (params) =>
   apiClient.get('api/ieo-ido/search', params);
 export const TopIdoLaunchPadSearch = (params) =>
   apiClient.get('api/ieo-ido/top-ido-launch-pad/search', params);
-export const TopIdoLaunchPadDetail = (key) =>
-  apiClient.get(`api/launch-pad-detail?key=${key}`);
+export const TopIdoLaunchPadDetail = (params) =>
+  apiClient.get(`api/launch-pad-detail`, params);

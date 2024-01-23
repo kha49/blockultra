@@ -13,7 +13,8 @@ const DetailPage = async ({ params }: PropsType) => {
   try {
     //@ts-ignore
     const data: LaunchPadInfomationType = await TopIdoLaunchPadDetail(
-      params.slug[0]
+      
+      { key: params.slug[0],time: '24h' }
     );
 
     return <LaunchPadInfomation category={params.category} data={data} />;

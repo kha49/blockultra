@@ -4,8 +4,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer } from 'react-toastify';
 import dynamic from 'next/dynamic';
 
-const Header = dynamic(() => import('@/components/CommonLayouts/Header/Index'), { ssr: false })
-const Footer = dynamic(() => import('@/components/CommonLayouts/Footer/Index'), { ssr: false })
+const Header = dynamic(() => import('@/components/CommonLayouts/Header/Index'), { ssr: true })
+const Footer = dynamic(() => import('@/components/CommonLayouts/Footer/Index'), { ssr: true })
 
 // Can be imported from a shared config
 const locales = ['en', 'vn'];

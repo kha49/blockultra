@@ -4,7 +4,6 @@ import React from 'react';
 import { IIeoIdoData } from '../../types';
 import { IeoIdoCategory } from '../../config';
 import { useParams } from 'next/navigation';
-import { IEO_IDO_CONSTANTS } from '../../../enums';
 
 type IChildrenCallback = {
   onOpen: () => void;

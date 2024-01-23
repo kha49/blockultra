@@ -15,7 +15,6 @@ import './style.scss';
 import IntroduceCoin from './popup/introduce-coin/IntroduceCoin';
 import IconFdv from '@/assets/icons/IconFdv';
 import Fdv from './popup/fdv/Fdv';
-import Links from './popup/links/Links';
 import Backers from './popup/backers/Backers';
 import IconETH from '@/assets/icons/IconETH';
 import WalletAddress from './popup/wallet/WalletAddress';
@@ -23,10 +22,10 @@ import WalletBrand from './popup/wallet/WalletBrand';
 import Categories from './popup/categories/Categories';
 import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
 import { IDetail } from '@/models/IDetail';
+import Links from './popup/links/Links';
 
 export default function CoinInformation({ data }: any) {
   let newData = data as IDetail;
-
   return (
     <div>
       <div className='bg-white py-6 px-2 md:px-6 coin-detail'>
@@ -120,6 +119,9 @@ export default function CoinInformation({ data }: any) {
             <div className='flex justify-start md:justify-end flex-wrap gap-2'>
               <span className='text-sm text-grey-500'>Categories</span>
               <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
+                {data?.category}
+              </span>
+              {/* <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
                 Wallet
               </span>
               <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
@@ -127,7 +129,7 @@ export default function CoinInformation({ data }: any) {
               </span>
               <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'>
                 Defi
-              </span>
+              </span> */}
               <Popover
                 placement='bottomRight'
                 content={<Categories data={newData} />}
@@ -145,16 +147,19 @@ export default function CoinInformation({ data }: any) {
               <div>
                 <div className='flex flex-wrap gap-2 md:gap-4 items-center'>
                   <span className='text-xl md:text-3xl font-bold'>
-                    {
-                      newData?.price?.USD ? nFormatter(newData?.price?.USD, 5, '$') : ''
-                    }
+                    {newData?.price?.USD
+                      ? nFormatter(newData?.price?.USD, 5, '$')
+                      : ''}
                   </span>
                   <span className='text-sp-green-500 text-xs text-base'>
-                    {percentFormat(newData?.price_change_in_24h)}
+                    {percentFormat(newData?.price_change_in_24h * 100)}
                   </span>
                 </div>
                 <div className='flex items-center flex-wrap coin-detail__range text-grey-700'>
-                  <span> {currencyFormat(newData?.atlPrice?.USD || 0, '$')}</span>
+                  <span>
+                    {' '}
+                    {currencyFormat(newData?.atlPrice?.USD || 0, '$')}
+                  </span>
                   <div className='price__range'>
                     <div className='price__range--active'></div>
                   </div>
@@ -179,9 +184,14 @@ export default function CoinInformation({ data }: any) {
                     {currencyFormat(newData?.idoPrice, '$')}
                   </span>
                   <span className='text-xs text-sp-green-500'>
-                    ({
-                      newData?.price?.USD ? currencyFormat(newData?.price.USD / newData?.idoPrice, '') : 0
-                    } x)
+                    (
+                    {newData?.price?.USD
+                      ? currencyFormat(
+                          newData?.price.USD / newData?.idoPrice,
+                          ''
+                        )
+                      : 0}{' '}
+                    x)
                   </span>
                 </div>
                 <div className='flex items-center mb-1'>
@@ -191,12 +201,12 @@ export default function CoinInformation({ data }: any) {
                   </span>
                   <span className='text-xs text-sp-green-500'>
                     (
-                      {
-                        newData?.price?.USD ? currencyFormat(
+                    {newData?.price?.USD
+                      ? currencyFormat(
                           newData?.price.USD / (newData?.atlPrice?.USD || 0),
                           ''
-                        ) : 0
-                      }
+                        )
+                      : 0}
                     x)
                   </span>
                 </div>
@@ -251,12 +261,15 @@ export default function CoinInformation({ data }: any) {
               </div>
             </div>
             <div className='flex items-center gap-4 xl:gap-8 2xl:gap-[110px] flex-wrap'>
-              <div className='mt-3 xl:mt-7'>
-                <span className='text-grey-500 text-sm mb-1'>Contracts</span>
-                <Contracts tokens={newData?.tokens} />
-              </div>
+              {newData?.tokens && (
+                <div className='mt-3 xl:mt-7'>
+                  <span className='text-grey-500 text-sm mb-1'>Contracts</span>
+                  <Contracts tokens={newData?.tokens} />
+                </div>
+              )}
+
               <div className='flex flex-wrap gap-4 md:gap-8 xl:gap-[110px] xl:mt-7'>
-                <div>
+                {/* <div>
                   <p className='text-grey-500 text-sm'>Links</p>
                   <div className='flex gap-4 xl:gap-5 py-[6px]'>
                     <svg
@@ -341,7 +354,9 @@ export default function CoinInformation({ data }: any) {
                       </span>
                     </Popover>
                   </div>
-                </div>
+                </div> */}
+
+                <Links links={newData?.links}></Links>
                 <Backers backers={newData?.backers} />
                 {/* <div>
                   <p className='text-grey-500 text-sm'>Backers</p>
@@ -391,7 +406,9 @@ function Contracts(props: any) {
       <IconETH />
       <span className='text-sm'>{tokens[0]?.platformName}</span>
       <Popover content={<WalletAddress tokens={props.tokens} />}>
-        <IconCaretDown />
+        <div>
+          <IconCaretDown />
+        </div>
       </Popover>
       <span className='text-primary-500 max-w-[62px] lg:max-w-[124px] truncate'>
         {tokens[0]?.address}

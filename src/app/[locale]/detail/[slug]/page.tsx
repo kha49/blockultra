@@ -1,6 +1,4 @@
 import './index.scss';
-import { FetchCoinDetail } from '@/usecases/coin-info';
-import { IDetail } from '@/models/IDetail';
 import { Page } from '@/components/page';
 import dynamic from 'next/dynamic';
 

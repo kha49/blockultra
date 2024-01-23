@@ -5,13 +5,13 @@ import { currencyFormat, nFormatter } from '@/helpers';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
-const Rounds = (props: any) => {
-  const dataProps = props.data;
-  console.log('====================================');
-  console.log('dataProps', dataProps);
-  console.log('====================================');
-  if (!dataProps) return;
-  const data = dataProps.unlocks || [];
+const Rounds = ({ data, tokenInfo }: any) => {
+  // const dataProps = props.data;
+  // console.log('====================================');
+  // console.log('dataProps', dataProps);
+  // console.log('====================================');
+  if (!data) return;
+  const unlocksData = data.unlocks || [];
 
   // const totalTokens: number =
   //   (dataProps.unlockedTokens * 100) / dataProps.unlockedTokensPercent;
@@ -66,20 +66,20 @@ const Rounds = (props: any) => {
           <div className='w-full max-w-[380px]'>
             <div className='flex items-center justify-between'>
               <span className='text-grey-700 text-xs md:text-sm font-semibold font-jsb'>
-                {value.unlockedPercent}%
+                {nFormatter(value.unlockedPercent, 2, '%', true)}
               </span>
               <span className='text-grey-700 text-xs md:text-sm font-semibold font-jsb'>
-                {value.lockedPercent}%
+                {nFormatter(value.lockedPercent, 2, '%', true)}
               </span>
             </div>
             <div className='py-2 relative'>
               <div
                 className='unlock absolute top-1/2 left-0 -translate-y-1/2 bg-primary-500 h-1.5 rounded-xl z-20'
-                style={{ width: value.unlockedPercent }}
+                style={{ width: value.unlockedPercent + '%' }}
               ></div>
               <div
                 className='next-lock absolute top-1/2 left-0 -translate-y-1/2 bg-orange-500 h-1.5 rounded-xl z-10'
-                style={{ width: value.lockedPercent }}
+                style={{ width: value.lockedPercent + '%' }}
               ></div>
               <div className='locked bg-grey-300 w-full h-1.5 rounded-xl'></div>
             </div>
@@ -128,16 +128,14 @@ const Rounds = (props: any) => {
                 <div className='w-full mb-4'>
                   <div className='flex items-center justify-center gap-3'>
                     <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
-                      {currencyFormat(value.allocationPercent, '')}%
+                      {currencyFormat(value.nextUnlockPercent, '')}%
                     </span>
                   </div>
                   <div className='text-grey-500 text-sm'>
-                    {nFormatter(value.lockedPercent, 2, '')}~
-                    {nFormatter(value.lockedPercent * dataProps.price, 2, '$')}{' '}
-                    (
+                    {nFormatter(value?.nextUnlockToken, 2, '')}~
+                    {nFormatter(value?.nextUnlockValue, 2, '$')} (
                     {nFormatter(
-                      (value.lockedPercent * 100) /
-                        (dataProps.marketCap / dataProps.price),
+                      (value?.nextUnlockValue * 100) / tokenInfo.marketCap,
                       2,
                       ''
                     )}
@@ -164,7 +162,7 @@ const Rounds = (props: any) => {
       <div className='overflow-x-auto hide-scroll'>
         <Table
           columns={columns}
-          dataSource={data}
+          dataSource={unlocksData}
           pagination={{ position: ['none'] }}
         />
       </div>

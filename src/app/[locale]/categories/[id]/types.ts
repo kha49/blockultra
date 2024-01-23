@@ -26,7 +26,7 @@ export type CategoryOverviewType = {
 
 export type CategoryCoinsFilterType = {
   category_id?: string | number;
-  search_key?: string;
+  search_key?: string | string[];
   limit?: number;
   page?: number;
   sort_by?: string;
@@ -52,4 +52,10 @@ export type CategoryCoinsType = {
   volume24h: string;
   marketCap: string;
   chart: string;
+};
+
+export type SearchProject = {
+  id: number;
+  name: string;
+  slug: string;
 };

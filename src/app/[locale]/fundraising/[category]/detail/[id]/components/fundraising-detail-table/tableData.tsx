@@ -1,6 +1,5 @@
 import { memo, useCallback, useEffect, useState } from 'react';
 import { Button, Checkbox, Pagination, Select, Table, Tag } from 'antd';
-import { FetchCoins, SearchCoinsFilter } from '@/usecases/home';
 import { isArray } from 'lodash';
 import SelectItemTable from '@/components/SelectItemTable';
 import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
@@ -13,7 +12,6 @@ import {
 import { renderRangePaging } from '@/helpers';
 import { IResponseAxios } from '@/models/IResponse';
 import { ORDER } from '@/helpers/constants';
-import { useDebounce } from 'usehooks-ts';
 import { ISearchFilter } from '@/app/home/coin/props';
 import { useParams } from 'next/navigation';
 import { tabFundraisingTable } from './columns';
@@ -26,11 +24,12 @@ import {
 
 interface IPropsTableData {
   tabKey: string;
+  slug: string;
   //   bankerId: string;
 }
 
 const TableData = (props: IPropsTableData) => {
-  const { tabKey } = props;
+  const { tabKey, slug } = props;
   const params = useParams();
   const { id } = params;
   const [data, setData] = useState<any[]>([]);
@@ -53,6 +52,7 @@ const TableData = (props: IPropsTableData) => {
       search_key: keyFilter.join(','),
       backer_id: id,
       key: 'cmt-digital',
+      slug,
     });
 
     if (!response) return;
@@ -61,7 +61,7 @@ const TableData = (props: IPropsTableData) => {
     setTotal(total!!);
 
     /* #endregion */
-  }, [pageSize, currentPage, order, keyFilter]);
+  }, [pageSize, currentPage, order, keyFilter, slug]);
 
   useEffect(() => {
     getTableData();

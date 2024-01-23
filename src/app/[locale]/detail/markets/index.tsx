@@ -6,7 +6,7 @@ import SelectMarket from './select-market/SelectMarket';
 import { ColumnsType } from 'antd/es/table';
 import Image from 'next/image';
 import SelectItemTable from '@/components/SelectItemTable';
-import { currencyFormat, percentFormat } from '@/helpers';
+import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
 import {
   FetchHistoricals,
   FetchSpot,
@@ -61,7 +61,7 @@ const columns: ColumnsType<ISpot> = [
     dataIndex: 'volume24h',
     key: 'volume24h',
     width: 200,
-    render: (_, { volume24h }) => <>{currencyFormat(volume24h, '$')}</>,
+    render: (_, { volume24h }) => <>{nFormatter(volume24h, 2,'$')}</>,
   },
   {
     title: 'Market Share',
@@ -112,14 +112,14 @@ const columnsHistoricals: ColumnsType<IHistorical> = [
     dataIndex: 'volume',
     key: 'volume',
     width: 200,
-    render: (_, { volume }) => <>{currencyFormat(volume, '$')}</>,
+    render: (_, { volume }) => <>{nFormatter(volume,2, '$')}</>,
   },
   {
     title: 'Market Cap',
     dataIndex: 'mc',
     key: 'mc',
     width: 200,
-    render: (_, { marketcap }) => <>{currencyFormat(marketcap, '$')}</>,
+    render: (_, { marketcap }) => <>{nFormatter(marketcap, 2,'$')}</>,
   },
 ];
 

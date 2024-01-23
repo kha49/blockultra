@@ -1,9 +1,9 @@
-'use client';
 import { FundraisingType, getBreadcrumbConfig } from './config';
 import './index.scss';
 import { Page } from '@/components/page';
-import { FunDTable } from './components/fundraising-table';
-import CommonPage from '@/components/page/common-page';
+import dynamic from 'next/dynamic';
+
+const FunDTable = dynamic(() => import('./components/fundraising-table'), { ssr: false })
 
 type PageProps = {
   params: {
@@ -14,11 +14,11 @@ type PageProps = {
 
 export default function Fundraising({ params }: PageProps) {
   return (
-    <CommonPage
+    <Page
       breadcrumbs={getBreadcrumbConfig(params.category)}
       classnames='fundraising'
     >
       <FunDTable />
-    </CommonPage>
+    </Page>
   );
 }

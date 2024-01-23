@@ -4,13 +4,18 @@ import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
 import moment from 'moment';
 import React from 'react';
 
-const Progress = (props: any) => {
-  const data = props.data;
+const Progress = ({tokenInfo, data}: any) => {
+  // const data = props.data;
+  console.log('====================================');
+  console.log("tokenInfo", tokenInfo);
+  console.log('====================================');
   if (!data) return;
   const date = new Date(data.totalRemainingTime || Date.now);
-  const unlockPercent: number = data.totalUnlockedPercent || 0;
-  const lockedPercent: number = data.totalLockedPercent || 0;
+  let unlockPercent: number = data.totalUnlockedPercent || 0;
+  let lockedPercent: number = data.totalLockedPercent || 0;
   const nextUnlockPercent: number = data.totalNextUnlockPercent;
+  unlockPercent = unlockPercent < 100 ? unlockPercent : 100;
+  lockedPercent = lockedPercent < 100 ? lockedPercent : 100;
   const nextUnlockToken =
     (data.unlockedTokens || 0 * nextUnlockPercent || 0) / unlockPercent || 1;
 
@@ -84,10 +89,16 @@ const Progress = (props: any) => {
               </span>
             </div>
             <div className='text-grey-500 text-sm'>
-              {nFormatter(nextUnlockToken, 2, '')}~
-              {nFormatter(nextUnlockToken * data.price, 2, '$')} (
+              {nFormatter(data?.totalNextUnlockToken, 2, '')}~
               {nFormatter(
-                (nextUnlockToken * 100) / (data.marketCap / data.price),
+                data?.totalNextUnlockToken * tokenInfo.price.USD,
+                2,
+                '$'
+              )}{' '}
+              (
+              {nFormatter(
+                (data?.totalNextUnlockToken * tokenInfo.price.USD * 100) /
+                  (tokenInfo.marketCap / tokenInfo.price.USD),
                 2,
                 ''
               )}

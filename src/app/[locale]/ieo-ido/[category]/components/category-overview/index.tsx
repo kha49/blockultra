@@ -3,19 +3,23 @@ import { nFormatter, percentFormat } from '@/helpers';
 import { Flex, Select } from 'antd';
 import { LaunchPadInfomationType } from '../../types';
 import GraphLine from '../graph-line';
+import { useCallback, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { TopIdoLaunchPadDetail } from '@/usecases/ieo-ido';
+import { TIME_FILTER } from '@/helpers/constants';
 
 const filterData = [
   {
     label: '24h',
-    value: '24h',
+    value: TIME_FILTER['24H'],
   },
   {
     label: '7d',
-    value: '7d',
+    value: TIME_FILTER['7D'],
   },
   {
     label: '1m',
-    value: '1m',
+    value: TIME_FILTER['1M'],
   },
 ];
 
@@ -24,7 +28,22 @@ type PropsType = {
 };
 
 export default function CategoryOverview(props: PropsType) {
-  const { losers, gainers } = props.info;
+  const params = useParams<{ slug: string[] }>();
+  const [info, setInfo] = useState(props.info);
+  const { losers, gainers } = info;
+
+  const getLaunchPadDetail = useCallback(
+    async (filter:any) => {
+      filter.key = params.slug[0];
+      filter.time = TIME_FILTER;
+      const response: any = await TopIdoLaunchPadDetail(filter);
+
+      if (response) {
+        setInfo(response);
+      }
+    },
+    []
+  );
 
   return (
     <Flex
@@ -39,6 +58,7 @@ export default function CategoryOverview(props: PropsType) {
           options={filterData}
           defaultValue={filterData[0].value}
           size='large'
+          onChange={(value) => getLaunchPadDetail({ time: value })}
         />
       </div>
 

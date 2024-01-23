@@ -28,7 +28,7 @@ const tabs = [
   },
 ];
 
-const FundraisingDetailTable = () => {
+const FundraisingDetailTable = ({ slug }: { slug: string }) => {
   const [tabActive, setTabActive] = useState('por');
 
   const _renderTabs = () => {
@@ -53,7 +53,7 @@ const FundraisingDetailTable = () => {
           {_renderTabs()}
         </Flex>
       </Flex>
-      <TableData key={tabActive} tabKey={tabActive} />
+      <TableData key={tabActive} tabKey={tabActive} slug={slug} />
     </Flex>
   );
 };

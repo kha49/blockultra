@@ -4,7 +4,7 @@ import Progress from './progress/Progress';
 import Schedule from './schedule/Schedule';
 import { useState, useEffect } from 'react';
 
-const Unlock = () => {
+const Unlock = ({tokenInfo}:any) => {
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -12,14 +12,18 @@ const Unlock = () => {
   }, []);
 
   async function fetchUnlock() {
-    let data = await FetchUnlockToken({ coin_key: 'avalanche' });
+    let data = await FetchUnlockToken({
+      coin_key: 'avalanche',
+      status: 'round',
+    });
+    //status: ended, upcoming, round
     setData(data);
   }
 
   return (
     <div>
-      <Progress data={data} />
-      <Schedule data={data} />
+      <Progress data={data} tokenInfo={tokenInfo} />
+      <Schedule data={data} tokenInfo={tokenInfo} />
     </div>
   );
 };

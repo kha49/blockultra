@@ -240,7 +240,7 @@ const Fundraising = () => {
     return res.map((e: ISearchFilter) => ({
       id: e.key,
       name: e.name,
-      code: e.key,
+      code: e.slug,
       thumb: '',
       isSelected: false,
     }));

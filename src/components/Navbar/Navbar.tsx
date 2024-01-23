@@ -262,7 +262,7 @@ const Navbar = () => {
   const [activeMenuMobile, setActiveMenuMobile] = useState<number>(0);
   const activeMobileHandler = (id: number, href?: string) => {
     if (href) {
-      return router.push(`/${params.locale}/${href}`);
+      return router.push(`/${params.locale}${href}`);
     }
 
     if (id === activeMenuMobile) {
@@ -286,7 +286,7 @@ const Navbar = () => {
                 {navItem?.href ? (
                   <Link
                     prefetch={false}
-                    href={`/${params.locale}/${navItem.href}`}
+                    href={`/${params.locale}${navItem.href}`}
                     className='menu text-base font-semibold font-jb hover:text-primary-500 text-grey-700'
                   >
                     {navItem.categoryName}
@@ -307,7 +307,7 @@ const Navbar = () => {
                             <div className='ingredient' key={sub.id}>
                               <Link
                                 prefetch={false}
-                                href={`/${params.locale}/${sub.href}`}
+                                href={`/${params.locale}${sub.href}`}
                               >
                                 <div className='ingredient__title text-base font-bold text-grey-700 mb-3'>
                                   {sub.name}
@@ -349,7 +349,7 @@ const Navbar = () => {
                           className='flex gap-2 p-3 sub-menu-item'
                           key={sub.id}
                           prefetch={false}
-                          href={`/${params.locale}/${sub.href}`}
+                          href={`/${params.locale}${sub.href}`}
                         >
                           {sub?.icons}
                           <span>{sub.name}</span>
@@ -412,7 +412,7 @@ const Navbar = () => {
                             {sub.href ? (
                               <Link
                                 prefetch={false}
-                                href={`/${params.locale}/${sub.href}`}
+                                href={`/${params.locale}${sub.href}`}
                                 className='ingredient__title text-base font-semibold font-jb text-grey-700 mb-3'
                               >
                                 {sub.name}
@@ -430,7 +430,7 @@ const Navbar = () => {
                                   sublv2?.href ? (
                                     <Link
                                       prefetch={false}
-                                      href={`/${params.locale}/${sublv2.href}`}
+                                      href={`/${params.locale}${sublv2.href}`}
                                       className='flex gap-2 p-3 sub-menu-item rounded'
                                       key={sublv2.id}
                                     >
@@ -468,7 +468,7 @@ const Navbar = () => {
                     {navItem?.subCateLevel1.map((sub: any) =>
                       sub?.href ? (
                         <Link
-                          href={`/${params.locale}/${sub.href}`}
+                          href={`/${params.locale}${sub.href}`}
                           className='flex gap-2 p-3 sub-menu-item'
                           key={sub.id}
                           prefetch={false}

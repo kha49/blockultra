@@ -1,10 +1,16 @@
-import DetailTabs from './components/tabs';
-import CoinInformation from './components/coinInfo';
+import DetailTabs from './components/exchange-detail-table/tabs';
+import CoinInformation from './components/exchange-detail-overview';
 import { Flex } from 'antd';
-import CoinTableInfo from './components/coinTable';
+import CoinTableInfo from './components/exchange-detail-table';
 import { Page } from '@/components/page';
+type PageProps = {
+  params: {
+    locale: 'vi' | 'en';
+    slug: string;
+  };
+};
 
-export default function Detail({params} : any) {
+export default function Detail({ params }: PageProps) {
   const breadcrumbs = [
     {
       title: 'BlockUltra',

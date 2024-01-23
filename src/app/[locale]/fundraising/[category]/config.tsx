@@ -59,7 +59,7 @@ const roundsColumns: ColumnsType<any> = [
     fixed: true,
     render: (_, { name, icon, _id }) => (
       <Flex align={'center'} gap={8}>
-        <Image src={icon} alt={'icon'} width={24} height={24} />
+        <img src={icon} alt={'icon'} width={24} height={24} />
         <span>{name}</span>
       </Flex>
     ),

@@ -1,19 +1,20 @@
 'use client';
-import { Flex, Pagination, Table } from 'antd';
+import { Flex } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
-import SelectItemTable from '@/components/SelectItemTable';
 import './styles.scss';
-import HeadFilter from '../head-filter';
 import { getColumnsFundraising, getFundraisingPathApi } from '../../config';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { IResponseAxios } from '@/models/IResponse';
 import { FetchFundraising } from '@/usecases/fundraising';
 import { ORDER } from '@/helpers/constants';
-import BaseTable from '@/components/BaseTable';
 import { useDebounce } from 'usehooks-ts';
 import { isArray } from 'lodash';
+import dynamic from 'next/dynamic';
 
-export const FunDTable = () => {
+const HeadFilter = dynamic(() => import('../head-filter'), { ssr: false })
+const BaseTable = dynamic(() => import('@/components/BaseTable'), { ssr: false })
+
+export default function FunDTable() {
   const params = useParams<{ locale: string; category: string }>();
 
   const [data, setData] = useState<any[]>([]);

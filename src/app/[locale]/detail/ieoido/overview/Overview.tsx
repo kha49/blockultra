@@ -1,16 +1,17 @@
-import { nFormatter } from '@/helpers';
+import BackerList from '@/components/BackerList/BackerList';
+import { currencyFormat, nFormatter } from '@/helpers';
 import React from 'react';
 
 const Overview = (props: any) => {
-  const data = props.data;
+  const overView = props.overView;
 
-  let totalRaise = 0, totalePrice = 0 , totalTokens = 0;
+  // let totalRaise = 0, totalePrice = 0 , totalTokens = 0;
 
-  for (let i in data) {
-    totalRaise += data[i].raise?.USD | 0
-    totalePrice += data[i].price?.USD |0
-    totalTokens += data[i].tokensForSale | 0;
-  }
+  // for (let i in data) {
+  //   totalRaise += data[i].raise?.USD | 0
+  //   totalePrice += data[i].price?.USD |0
+  //   totalTokens += data[i].tokensForSale | 0;
+  // }
   return (
     <div className='mb-6'>
       <div className='text-grey-700 text-xl font-bold font-jb mb-2'>
@@ -30,7 +31,7 @@ const Overview = (props: any) => {
                   Total Raise
                 </div>
                 <div className='text-grey-700 text-base font-semibold font-jsb'>
-                  {nFormatter(totalRaise, 2, '$')}
+                  {nFormatter(overView?.totalRaise, 2, '$')}
                 </div>
               </div>
               <div className='text-center'>
@@ -38,7 +39,10 @@ const Overview = (props: any) => {
                   Avg Price
                 </div>
                 <div className='text-grey-700 text-base font-semibold font-jsb'>
-                  {nFormatter(totalePrice / data.length,10,'$')}
+                  {currencyFormat(overView?.avgPrice, '$', {
+                    numberRound: 4,
+                    isAutoZero: false,
+                  })}
                 </div>
               </div>
               <div className='text-center'>
@@ -46,7 +50,11 @@ const Overview = (props: any) => {
                   Total Tokens Offered
                 </div>
                 <div className='text-grey-700 text-base font-semibold font-jsb'>
-                {nFormatter(totalTokens,2,"XXX")}
+                  {nFormatter(
+                    overView?.totalTokensOffered,
+                    2,
+                    props?.tokenInfo?.symbol
+                  )}
                 </div>
               </div>
             </div>
@@ -55,10 +63,17 @@ const Overview = (props: any) => {
         <div className='box-shadow-common'>
           <div className='p-6 text-center border-b border-grey-300'>
             <div className='text-grey-700 text-base font-bold font-jb'>
-              Launchpads <span className='text-grey-500'>6</span>
+              Launchpads{' '}
+              <span className='text-grey-500'>{overView?.backers?.length}</span>
             </div>
           </div>
-          <div className='p-6'>
+
+          <BackerList
+            backers={overView.backers}
+            initNumber={4}
+            type={'backer'}
+          />
+          {/* <div className='p-6'>
             <div className='flex items-center gap-10 flex-wrap'>
               <div className='flex gap-2'>
                 <img src='/Dao.svg' alt='dao' />
@@ -97,7 +112,7 @@ const Overview = (props: any) => {
                 +3 Launchpad
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

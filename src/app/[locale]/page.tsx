@@ -3,9 +3,9 @@ import { notFound } from 'next/navigation';
 import { locales } from '../../config';
 import dynamic from 'next/dynamic';
 
-const Banner = dynamic(() => import('../home/banner'), { ssr: false })
+const Banner = dynamic(() => import('../home/banner'), { ssr: true })
 const RenderTabs = dynamic(() => import('../home/RenderTabs/RenderTabs'), { ssr: false })
-const Introduce = dynamic(() => import('../home/introduce'), { ssr: false })
+const Introduce = dynamic(() => import('../home/introduce'), { ssr: true })
 
 type Props = {
   params: { locale: string };

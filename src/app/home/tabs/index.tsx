@@ -8,6 +8,8 @@ import {
 } from '@/assets/icons';
 import IconFundraising from '@/assets/icons/IconFundraising';
 import IconUpcomingIEOIDO from '@/assets/icons/IconUpcomingIEOIDO';
+import animationData from "./icons/tablet.json";
+import Lottie from "lottie-react";
 
 const data: any = [
   {
@@ -30,7 +32,9 @@ const data: any = [
   },
   {
     id: 'trending',
-    icon: <IconTrending />,
+    icon: <Lottie
+      animationData={animationData}
+    />,
     label: 'Trending',
     isActive: false,
   },

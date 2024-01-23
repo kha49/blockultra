@@ -1,8 +1,10 @@
 import './index.scss';
-import { UnlockTimeTop } from './components/unlock-time-top';
-import { UsTable } from './components/us-table';
 import { useUnlockTime } from './logic/useUnlockTime';
 import { Page } from '@/components/page';
+import dynamic from 'next/dynamic';
+
+const UnlockTimeTop = dynamic(() => import('./components/unlock-time-top'), { ssr: false })
+const UsTable = dynamic(() => import('./components/us-table'), { ssr: false })
 
 const breadcrumbConfig = [
   {

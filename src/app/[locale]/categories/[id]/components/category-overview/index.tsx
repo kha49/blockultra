@@ -2,29 +2,27 @@ import Doughnut from '@/components/DoughnutChart';
 import { nFormatter, percentFormat } from '@/helpers';
 import { Select } from 'antd';
 import { CategoryOverviewType } from '../../types';
-import GraphLine from '../graph-line';
+import GraphLine from '../graph-line'; 
+import { TIME_FILTER } from '@/helpers/constants';
 
-const filterData = [
+const filterData: { label: string; value: TIME_FILTER }[] = [
   {
     label: '24h',
-    value: '24h',
+    value: TIME_FILTER['24H'],
   },
   {
     label: '7d',
-    value: '7d',
+    value: TIME_FILTER['7D'],
   },
   {
-    label: '30d',
-    value: '30d',
-  },
-  {
-    label: '1y',
-    value: '1y',
+    label: '1m',
+    value: TIME_FILTER['1M'],
   },
 ];
 
 type PropsType = {
   category: CategoryOverviewType;
+  onFilter: ({ time }: { time: TIME_FILTER }) => void;
 };
 
 export default function CategoryOverview(props: PropsType) {
@@ -35,8 +33,9 @@ export default function CategoryOverview(props: PropsType) {
       <div className='w-full flex items-center flex-wrap justify-between'>
         <h1 className='text-gray-700 text-2xl font-bold'>Currency</h1>
         <Select
-          defaultValue={filterData[0].value}
+          defaultValue={TIME_FILTER['24H']}
           options={filterData}
+          onChange={(value) => props.onFilter({ time: value })}
           size='large'
         />
       </div>

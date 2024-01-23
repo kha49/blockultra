@@ -7,6 +7,7 @@ import CategoryOverview from './components/category-overview';
 import CategoryTable from './components/category-table';
 import { getBreadcrumbConfig } from './components/category-table/config';
 import { FetchCategoryDetail } from '@/usecases/category';
+import { TIME_FILTER } from '@/helpers/constants';
 type PageProps = {
   params: {
     id: string;
@@ -18,13 +19,17 @@ export default function CategoryPage(props: PageProps) {
 
   const [category, setCategory] = useState<any>({});
 
-  const getCategoryDetail = async (id: any) => {
-    const response = await FetchCategoryDetail({ id });
+  const getCategoryDetail = async ({
+    time = TIME_FILTER['24H'],
+  }: {
+    time?: TIME_FILTER;
+  } = {}) => {
+    const response = await FetchCategoryDetail({ id: props.params.id, time });
     setCategory(response);
   };
 
   useEffect(() => {
-    getCategoryDetail(props.params.id);
+    getCategoryDetail();
   }, [props.params]);
 
   return (
@@ -33,7 +38,7 @@ export default function CategoryPage(props: PageProps) {
       contentClassnames='py-8'
       breadcrumbs={breadcrumbs}
     >
-      <CategoryOverview category={category} />
+      <CategoryOverview onFilter={getCategoryDetail} category={category} />
       <CategoryTable />
     </Page>
   );

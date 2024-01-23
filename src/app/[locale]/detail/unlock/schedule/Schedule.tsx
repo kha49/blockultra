@@ -7,7 +7,7 @@ import Rounds from './Rounds/Rounds';
 import Upcomming from './Upcomming/Upcomming';
 import Chart from './Chart/index';
 
-const Schedule = (props: any) => {
+const Schedule = ({data, tokenInfo}: any) => {
   const [unlock, setUnlock] = useState('Rounds');
 
   const handler = (e: any) => {
@@ -17,12 +17,12 @@ const Schedule = (props: any) => {
   const renderUnlock = () => {
     switch (unlock) {
       case 'Rounds':
-        return <Rounds data={props.data} />;
+        return <Rounds data={data} tokenInfo={tokenInfo} />;
       case 'Upcomming':
       case 'Past':
-        return <Upcomming />;
+        return <Upcomming tokenInfo={tokenInfo} />;
       case 'Chart':
-        return <Chart data={props.data} />;
+        return <Chart data={data} />;
       default:
         break;
     }

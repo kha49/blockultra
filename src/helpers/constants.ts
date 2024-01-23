@@ -90,3 +90,9 @@ export const ORDER: { [key: string]: string } = {
 };
 
 export const TEXT_RECENT_DATA = 'recent_data';
+
+export enum TIME_FILTER {
+  '24H' = '24h',
+  '7D' = '7d',
+  '1M' = '1m',
+}

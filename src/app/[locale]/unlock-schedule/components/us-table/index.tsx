@@ -23,7 +23,7 @@ import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
 import NextUnlock from '../nextUnlock';
 import Link from 'next/link';
 
-export const UsTable = () => {
+export default function UsTable() {
   const columns: ColumnsType<IUnlock> = [
     {
       title: 'Name',

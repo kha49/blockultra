@@ -37,13 +37,13 @@ const CoinTabInfo = (props: any) => {
       id: '4',
       disable: false,
       label: 'Fundraising',
-      component: <Fundraising />,
+      component: <Fundraising data={props.data} slug={props.slug} />,
     },
     {
       id: '5',
       disable: false,
       label: 'IDO/IEO',
-      component: <IEOIDODetail />,
+      component: <IEOIDODetail data={props.data} slug={props.slug} />,
     },
     {
       id: '6',
@@ -55,7 +55,7 @@ const CoinTabInfo = (props: any) => {
       id: '7',
       disable: false,
       label: 'Unlock',
-      component: <Unlock />,
+      component: <Unlock tokenInfo={props.data} />,
     },
     {
       id: '8',

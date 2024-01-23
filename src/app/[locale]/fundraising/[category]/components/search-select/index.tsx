@@ -74,9 +74,9 @@ export default function SearchSelect({ onChange, layout }: IHeaderFilter) {
     if (!res) return [];
 
     return res.map((e: ISearchFilter) => ({
-      id: isFun ? e.key : e.slug,
+      id:  e.slug,
       name: e.name,
-      code: isFun ? e.key : e.slug,
+      code: e.slug,
       thumb: '',
       isSelected: false,
     }));

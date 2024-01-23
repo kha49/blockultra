@@ -27,16 +27,15 @@ export default async function InfoCharts(props: any) {
     <div className='info-charts'>
       <div className='info-charts__wrapper grid grid-cols-1 xl:grid-cols-3 gap-4'>
         <div className='chart xl:col-span-2'>
-          {
-            data?.symbol ? (
-              <AdvancedRealTimeChart
-                symbol={data?.symbol + 'USD'}
-                interval={'60'}
-                autosize
-              ></AdvancedRealTimeChart>
-            ) : ''
-          }
-         
+          {data?.symbol ? (
+            <AdvancedRealTimeChart
+              symbol={data?.symbol + 'USD'}
+              interval={'60'}
+              autosize
+            ></AdvancedRealTimeChart>
+          ) : (
+            ''
+          )}
         </div>
         <div className='info p-6'>
           <div className='info__item pb-5 mb-5 flex item-center justify-between'>
@@ -57,10 +56,13 @@ export default async function InfoCharts(props: any) {
             </div>
             <div className='value font-medium text-base font-jm'>
               <div className='price font-semibold'>
-                {currencyFormat(data?.priceLast24H, '$')}
+                {currencyFormat(
+                  data?.price?.USD * (1-data?.price_change_in_24h),
+                  '$'
+                )}
               </div>
               <div className='percent-increment text-sm text-right'>
-                {percentFormat(props?.data?.priceChange24h)}
+                {percentFormat(props?.data?.price_change_in_24h * 100)}
               </div>
             </div>
           </div>
@@ -84,9 +86,7 @@ export default async function InfoCharts(props: any) {
           <div className='info__item pb-5 mb-5 flex item-center justify-between'>
             <div className='label font-medium text-base font-jm'>
               <div>All Time Low</div>
-              <div className='time text-xs'>
-                {data?.atlPrice?.dateUSD}
-              </div>
+              <div className='time text-xs'>{data?.atlPrice?.dateUSD}</div>
             </div>
             <div className='value font-medium text-base font-jm'>
               <div className='price font-semibold'>
@@ -94,8 +94,7 @@ export default async function InfoCharts(props: any) {
               </div>
               <div className='percent-increment text-sm text-right'>
                 {percentFormat(
-                  (data?.price?.USD - data?.atlPrice?.USD) /
-                    data?.atlPrice?.USD
+                  (data?.price?.USD - data?.atlPrice?.USD) / data?.atlPrice?.USD
                 )}
               </div>
             </div>
@@ -106,8 +105,7 @@ export default async function InfoCharts(props: any) {
             </div>
             <div className='value font-medium text-base font-jm'>
               {currencyFormat(
-                (data?.marketCap * 100) /
-                  props?.data?.header.totalMarketCap,
+                (data?.marketCap * 100) / props?.data?.header.totalMarketCap,
                 ''
               )}
               %

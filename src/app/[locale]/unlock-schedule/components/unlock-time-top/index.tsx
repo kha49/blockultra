@@ -5,7 +5,7 @@ import { UnlockTime } from '../unlock-time';
 import { TUnlockTime } from '../../types';
 import { FetchUnlockHeader } from '@/usecases/token-unlock';
 
-export const UnlockTimeTop = () => {
+export default function UnlockTimeTop() {
   const [data, setData] = useState<TUnlockTime[]>([]);
 
   const _getData = async () => {

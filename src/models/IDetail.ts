@@ -13,6 +13,7 @@ export interface IDetail {
   tokens: any[];
   listingDate: string;
   idoPrice: number;
+  links: any[];
   idoPriceType: string;
   public_price_change_in24h: number;
   marketCap: string;

@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { ReactNode, useCallback, useEffect, useState } from 'react';
 import './style.scss';
@@ -20,8 +22,9 @@ import {
 import { IExchangeSpot } from '../props';
 import { COLOR_CHART, ORDER } from '@/helpers/constants';
 import { useDebounce } from 'usehooks-ts';
-import { ISearchFilter } from '../[slug]/components/coinTable/props';
+import { ISearchFilter } from '../props';
 import { isArray } from 'lodash';
+import Image from 'next/image';
 
 const columns: ColumnsType<IExchangeSpot> = [
   {
@@ -102,7 +105,14 @@ const columns: ColumnsType<IExchangeSpot> = [
     align: 'center',
     render: (_, value: any) => {
       return (
-        <div className='flex justify-center items-center'>{value.country}</div>
+        (value.country? (
+          <div className='flex justify-center items-center'>
+            <img className='w-8 h-4.5' src= {`/Flag/Country=${value.country}, Style=Flag, Radius=Off.svg`}/>
+            {/* <div>{value.country}</div> */}
+          </div>
+        ): (
+          <div>-</div>
+        ))
       );
     },
   },

@@ -11,9 +11,21 @@ export interface IExchangeSpot {
   volumn24h: number;
   volumn24hPercent: number;
 }
-
-export interface DataChart {
+interface DataChart {
   openInterests: [];
   timestamps: [];
   volumes: number[];
+}
+
+export interface ISearchFilter {
+  key: string;
+  name: string;
+  image: Image;
+}
+
+interface Image {
+  native: string;
+  icon: string;
+  x60: string;
+  x150: string;
 }

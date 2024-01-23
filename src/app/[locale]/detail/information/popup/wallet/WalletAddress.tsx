@@ -7,6 +7,10 @@ const WalletAddress = (props: any) => {
   if (!tokens) return;
   if (tokens.length <= 0) return;
 
+    console.log('====================================');
+    console.log('tokens', tokens);
+    console.log('====================================');
+
   return (
     <div className='wallet-contract max-h-[300px] overflow-y-auto'>
       {...Array.from(Array(tokens.length).keys()).map((item) => {

@@ -1,23 +1,35 @@
 'use client';
 import { Button } from 'antd';
-import React from 'react';
+import { useState } from 'react';
 
 import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
-import { useParams, useRouter } from 'next/navigation';
+import { CategoryCoinsFilterType } from '../types';
 import SearchSelect from './search-select';
 
-export default function HeadFilter() {
-  const router = useRouter();
-  const params = useParams<{ locale: string; id: string }>();
+export default function HeadFilter({
+  onFilter,
+}: {
+  onFilter: (filter: CategoryCoinsFilterType) => void;
+}) {
+  const [keys, setSearchKeys] = useState<string[]>([]);
 
   return (
     <div className='filter flex justify-between mb-4'>
       <div className='flex'>
-        <SearchSelect />
+        <SearchSelect
+          onFilterChange={(keys) => {
+            if (keys.length) {
+              setSearchKeys(keys);
+            } else {
+              onFilter({});
+            }
+          }}
+        />
         <div className='hidden xl:block md:block'>
           <Button
-            disabled
+            disabled={keys.length === 0}
             className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'
+            onClick={() => onFilter({ search_key: keys })}
           >
             <div className='flex'>
               <IconFilterCoinTab />

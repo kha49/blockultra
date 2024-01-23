@@ -1,5 +1,7 @@
-import HeaderDesktop from './HeaderDesktop/HeaderDesktop';
-import HeaderMobile from './HeaderMobile/HeaderMobile';
+import dynamic from 'next/dynamic';
+
+const HeaderDesktop = dynamic(() => import('./HeaderDesktop/HeaderDesktop'), { ssr: false })
+const HeaderMobile = dynamic(() => import('./HeaderMobile/HeaderMobile'), { ssr: false })
 
 const Header = () => {
   return (

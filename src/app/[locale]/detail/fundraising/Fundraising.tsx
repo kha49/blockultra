@@ -11,9 +11,10 @@ import { FetchCoinFundraising } from '@/usecases/coin-info';
 import { AxiosResponse } from 'axios';
 import React, { useEffect, useState } from 'react';
 import Backers from './Backers';
+import BackerList from '@/components/BackerList/BackerList';
 
 
-const Fundraising = () => {
+const Fundraising = (props:any) => {
   const [items, setItems] = useState([
     { id: 1, isVisible: false },
     { id: 2, isVisible: false },
@@ -21,6 +22,7 @@ const Fundraising = () => {
   ]);
   const [overView, setOverview] = useState<any>([]);
   const [fundraisings, setFundraisings] = useState<IFundraisings[]>([]);
+  const symbol = props.data?.symbol || '';
 
   useEffect(() => {
     const res = fetchFundraising();
@@ -33,7 +35,6 @@ const Fundraising = () => {
     });
     setOverview(res?.overview);
     setFundraisings(res?.fundraisings);
-    // setFundraisings(fundraisings)
     console.log('====================================');
     console.log('fetchFundraising', overView, fundraisings);
     console.log('====================================');
@@ -146,7 +147,8 @@ const Fundraising = () => {
               </span>
             </h1>
           </div>
-          <Backers backers={overView.backers} />
+          {/* <Backers backers={overView.backers} /> */}
+          <BackerList backers={overView.backers} initNumber={4} type={'backer'} />
           {/* <div className='w-full p-6 flex flex-wrap items-center justify-between gap-4'>
             <div className='flex justify-center items-center gap-2'>
               <div className='w-12 h-12'>
@@ -308,9 +310,9 @@ const Fundraising = () => {
               </div>
               {/* {item.isVisible ? ( */}
               <div className='text-grey-500 text-sm'>
-                {nFormatter(item.unlockedTokens || 0, 2, 'BIT')}~
+                {nFormatter(item.unlockedTokens || 0, 2, symbol)}~
                 <span className='font-semibold'>
-                  {nFormatter(item.unlockedValue || 0, 2, 'BIT')}
+                  {nFormatter(item.unlockedValue || 0, 2, symbol)}
                 </span>
               </div>
               {/* ) : (

@@ -43,7 +43,7 @@ export default function BackersModal(props: BackersModalProps) {
         footer={null}
         styles={{
           content: {
-            height: 500,
+            height: 'auto',
             overflowY: 'auto',
           },
         }}
@@ -58,7 +58,7 @@ export default function BackersModal(props: BackersModalProps) {
                     <Flex align='center' gap={8} key={item.name}>
                       <Avatar src={item.image} alt='avatar' size={32} />
                       <span className='text-sm font-normal text-[#333747]'>
-                        {item.name}
+                        {item?.name || ''}
                       </span>
                     </Flex>
                   ))}

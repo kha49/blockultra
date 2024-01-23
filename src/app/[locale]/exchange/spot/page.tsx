@@ -1,9 +1,9 @@
-'use client';
-
-import ExchangeTabs from './tabs';
-import ExchangeTable from './table';
 import { Page } from '@/components/page';
 import { Flex } from 'antd';
+import dynamic from 'next/dynamic';
+
+const ExchangeTabs = dynamic(() => import('./tabs'), { ssr: false });
+const ExchangeTable = dynamic(() => import('./table'), { ssr: false });
 
 export default function Exchange() {
   const breadcrumbs = [

@@ -1,6 +1,7 @@
 const Categories = (props: any) => {
   const data = props.data;
-  const subCategories = data.tags;
+  const subCategories = data.subCategories;
+  const category = data.category;
   if (!subCategories) return;
   if (subCategories.length <= 0) return;
   return (
@@ -11,16 +12,22 @@ const Categories = (props: any) => {
       <div className='mb-6'>
         <div className='mb-3 text-grey-700 text-sm'>Category</div>
         <div className='flex flex-wrap gap-3'>
-          {...Array.from(Array(20).keys()).map((item) => {
+          <span
+            className='flex items-center px-2 py-0.5 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'
+          >
+            {category}
+          </span>
+
+          {/* {...Array.from(Array(category?.length).keys()).map((item) => {
             return (
               <span
                 key={item}
                 className='flex items-center px-2 py-0.5 rounded text-xs text-grey-500 font-medium bg-grey-200 whitespace-nowrap cursor-pointer'
               >
-                Wallet
+                {item}
               </span>
-            );
-          })}
+            ); */}
+          {/* })} */}
         </div>
       </div>
       <div>

@@ -71,7 +71,7 @@ export default function CategoryTable() {
   return (
     <div className='mt-4 category-table'>
       <Flex vertical gap={16} className={'p-6'}>
-        <HeadFilter />
+        <HeadFilter onFilter={getCategoryCoins} />
         <Table
           columns={categoryColumns}
           dataSource={data as any}
