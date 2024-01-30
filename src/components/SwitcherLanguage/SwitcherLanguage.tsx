@@ -24,9 +24,24 @@ const SwitcherLanguage = () => {
     },
   ];
 
+  const langList = [
+    {
+      key: 'en',
+      label: 'English',
+    },
+    {
+      key: 'vn',
+      label: 'Viet Nam',
+    },
+  ];
+
   const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
     router.replace(pathname, { locale: key });
   };
+
+  const getLabelLanguage = (key: string) => {
+    return langList.find(item => item?.key === key)?.label
+  }
 
   return (
     <Dropdown
@@ -38,7 +53,7 @@ const SwitcherLanguage = () => {
         className='flex gap-1 items-center cursor-pointer'
         onClick={(e) => e.preventDefault()}
       >
-        {lang.toUpperCase()} <IconCaretDown />
+        {getLabelLanguage(lang)} <IconCaretDown />
       </div>
     </Dropdown>
   );

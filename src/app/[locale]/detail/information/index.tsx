@@ -91,13 +91,13 @@ export default function CoinInformation({ data }: any) {
                     </span> */}
                   </div>
                   <div className='hidden md:flex gap-2 item-center'>
-                    <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200'>
+                    <span className='flex items-center px-2 py-0.5 rounded text-xs text-grey-500 font-medium bg-grey-200'>
                       #{newData?.rank}
                     </span>
-                    <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200'>
+                    <span className='flex items-center px-2 py-0.5 rounded text-xs text-grey-500 font-medium bg-grey-200'>
                       #{newData?.wallet} in Wallet
                     </span>
-                    <span className='flex items-center px-2 rounded text-xs text-grey-500 font-medium bg-grey-200'>
+                    <span className='flex items-center px-2 py-0.5 rounded text-xs text-grey-500 font-medium bg-grey-200'>
                       <img
                         src='/coin-info/accumulating.png'
                         alt=''

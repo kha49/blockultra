@@ -21,7 +21,8 @@ const HeaderDesktop = () => {
           <div className='flex-grow'>
             <Marquee />
           </div>
-          <div className='flex items-center gap-3 justify-end'>
+          <div className='flex items-center gap-4 justify-end'>
+            <div className='w-px h-6 bg-grey-300'></div>
             <div className='flex items-center gap-5'>
               <SwitcherLanguage />
               <SwitcherCurrency />
