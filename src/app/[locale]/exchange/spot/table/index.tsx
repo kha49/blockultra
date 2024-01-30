@@ -43,7 +43,11 @@ const columns: ColumnsType<IExchangeSpot> = [
         <span className='table-header'>
           <Link href={`spot/${value.key2}`}>
             <div className='inline-flex items-center'>
-              <img src={value.icon} alt={value.name} className='w-8 h-8' />
+              {
+                value?.icon ? (
+                  <img src={value.icon} alt={value.name} className='w-8 h-8' />
+                ) : ''
+              }
               <div className='mx-2 text-grey-700 text-sm font-bold font-jb hover:text-primary-500 truncate max-w-full'>
                 {value.name}
               </div>
@@ -63,7 +67,7 @@ const columns: ColumnsType<IExchangeSpot> = [
     align: 'center',
     sorter: true,
     render: (_, value) => {
-      return <p className='text-right font-jsb'>{value.tier ? value.tier : '-'}</p>;
+      return <p className='text-right font-jsb'>{value?.tier ? value?.tier : '-'}</p>;
     },
   },
   {
@@ -77,9 +81,9 @@ const columns: ColumnsType<IExchangeSpot> = [
       return (
         <div className='text-right font-jsb'>
           <p className='text-grey-700 text-sm font-semibold'>
-            {nFormatter(value.volume24h, 2, '$')}
+            {value?.volume24h ? nFormatter(value?.volume24h, 2, '$') : '-'}
           </p>
-          {percentFormat(value.volumn24hPercent, 'text-sm font-bold')}
+          {value?.volumn24hPercent ? percentFormat(value?.volumn24hPercent, 'text-sm font-bold') : '-'}
         </div>
       );
     },
@@ -91,7 +95,7 @@ const columns: ColumnsType<IExchangeSpot> = [
     width: 96,
     align: 'right',
     render: (_, value) => {
-      return <p className='text-right font-jsb'>{value.currenciesCount}</p>;
+      return <p className='text-right font-jsb'>{value?.currenciesCount ? value?.currenciesCount : '-'}</p>;
     },
     sorter: true,
     sortIcon: renderSortIcon,
@@ -102,11 +106,11 @@ const columns: ColumnsType<IExchangeSpot> = [
     width: 130,
     align: 'center',
     render: (_, value: any) => {
-      return value.country ? (
+      return value?.country ? (
         <div className='flex justify-center items-center'>
           <img
             className='w-8 h-4.5'
-            src={`/Flag/Country=${value.country}, Style=Flag, Radius=Off.svg`}
+            src={`/Flag/Country=${value?.country}, Style=Flag, Radius=Off.svg`}
           />
           {/* <div>{value.country}</div> */}
         </div>
