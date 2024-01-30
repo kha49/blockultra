@@ -1,14 +1,11 @@
 'use client';
 
-import React, { memo, useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import './index.scss';
 import MarqueeItem from './MarqueeItem/MarqueeItem';
 import { FetchHeaderBar } from '@/usecases/common';
 import { IMarquee, IMarqueeItem } from './props';
-import { get } from 'lodash';
 import { IconGas } from '@/assets/icons/home/header/IconGas';
-import { IconDown } from '@/assets/icons/home/IconDown';
-import { Tooltip } from 'antd';
 
 const Marquee = () => {
   const [data, setData] = useState<IMarqueeItem[]>();
@@ -20,7 +17,7 @@ const Marquee = () => {
   const _getHeaderBar = async () => {
     const response: any = await FetchHeaderBar();
     if (!response) return;
-    const marqueeData: IMarquee | null = get(response, '[0]', null);
+    const marqueeData: IMarquee | null = response;
     if (!marqueeData) return;
     setData([
       {
@@ -72,12 +69,11 @@ const Marquee = () => {
     ]);
   };
 
-  const _renderMarquee = (length: number) => {
+  const _renderMarquee = () => {
     if (!data) return;
 
-    const dtRender = data.slice(length, length + 2);
-    const elements: JSX.Element[] = dtRender.map((item, index) => {
-      const renderBr = index !== dtRender.length - 1 || !!length;
+    const elements: JSX.Element[] = data.map((item, index) => {
+      const renderBr = index !== data.length - 1 || !!length;
       return (
         <div
           key={item.id}
@@ -97,10 +93,7 @@ const Marquee = () => {
       <div className='marquee'>
         <div className='flex items-center'>
           <div className='marquee__wrapper flex items-center gap-1 md:gap-6 xl:gap-6'>
-            {_renderMarquee(0)}
-          </div>
-          <div className='marquee__wrapper marquee-2 flex items-center gap-1 md:gap-6 xl:gap-6'>
-            {_renderMarquee(2)}
+            {_renderMarquee()}
           </div>
         </div>
       </div>

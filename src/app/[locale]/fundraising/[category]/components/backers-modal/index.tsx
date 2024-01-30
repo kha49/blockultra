@@ -1,6 +1,6 @@
 import { Avatar, Flex, Modal } from 'antd';
 import React from 'react';
-import _ from 'lodash';
+import _, { orderBy } from 'lodash';
 import { IBacker } from '../../types';
 
 type IChildrenCallback = {
@@ -31,7 +31,6 @@ export default function BackersModal(props: BackersModalProps) {
   };
 
   const mappedData = _.groupBy(data, 'type');
-
   return (
     <>
       {children(childrenCallback)}
@@ -52,7 +51,9 @@ export default function BackersModal(props: BackersModalProps) {
           {_.map(mappedData, (value, key) => {
             return (
               <Flex vertical gap={16} key={key}>
-                <h4 className='font-bold text-sm text-[#333747]'>{key}</h4>
+                <h4 className='font-bold text-sm text-[#333747]'>
+                  {key !== 'null' && key != 'undefined' ? key : 'Others'}
+                </h4>
                 <Flex vertical gap={16}>
                   {value.map((item) => (
                     <Flex align='center' gap={8} key={item.name}>

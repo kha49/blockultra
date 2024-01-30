@@ -4,11 +4,12 @@ import HeadFilter from '../HeadFilter';
 import { categoryColumns } from './config';
 import { useParams } from 'next/navigation';
 import SelectItemTable from '@/components/SelectItemTable';
-import { faker } from '@faker-js/faker';
+import { get, isArray, isEmpty, random } from 'lodash';
 import { FetchCategoryCoins } from '@/usecases/category';
 import { CategoryCoinsFilterType, CategoryCoinsType } from '../../types';
 import { IResponseAxios } from '@/models/IResponse';
 import { ORDER } from '@/helpers/constants';
+import CommonTable from '@/components/CommonTable/common-table';
 
 export default function CategoryTable() {
   const params = useParams<{ locale: string; id: string }>();
@@ -61,7 +62,7 @@ export default function CategoryTable() {
       setData(data);
       setTotal(total!!);
     },
-    [pageSize, currentPage, categoryId]
+    [pageSize, currentPage, order, categoryId]
   );
 
   useEffect(() => {
@@ -72,11 +73,20 @@ export default function CategoryTable() {
     <div className='mt-4 category-table'>
       <Flex vertical gap={16} className={'p-6'}>
         <HeadFilter onFilter={getCategoryCoins} />
-        <Table
+        <CommonTable
           columns={categoryColumns}
           dataSource={data as any}
           pagination={false}
           className='overflow-x-auto overflow-y-hidden'
+          onChange={(_page, _filter, sort) => {
+            const itemSort = isArray(sort) ? sort[0] : sort;
+            setOrder({
+              columnKey: itemSort.columnKey
+                ? itemSort.columnKey.toString()
+                : '',
+              order: itemSort.order ? itemSort.order.toString() : '',
+            });
+          }}
         />
         <div className='pt-6 flex items-center justify-center table-pagination pagination-mobile'>
           <Pagination

@@ -21,50 +21,30 @@ import { IconTwitter,
 import IconFacebook from '../icons/IConFacebook';
 import { useParams } from 'next/navigation';
 import { ICoinInfo, CoinAllocation, ILink } from '../../props';
+import IconSource from '@/assets/icons/IconSource';
+import HexagonItem from '@/components/Hexa/Hexagon';
+
+const linkRef = ['twitter', 'web', 'telegram', 'discord', 'facebook', 'medium', 'github', 'file'];
 
 export function _renderIconLinks(type: string) {
   switch (type) {
-    case 'explorer':
-      return <IconWeb />;
     case 'twitter':
       return <IconTwitter />;
     case 'web':
-      return <IconWeb />;
-    case 'announcement':
       return <IconWeb />;
     case 'telegram':
       return <IconTelegram />;
     case 'discord':
       return <IconDiscord />;
-    case 'whitepaper':
-      return <IconWeb />;
     case 'facebook':
-      return <IconFacebook />;  
-    case 'fees':
-      return <IconFile />;
-    case 'weibo':
-      return <IconFile />; 
+      return <IconFacebook />; 
     case 'medium':
       return <IconMedium />;
-    case 'reddit':
-      return <IconFile />;
-    case 'youtube':
-      return <IconFile />;
-    case 'blog':
-      return <IconFile />;
-    case 'linkedin':
-      return <IconFile />;
-    case 'gitbook':
-      return <IconFile />;
-    case 'referral':
-      return <IconFile />;
-    case 'chat':
-      return <IconFile />;
     case 'github':
       return <IconGithub />;
     case 'file':
       return <IconFile />;
-    default: return <IconWeb/>
+    default: return 
   }
 }
 
@@ -79,10 +59,9 @@ const CoinInformation = () => {
   const getData = async () => {
     const responses: any = await FetchInfomationCoin({ key: params.slug });
     if (!responses) return;
-    console.log(responses)
     setCoinsData(responses);
-    setTotalVolume(await responses.totalUsdVolume);
-    setListTopCoin(await responses.tokenAllocation);
+    setTotalVolume(responses?.totalUsdVolume);
+    setListTopCoin(responses?.tokenAllocation);
   };
 
   useEffect(() => {
@@ -106,19 +85,9 @@ const CoinInformation = () => {
     setIsModalOpen(true);
   };
 
-  const _renderFlag = () => {
-    return (
-      coinsData?.country? (
-        <div>
-          <img height={23} width={33} src= {`/Flag/Country=${coinsData?.country}, Style=Flag, Radius=Off.svg`}/>
-        </div>
-      )
-      : ('')
-    )
-  }
 
   const _renderLinks = () => {
-    const links: ILink[] = coinsData?.links ?? [];
+    const links: ILink[] = (coinsData?.links ?? []).filter(link => linkRef.includes(link.type));
     const elements: JSX.Element[] = links.slice(0, 3).map((link: ILink) => {
       return (
         <Link href={link.value} key={link.value}>
@@ -136,30 +105,44 @@ const CoinInformation = () => {
     return (
       links.length > 3? 
       (
-        <Flex gap={20}>
-          {elements}
-          <Popover
-            trigger='click'
-            placement='bottom'
-            content={
-              <Flex gap={20}>
-                {remainingElements}
-              </Flex>
-            }
-          >
-            <div className='w-7 h-7 bg-slate-200 rounded-3xl flex-col justify-center items-center inline-flex'>
-              <div className='text-zinc-700 text-xs font-jsb leading-tight hover:cursor-pointer'>
-                +{remainingElements.length}
+        <Flex vertical gap={8}>
+          <div className='text-gray-400 text-xs font-jm leading-tight'>
+            Links
+          </div>
+          <Flex gap={20}>
+            {elements}
+            <Popover
+              trigger='hover'
+              placement='bottom'
+              content={
+                <Flex gap={20}>
+                  {remainingElements}
+                </Flex>
+              }
+            >
+              <div className='w-7 h-7 bg-slate-200 rounded-3xl flex-col justify-center items-center inline-flex'>
+                <div className='text-grey-700 text-xs font-jsb leading-tight hover:cursor-pointer'>
+                  +{remainingElements.length}
+                </div>
               </div>
-            </div>
-          </Popover>
+            </Popover>
+          </Flex>
         </Flex>
       ):(
-        <Flex gap={20}>
-          {elements}
+        links.length !== 0?
+        (        
+        <Flex vertical gap={8}>
+          <div className='text-grey-500 text-xs font-jm leading-tight'>
+            Links
+          </div>
+          <Flex gap={20}>
+            {elements}
+          </Flex>
         </Flex>
+        )  : (
+          ''
+        )
       )
-
     );
   };
 
@@ -172,14 +155,14 @@ const CoinInformation = () => {
     let otherRate = round((otherSum / totalVolume) * 100, 2);
     if (i < 9) {
       return (
-        <div className='flex index__detail'>
+        <div className='flex text-sm font-jm'>
           <span className='mr-1'>{name + ': '}</span>
           <span>{rate + '%'}</span>
         </div>
       );
     } else {
       return (
-        <div className='flex index__detail'>
+        <div className='flex text-sm font-jm'>
           <span className='mr-1'>Other:</span>
           <span>{otherRate + '%'}</span>
         </div>
@@ -190,19 +173,9 @@ const CoinInformation = () => {
   const _renderLinePopup = (i: number) => {
     let _color = colorChart[i];
     return (
-      <div className='popup__contents-index hover:cursor-pointer flex'>
+      <div className='hover:cursor-pointer flex gap-3'>
         <div>
-          <svg
-            className='w-4.5 h-5 hover:w-5.5 hover:h-6'
-            viewBox='0 0 18 20'
-            fill='none'
-            xmlns='http://www.w3.org/2000/svg'
-          >
-            <path
-              d='M8 0.57735C8.6188 0.220085 9.3812 0.220085 10 0.57735L16.6603 4.42265C17.2791 4.77992 17.6603 5.44017 17.6603 6.1547V13.8453C17.6603 14.5598 17.2791 15.2201 16.6603 15.5774L10 19.4226C9.3812 19.7799 8.6188 19.7799 8 19.4226L1.33975 15.5774C0.720943 15.2201 0.339746 14.5598 0.339746 13.8453V6.1547C0.339746 5.44017 0.720943 4.77992 1.33975 4.42265L8 0.57735Z'
-              fill={_color}
-            />
-          </svg>
+          <HexagonItem color={_color} />
         </div>
         {_caculateCoin(i)}
       </div>
@@ -212,38 +185,38 @@ const CoinInformation = () => {
   return (
     <div className='w-full bg-white mx-auto'>
       <Modal
-        title={<div className='text-2xl'>Token Allocation</div>}
+        title={<div className='font-bold font-jb text-2xl'>Token Allocation</div>}
         open={isModalOpen}
         onOk={() => setIsModalOpen(false)}
         onCancel={() => setIsModalOpen(false)}
         footer=''
       >
-        <div className='popup__contents'>
-          {_renderLinePopup(0)}
-          {_renderLinePopup(1)}
-          {_renderLinePopup(2)}
-          {_renderLinePopup(3)}
-          {_renderLinePopup(4)}
-          {_renderLinePopup(5)}
-          {_renderLinePopup(6)}
-          {_renderLinePopup(7)}
-          {_renderLinePopup(8)}
-          {_renderLinePopup(9)}
+        <div className='mt-4'>
+          {...Array.from(Array(9).keys()).map((item: any) => {
+            return (
+              <div key={item} className='mb-3'>
+                {_renderLinePopup(item)}
+              </div>
+            )
+          })}
         </div>
       </Modal>
 
-      <div className='coins bg-white px-6 pt-6 pb-4 gap-1.5 rounded-lg shadow'>
-        <div className='coins__header flex border-b pb-6 justify-between'>
+      <div className='coins bg-white p-6 mb-6 gap-1.5 rounded-lg box-shadow-common'>
+        <div className='border-b border-grey-300 flex border-b pb-6 mb-6 justify-between'>
           <div className='flex gap-4 items-center justify-center'>
-            <img src={coinsData?.icon} />
-
+            {
+              coinsData?.icon ? (
+                <img src={coinsData?.icon} alt={coinsData?.name} />
+              ) : ''
+            }
             <div className='flex-col gap-3 justify-start inline-flex'>
-              <div className='coins__name text-zinc-700 text-2xl font-jb leading-loose'>
+              <div className='text-grey-700 text-2xl font-jb'>
                 {coinsData?.name}
               </div>
               <div className='justify-start items-center inline-flex'>
-                <div className='px-2 bg-slate-100 rounded items-center'>
-                  <div className='text-gray-400 text-xs font-jm leading-tight'>
+                <div className='px-2 py-0.5 bg-grey-200 rounded items-center'>
+                  <div className='text-grey-500 text-xs font-jm'>
                     Tier 
                     <span className='ml-1'>
                       {coinsData?.tier? coinsData?.tier : '1'}
@@ -251,13 +224,13 @@ const CoinInformation = () => {
                   </div>
                 </div>
 
-                <div className='line__tag border border-grey-400 mx-3' />
+                <div className='w-px h-5 border bg-grey-400 mx-3' />
 
-                <div className='flex items-center '>
-                  <span className='text-gray-400 text-xs font-jm leading-tight'>
+                <div className='flex items-center gap-1'>
+                  <span className='text-grey-500 text-xs font-jm'>
                     Year of Foundation:
                   </span>
-                  <span className='text-zinc-700 text-xs font-jb leading-tight'>
+                  <span className='text-grey-700 text-xs font-jb'>
                     {coinsData?.yearOfFoundation?
                       coinsData?.yearOfFoundation : '-'
                     }
@@ -265,60 +238,62 @@ const CoinInformation = () => {
                 </div>
 
                 <div className='w-1.5 h-1.5 mx-2 bg-gray-300 rounded-full' />
-
-                <span className='coins__tag items-center'>
-                  <Popover
-                    content={
-                      <div className='text-right text-zinc-700 text-xs font-medium leading-tight'>
-                        {coinsData?.country}
-                      </div>
-                    }
-                    trigger='hover'
-                  >
-                    {/* {showFlag(coinsData?.country)} */}
-                    <Link href='../spot'>
-                      {_renderFlag()}
-                    </Link>
-                  </Popover>
-                </span>
+                {
+                  coinsData?.country ? (
+                    <Popover
+                      content={
+                        <div className='text-right text-grey-700 text-xs font-medium leading-tight'>
+                          {coinsData?.country}
+                        </div>
+                      }
+                      trigger='hover'
+                    >
+                      {/* {showFlag(coinsData?.country)} */}
+                      <Link href='../spot'>
+                        {
+                          coinsData?.country ? (
+                            <div>
+                              <img className='shadow-[0_1px_10px_0_rgba(51,55,71,0.15)]' height={23} width={33} src= {`/Flag/Country=${coinsData?.country}, Style=Flag, Radius=Off.svg`}/>
+                            </div>
+                          )
+                          : ('')
+                        }
+                      </Link>
+                    </Popover>
+                  ) : ''
+                }
               </div>
             </div>
           </div>
         </div>
-        <div className='coins__info grid grid-cols-5 mt-1.5'>
+        <div className='grid grid-cols-5'>
           <div className='col-span-5 md:col-span-3'>
-            <div className='coins__body grid grid-cols-2'>
+            <div className='grid grid-cols-2'>
               <div className='col-span-2 xl:col-span-1'>
-                <div className='coins__value flex-col justify-start gap-2 inline-flex'>
+                <div className='flex-col justify-start gap-2 inline-flex'>
                   <div className='flex items-center'>
-                    <div className='text-xs text-gray-400 font-jm leading-tight'>
+                    <div className='text-xs text-grey-500 font-jm'>
                       Spot Trading Volume
                     </div>
                   </div>
 
                   <div className='items-center gap-4 inline-flex'>
-                    <span className='price text-[40px] font-jeb leading-[48px]'>
+                    <span className='text-[40px] font-jeb text-grey-700 leading-[48px]'>
                       {nFormatter(Number(coinsData?.spotTradingVolume.usd), 2, '$')}
                     </span>
-                    <span className='price--increase text-base font-jsb'>
+                    <span className='text-base font-jsb'>
                       {percentFormat(Number(coinsData?.spotTradingVolume.percent))}
                     </span>
                   </div>
 
-                  <div className='text-zinc-700 text-sm font-jm leading-tight'>
-                    {nFormatter(Number(coinsData?.spotTradingVolume.btc), 3, 'BTC')}
+                  <div className='text-grey-700 text-sm font-jm leading-tight'>
+                    {nFormatter(Number(coinsData?.spotTradingVolume.btc), 3, 'BTC ')}
                   </div>
                 </div>
 
                 <div className='coins__socials mt-8'>
                   <div className='coins__links flex-col justify-start items-start gap-2 inline-flex'>
-                    <div className='text-gray-400 text-xs font-jm leading-tight'>
-                      Links
-                    </div>
-
-                    <div className='flex gap-4 xl:gap-5 py-1.5'>
-                      {_renderLinks()}
-                    </div>
+                    {_renderLinks()}
                   </div>
                 </div>
               </div>
@@ -342,7 +317,7 @@ const CoinInformation = () => {
                   </div>
 
                   <div className='category'>
-                    <div className='coins__title'>Coin</div>
+                    <div className='coins__title'>Coins</div>
                     <div className='category__number'>
                       {coinsData?.coinsCount?
                         coinsData?.coinsCount
@@ -356,54 +331,31 @@ const CoinInformation = () => {
                     </div>
                   </div>
                   <div className='category'>
-                    <div className='coins__title'>Native Token</div>
+                    <div className='coins__title mb-2'>Native Token</div>
                     <div className='category__link flex'>
-                      <Image
-                        src={coinsData?.nativeCoin.logo? coinsData?.nativeCoin.logo : ''}
-                        alt=''
-                        width={20}
-                        height={20}
-                      />
-                      <div className='ml-2 text-zinc-700 text-base font-jsb leading-normal'>
-                        {coinsData?.nativeCoin.name? coinsData?.nativeCoin.name : ''}
+                      {
+                        coinsData?.nativeCoin?.logo ? (
+                          <Image
+                            src={coinsData?.nativeCoin.logo}
+                            alt={coinsData?.name}
+                            className='w-5 h-5 max-w-5 max-h-5 min-w-5 min-h-5'
+                            width={20}
+                            height={20}
+                          />
+                        ) : ''
+                      }
+                      <div className='ml-2 text-grey-700 text-base font-jsb leading-normal'>
+                        {coinsData?.nativeCoin?.name? coinsData?.nativeCoin.name : ''}
                       </div>
                     </div>
                   </div>
                   <div className='category'>
-                    <div className='coins__title'>Fees</div>
+                    <div className='coins__title mb-2'>Fees</div>
                     <div className='category__link flex'>
-                      <svg
-                        width='24'
-                        height='24'
-                        viewBox='0 0 24 24'
-                        fill='none'
-                        xmlns='http://www.w3.org/2000/svg'
-                      >
-                        <path
-                          d='M13 11L21.2 2.80005'
-                          stroke='#5766FF'
-                          stroke-width='2'
-                          stroke-linecap='round'
-                          stroke-linejoin='round'
-                        />
-                        <path
-                          d='M22 6.8V2H17.2'
-                          stroke='#5766FF'
-                          stroke-width='2'
-                          stroke-linecap='round'
-                          stroke-linejoin='round'
-                        />
-                        <path
-                          d='M11 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V13'
-                          stroke='#5766FF'
-                          stroke-width='2'
-                          stroke-linecap='round'
-                          stroke-linejoin='round'
-                        />
-                      </svg>
+                      <IconSource />
                       <Link href=''>
                         {/* <Link href={coinsData?.links}> */}
-                        <div className='items-center ml-2 text-zinc-700 text-base font-jsb underline'>
+                        <div className='items-center ml-2 text-grey-700 text-base font-jsb underline'>
                           Source
                         </div>
                       </Link>

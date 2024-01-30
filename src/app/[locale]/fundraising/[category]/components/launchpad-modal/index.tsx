@@ -41,7 +41,7 @@ export default function LaunchpadModal(props: LaunchpadProps) {
         footer={null}
         styles={{
           content: {
-            height: 500,
+            height: 'auto',
             overflowY: 'auto',
           },
         }}

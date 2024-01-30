@@ -1,3 +1,4 @@
+import { changeImageUrl } from '@/app/[locale]/detail/information/popup/backers/Backers';
 import { Modal } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -33,16 +34,10 @@ const BackerList = ({ backers, initNumber, type }: any) => {
             onCancel={handleCancel}
             footer={false}
           >
-            <div className='flex flex-wrap gap-5 w-full'>
+            <div className='flex flex-col flex-wrap items-start gap-5 w-full mt-6'>
               {...Array.from(Array(backers?.length).keys()).map((item) => {
                 return (
-                  <img
-                    src={backers[item]?.logo}
-                    width={28}
-                    height={28}
-                    alt='backers-1'
-                    key={item}
-                  />
+                  <BackerItem key={item} item={backers[item]} />
                 );
               })}
             </div>
@@ -57,7 +52,7 @@ export const BackerItem = ({ item  }:any) => {
   return (
     <div className='flex justify-center items-center gap-2'>
       <div className='w-12 h-12'>
-        <Image src={item.logo} height={100} width={100} alt={item.name} />
+        <Image src={changeImageUrl(item?.logo)} height={50} width={50} alt={item.name} />
       </div>
       <div>
         <p className='text-grey-700 font-semibold text-sm mb-1'>{item.name}</p>

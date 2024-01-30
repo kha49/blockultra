@@ -1,7 +1,9 @@
+'use client';
 import React from 'react';
 import './index.scss';
 import { Pagination, Table } from 'antd';
 import SelectItemTable from '../SelectItemTable';
+import CommonTable from '../CommonTable/common-table';
 
 export default function BaseTable(props: any) {
   const {
@@ -19,7 +21,7 @@ export default function BaseTable(props: any) {
     const start = (currentPage - 1) * pageSize + 1;
     const end = start + data.length - 1;
     return (
-      <span className='table-total'>
+      <span className='table-total text-grey-700 text-sm font-medium font-jm'>
         {start} - {end} from {total}
       </span>
     );
@@ -27,7 +29,7 @@ export default function BaseTable(props: any) {
 
   return (
     <div className='base-table'>
-      <Table
+      <CommonTable
         columns={columns as any}
         dataSource={data as any}
         pagination={false}
@@ -56,7 +58,7 @@ export default function BaseTable(props: any) {
           />
         </div>
         <div>
-          <SelectItemTable onChange={_onChangeSize} />
+          <SelectItemTable onChange={_onChangeSize} pageSize={pageSize} />
         </div>
       </div>
     </div>

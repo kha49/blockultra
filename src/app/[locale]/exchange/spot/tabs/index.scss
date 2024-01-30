@@ -19,5 +19,9 @@
         color: white !important;
       }
     }
+
+    .ant-btn-default:disabled {
+      background: #fff !important;
+    }
   }
 }

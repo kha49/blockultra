@@ -32,7 +32,7 @@ export default function SelectProject(props: PropsType) {
   };
 
   const _renderTag = (options: ICustomTagProp) => {
-    const { value, closable, onClose, index } = options;
+    const { value, closable, onClose, index, rawData } = options;
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
       event.preventDefault();
       event.stopPropagation();
@@ -54,7 +54,7 @@ export default function SelectProject(props: PropsType) {
         onClose={onClose}
         style={{ marginRight: 3 }}
       >
-        {value}
+        {rawData.name ?? value}
       </Tag>
     );
   };
@@ -68,7 +68,7 @@ export default function SelectProject(props: PropsType) {
     return data.map((searchItem: SearchProject) => ({
       id: searchItem.id,
       name: searchItem.name,
-      code: searchItem.name,
+      code: searchItem.slug,
       thumb: '',
       isSelected: false,
     }));

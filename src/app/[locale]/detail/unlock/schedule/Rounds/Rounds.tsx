@@ -6,10 +6,6 @@ import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 const Rounds = ({ data, tokenInfo }: any) => {
-  // const dataProps = props.data;
-  // console.log('====================================');
-  // console.log('dataProps', dataProps);
-  // console.log('====================================');
   if (!data) return;
   const unlocksData = data.unlocks || [];
 
@@ -23,8 +19,6 @@ const Rounds = ({ data, tokenInfo }: any) => {
       align: 'left',
       width: 250,
       render: (_, value) => {
-        console.log(value);
-
         return (
           <div>
             <div className='text-grey-700 text-sm mb-2 font-bold font-jb flex gap-2'>

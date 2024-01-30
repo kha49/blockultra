@@ -42,14 +42,19 @@ const FundraisingDetailOverview = (props: IBankerDetail) => {
   //   ));
   // };
 
-  const _renderFlag = () => {
-    const ic = getFlagCountry(data.location);
-    return <img src={ic} width={32} height={18} />;
+  const _renderFlag = (country: string) => {
+    // const ic = getFlagCountry(data.location);
+    const ic = `/Flag/Country=${country}, Style=Flag, Radius=Off.svg`;
+    return (
+      country? (
+        <img src={ic} width={32} height={18} />
+      ) : ('')
+    );
   };
 
   const _renderLinks = () => {
     const { links } = data;
-    const elements: JSX.Element[] = links.splice(0, 3).map((link) => {
+    const elements: JSX.Element[] = links?.splice(0, 3).map((link) => {
       return (
         <a href={link.value} key={link.value}>
           {linksIcon[link.type as keyof typeof linksIcon]}
@@ -83,23 +88,31 @@ const FundraisingDetailOverview = (props: IBankerDetail) => {
         {/* overview top */}
         <div className='flex justify-center md:justify-start pb-6 border-bottom-content'>
           <div className='flex gap-4 flex-col md:flex-row justify-center items-center'>
-            <img width={76} height={76} src={data.logo} alt={data.name} />
+            {
+              data?.logo ? (
+                <img width={76} height={76} src={data.logo} alt={data.name} />
+              ) : ''
+            }
             <div className='flex flex-col gap-3'>
               <h1 className='text-grey-700 text-center md:text-left text-2xl font-bold font-jm'>
-                {data.name}
+                {data.name ? data.name : ''}
               </h1>
               <div className='flex justify-center md:justify-start item-center gap-3'>
                 <div className='flex items-center gap-1'>
                   <div className='bg-grey-200 px-2 rounded'>
                     <div className='font-jm text-xs leading-5 text-grey-500'>
-                      {data.type}
+                      {data.type ? data.type : '-'}
                     </div>
                   </div>
-                  <div className='bg-grey-200 px-2 rounded'>
-                    <div className='font-jm text-xs leading-5 text-grey-500'>
-                      {data.tier}
-                    </div>
-                  </div>
+                  {
+                    data.tier ? (
+                      <div className='bg-grey-200 px-2 rounded'>
+                        <div className='font-jm text-xs leading-5 text-grey-500'>
+                          {data.tier}
+                        </div>
+                      </div>
+                    ) : ''
+                  }
                 </div>
 
                 <span className='items-center'>
@@ -111,7 +124,7 @@ const FundraisingDetailOverview = (props: IBankerDetail) => {
                     }
                     trigger='hover'
                   >
-                    {_renderFlag()}
+                    {_renderFlag(data.location)}
                   </Popover>
                 </span>
               </div>
@@ -128,7 +141,7 @@ const FundraisingDetailOverview = (props: IBankerDetail) => {
                   Total Investments
                 </div>
                 <div className='text-[40px] text-grey-700 font-bold font-jm'>
-                  {data.totalInvesments}
+                  {data.totalInvesments ? data.totalInvesments : 'N/A'}
                 </div>
               </div>
 
@@ -150,7 +163,7 @@ const FundraisingDetailOverview = (props: IBankerDetail) => {
                         Lead Rounds
                       </div>
                       <div className='text-sm text-grey-700 font-bold font-jm'>
-                        {data.leadRounds}
+                        {data.leadRounds ? data.leadRounds : 'N/A'}
                       </div>
                     </div>
 
@@ -159,7 +172,7 @@ const FundraisingDetailOverview = (props: IBankerDetail) => {
                         Raised
                       </div>
                       <div className='text-sm text-grey-700 font-bold font-jm'>
-                        {data.raised}
+                        {data.raised ? data.raised : 'N/A'}
                       </div>
                     </div>
                   </div>
@@ -169,7 +182,7 @@ const FundraisingDetailOverview = (props: IBankerDetail) => {
                         Unicorns
                       </div>
                       <div className='text-sm text-grey-700 font-bold font-jm'>
-                        {data.unicorns}
+                        {data.unicorns ? data.unicorns : 'N/A'}
                       </div>
                     </div>
 
@@ -178,7 +191,7 @@ const FundraisingDetailOverview = (props: IBankerDetail) => {
                         Gainers
                       </div>
                       <div className='text-sm text-grey-700 font-bold font-jm'>
-                        {data.gainers}
+                        {data.gainers ? data.gainers : 'N/A'}
                       </div>
                     </div>
                   </div>

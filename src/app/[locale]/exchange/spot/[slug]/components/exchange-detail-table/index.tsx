@@ -2,17 +2,16 @@
 
 import Link from 'next/link';
 import './index.scss';
-import { ReactNode, useCallback, useEffect, useState } from 'react';
-import { Checkbox, Pagination, Select, Table, Tag } from 'antd';
+import { useEffect, useState } from 'react';
+import { Checkbox, Select, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { cloneDeep, isArray, random, round } from 'lodash';
-import SelectItemTable from '@/components/SelectItemTable';
+import { isArray, round } from 'lodash';
 import FilterCustom from '@/components/FilterCustom';
 import {
   percentFormat,
   nFormatter,
   renderSortIcon,
-  renderRangePaging,
+  convertNumberToThreeDot,
 } from '@/helpers';
 
 import {
@@ -23,12 +22,13 @@ import {
 import { IResponseAxios } from '@/models/IResponse';
 import { ISearchFilter } from '../../../props';
 import { ICoinTable } from '../../props';
-import { COLOR_CHART, ORDER } from '@/helpers/constants';
+import { ORDER } from '@/helpers/constants';
 import { useDebounce } from 'usehooks-ts';
 import { FetchSpotList, SearchCoinsInFilter } from '@/usecases/exchange';
 import { IconStar } from '@/assets/icons';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import BaseTable from '@/components/BaseTable';
+import { useLocale } from 'next-intl';
 
 const columns: ColumnsType<ICoinTable> = [
   {
@@ -38,7 +38,7 @@ const columns: ColumnsType<ICoinTable> = [
     align: 'left',
     render: (_, value, index) => {
       return (
-        <div className='text-zinc-700 text-sm font-jb leading-tight'>
+        <div className='text-grey-700 text-sm font-jb leading-tight'>
           {index + 1}
         </div>
       );
@@ -52,52 +52,65 @@ const columns: ColumnsType<ICoinTable> = [
     render: (_, value) => {
       return (
         <span className='table-header'>
-          <div className='flex items-center'>
-            <Link
-              className='flex items-center'
-              href={`/en/exchange/spot/${value.name}`}
-            >
-              <img className='mr-2 h-8 w-8' src={value.logo} alt={value.name}/>
-              <div className='text-zinc-700 text-sm font-jb leading-tight hover:text-primary-500'>
-                {value.name}
+          <Link
+            className='flex items-center'
+            href={value?.key2 ? `/${useLocale()}/detail/${value?.key2}` : ''}
+          >
+            <div className='flex items-center'>
+              {
+                value?.logo ? (
+                  <img className='mr-2 h-8 w-8' src={value.logo} alt={value.name}/>
+                ) : ''
+              }
+              <div className='text-grey-700 text-sm font-jb truncate max-w-[160px] hover:text-primary-500'>
+                {value?.name || ''}
               </div>
-            </Link>
-          </div>
+              {
+                value?.ticker ? (
+                  <span className='ml-1 px-2 rounded py-0 bg-grey-200 text-grey-500 text-xs font-jm font-medium coin-code'>
+                    {value?.ticker || ''}
+                  </span>
+                ) : ''
+              }
+            </div>
+          </Link>
         </span>
       );
     },
     sortIcon: renderSortIcon,
     sorter: true,
   },
-  {
-    key: 'rate',
-    title: 'Rate',
-    width: 115,
-    align: 'left',
-    render: (_, value, index) => {
-      if (!value?.rate) {
-        return <span>-</span>;
-      }
+  // {
+  //   key: 'rate',
+  //   title: 'Rate',
+  //   width: 115,
+  //   align: 'left',
+  //   render: (_, value, index) => {
+  //     if (!value?.rate) {
+  //       return <span>-</span>;
+  //     }
 
-      return (
-        <div className='flex gap-1'>
-          <div className='text-zinc-700 text-sm font-sb leading-tight'>
-            {value.rate}
-          </div>
-          <IconStar />
-        </div>
-      );
-    },
-  },
+  //     return (
+  //       <div className='flex gap-1'>
+  //         <div className='text-grey-700 text-sm font-jsb leading-tight'>
+  //           {value?.rate}
+  //         </div>
+  //         <IconStar />
+  //       </div>
+  //     );
+  //   },
+  // },
   {
     key: 'pair',
     title: 'Pair',
     width: 199,
     align: 'right',
+    sorter: true,
+    sortIcon: renderSortIcon,
     render: (_, value) => {
       return (
-        <div className='text-zinc-700 text-sm font-sb leading-tight'>
-          {value.pair}
+        <div className='text-grey-700 text-sm font-jsb leading-tight'>
+          {value?.pair}
         </div>
       );
     },
@@ -109,10 +122,8 @@ const columns: ColumnsType<ICoinTable> = [
     align: 'right',
     render: (_, value) => {
       return (
-        <div className='text-zinc-700 text-sm font-jsb leading-tight'>
-          {'$ ' +
-            (value.price < 0.01 ? value.price : round(value.price, 2))}
-          {/* {nFormatter(value.usdLast, 2, '$')} */}
+        <div className='text-grey-700 text-sm font-jsb leading-tight'>
+          {value?.price < 0.0001 ? convertNumberToThreeDot(value?.price) : '$' + round(value?.price, 2)}
         </div>
       );
     },
@@ -120,14 +131,14 @@ const columns: ColumnsType<ICoinTable> = [
     sorter: true,
   },
   {
-    key: 'priceChangeIn24h',
-    title: '24h%',
+    key: 'changepercent',
+    title: '24h %',
     width: 190,
     align: 'right',
     render: (_, value) => {
       return (
         <div className='text-sm font-jsb leading-tight'>
-          {percentFormat(value.priceChangeIn24h, 'text-sm font-semibold')}
+          {percentFormat(value?.priceChangeIn24h || 0, 'text-sm font-semibold')}
         </div>
       );
     },
@@ -141,8 +152,8 @@ const columns: ColumnsType<ICoinTable> = [
     align: 'right',
     render: (_, value) => {
       return (
-        <div className='text-zinc-700 text-sm font-jsb leading-tight'>
-          {value.volume? nFormatter(value.volume, 2, '$') : '-'}
+        <div className='text-grey-700 text-sm font-jsb leading-tight'>
+          {value?.volume ? nFormatter(value?.volume, 2, '$') : '-'}
         </div>
       );
     },
@@ -157,7 +168,7 @@ const columns: ColumnsType<ICoinTable> = [
     render: (_, value) => {
       return (
         <div className='text-sm font-jsb leading-tight'>
-          {percentFormat(value.volumeChangeIn24h, 'text-sm font-semibold')}
+          {percentFormat(value?.volumeChangeIn24h || 0, 'text-sm font-semibold')}
         </div>
       );
     },
@@ -167,12 +178,13 @@ const columns: ColumnsType<ICoinTable> = [
 ];
 
 const CoinTableInfo = (props: any) => {
+  const router = useRouter();
   const params = useParams<{ locale: string; slug: string }>();
   const [dataCoins, setDataCoins] = useState<ICoinTable[]>([]);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(999);
-  const [key, setKey] = useState('binance');
+  const [key] = useState(params.slug);
   const [order, setOrder] = useState({
     columnKey: '',
     order: '',
@@ -185,8 +197,7 @@ const CoinTableInfo = (props: any) => {
     getCoins();
   }, [pageSize, currentPage, order, debouncedValue]);
 
-  const getCoins = useCallback(async () => {
-    setKey(params.slug);
+  const getCoins = async () => {
     const response: IResponseAxios<ICoinTable> = await FetchSpotList({
       key: key,
       limit: pageSize,
@@ -197,9 +208,14 @@ const CoinTableInfo = (props: any) => {
     });
     if (!response) return;
     const { data, total } = response;
+    if (data && data.length > 0) {
+      const dataClone = data.map((item: any, index: number) => ({...item, key2: item.key ,key: index}))
+      setDataCoins(dataClone)
+    } else {
+      setDataCoins(data);
+    }
     setTotal(total!!);
-    setDataCoins(data!!);
-  }, [pageSize, currentPage, order, debouncedValue]);
+  };
 
   const _onChangePage = (page: number) => {
     setCurrentPage(page);

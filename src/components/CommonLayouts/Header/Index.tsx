@@ -5,7 +5,7 @@ const HeaderMobile = dynamic(() => import('./HeaderMobile/HeaderMobile'), { ssr:
 
 const Header = () => {
   return (
-    <header className='header relative z-[999] bg-grey-100 border border-grey-300'>
+    <header className='header relative z-[999] border border-grey-300'>
       <HeaderDesktop />
       <HeaderMobile />
     </header>

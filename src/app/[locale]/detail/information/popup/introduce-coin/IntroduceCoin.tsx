@@ -1,5 +1,4 @@
 import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
-import Image from 'next/image';
 
 const IntroduceCoin = (props: any) => {
   return (
@@ -22,11 +21,9 @@ const IntroduceCoin = (props: any) => {
           </a>
         </div>
       </div>
-      <div className='mb-6 text-sm text-grey-600'>
-        Ready for a fresh start in 2023? So are we Join NanoBit Community Call
-        to reflect on the past and set our sights on the future. Ready for a
-        fresh start in 2023? So are we Join NanoBit Community Call to reflect on
-        the past and set our sights on the future.
+      <div className='mb-6 text-sm text-grey-600 max-h-[300px] overflow-y-auto' dangerouslySetInnerHTML={
+        { __html: props.data?.description }
+      }>
       </div>
       <div className='w-full flex'>
         <button

@@ -11,8 +11,10 @@ import { useDebounce } from 'usehooks-ts';
 import { isArray } from 'lodash';
 import dynamic from 'next/dynamic';
 
-const HeadFilter = dynamic(() => import('../head-filter'), { ssr: false })
-const BaseTable = dynamic(() => import('@/components/BaseTable'), { ssr: false })
+const HeadFilter = dynamic(() => import('../head-filter'), { ssr: false });
+const BaseTable = dynamic(() => import('@/components/BaseTable'), {
+  ssr: false,
+});
 
 export default function FunDTable() {
   const params = useParams<{ locale: string; category: string }>();
@@ -87,4 +89,4 @@ export default function FunDTable() {
       />
     </Flex>
   );
-};
+}

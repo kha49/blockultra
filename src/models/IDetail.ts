@@ -6,13 +6,13 @@ export interface IDetail {
   category: string;
   wallet: number;
   rank_coin_in_category: number;
-  price: Price;
+  price: number;
   atlPrice?: Price;
   athPrice?: Price;
   price_change_in_24h: any;
   tokens: any[];
   listingDate: string;
-  idoPrice: number;
+  idoPrice: any;
   links: any[];
   idoPriceType: string;
   public_price_change_in24h: number;
@@ -29,6 +29,7 @@ export interface IDetail {
   compare: Compare[];
   header: Header;
   tags: any[];
+  histData: any;
 }
 
 export interface Image {

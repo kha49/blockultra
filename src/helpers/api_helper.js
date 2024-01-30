@@ -96,7 +96,6 @@ class APIClient {
     } else {
       response = api.get(`${url}`, params);
     }
-    console.log('Request url: ', url, params);
     // console.log(response);
     return response;
   };

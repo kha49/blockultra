@@ -1,6 +1,8 @@
-import Image from 'next/image';
 import { TUnlockTime } from '../../types';
-import { currencyFormat } from '@/helpers';
+import { nFormatter } from '@/helpers';
+import { Tooltip } from 'antd';
+import { round } from 'lodash';
+import moment from 'moment';
 
 type UnlockTimeProps = TUnlockTime;
 
@@ -8,27 +10,31 @@ export const UnlockTime = (props: UnlockTimeProps) => {
   const { title, money, coins = [] } = props;
 
   return (
-    <div className={'us-time-card rounded flex-1'}>
-      <div
-        className={
-          'border-b flex items-center justify-center space-x-4 py-2 px-6'
-        }
-      >
-        <div className={'us-time-card__title'}>{title}</div>
-        <div className={'us-time-card__money'}>{money}</div>
+    <div className={'box-shadow-common rounded'}>
+      <div className='border-b flex items-center justify-center gap-4 py-2 px-6'>
+        <div className='text-grey-700 text-base font-medium'>{title}</div>
+        <div className='text-grey-700 text-xl font-bold font-jb'>${parseFloat(money) > 0 ? round(parseFloat(money), 2) : 0}</div>
       </div>
 
-      <div
-        className={'us-time-card__body grid grid-rows-2 grid-flow-col gap-4'}
-      >
+      <div className='p-6 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8'>
         {coins.map((item, index) => (
-          <div className={'coin-item space-x-2'} key={index}>
-            <img src={item.image} width={24} height={24} alt={'coin-icon'} />
-            <div className={'coin-item__name'}>{item.name}</div>
-            <div className={'coin-item__money'}>
-              {currencyFormat(Number(item.marketcap), '$')}
+          <div className='flex items-center justify-between flex-wrap gap-6' key={index}>
+            <div className="flex gap-2 items-center flex-wrap">
+              {
+                item?.image ? (
+                  <img src={item.image} width={24} height={24} alt={'coin-icon'} />
+                ) : ''
+              }
+              <Tooltip title={item.name}>
+                <div className='text-grey-500 truncate max-w-[100px] text-sm font-bold font-jb'>{item.name}</div>
+              </Tooltip>
             </div>
-            <div className={'coin-item__time'}>{item.date}</div>
+            <div className="flex gap-2 items-center flex-wrap">
+              <div className='text-grey-700 text-sm font-bold font-jb'>
+                {nFormatter(Number(item.marketcap), 2, '$')}
+              </div>
+              <div className='text-grey-500 text-sm font-medium font-jm'>{item?.nextUnlockDate ? moment(item?.nextUnlockDate).format('DD/MM/YYYY') : ''}</div>
+            </div>
           </div>
         ))}
       </div>

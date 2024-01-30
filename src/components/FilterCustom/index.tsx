@@ -23,7 +23,7 @@ const FilterCustom = (props: IFilterCustom) => {
   const [isSelected, setIsSelected] = useState<string[]>([]);
   const [textSearch, setTextSearch] = useState('');
   const debouncedValue = useDebounce<string>(textSearch, 500);
-
+  const [searchKey, setSearchKey] = useState('');
   useEffect(() => {
     if (!value) return;
     setArSelected(value);
@@ -37,6 +37,7 @@ const FilterCustom = (props: IFilterCustom) => {
     });
     setIsLoading(false);
     setSearchData([..._mergeAr(arSelected, data)]);
+    setSearchKey(searchKey || '');
   };
 
   const _mergeAr = (oldAr: any[], newAr: any[]) => {
@@ -96,6 +97,7 @@ const FilterCustom = (props: IFilterCustom) => {
     setArSelected([..._convertSelected().filter((s) => s.isSelected)]);
     setIsSelected(value);
     onChange(value, [..._convertSelected().filter((s) => s.isSelected)]);
+    _getData(searchKey);
   };
 
   const _tagRender = (props: CustomTagProps) => {
@@ -125,6 +127,7 @@ const FilterCustom = (props: IFilterCustom) => {
         onSearch={_onSearch}
         value={arSelected.map((e) => e.code)}
         notFoundContent={<>No results found</>}
+        onFocus={() => _getData('')}
         filterOption={(input, option) => {
           if (!option) return false;
           if (option['isSelectOption']) return true;

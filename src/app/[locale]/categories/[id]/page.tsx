@@ -1,45 +1,37 @@
-'use client';
 import { Page } from '@/components/page';
-import React, { useEffect, useState } from 'react';
 
 import './styles.scss';
-import CategoryOverview from './components/category-overview';
-import CategoryTable from './components/category-table';
-import { getBreadcrumbConfig } from './components/category-table/config';
-import { FetchCategoryDetail } from '@/usecases/category';
-import { TIME_FILTER } from '@/helpers/constants';
+import dynamic from 'next/dynamic';
 type PageProps = {
   params: {
     id: string;
   };
 };
 
+const CategoryDetail = dynamic(() => import('./CategoryDetail'), {
+  ssr: false,
+});
+
+const breadcrumbs = [
+  {
+    title: 'BlockUltra',
+  },
+  {
+    title: 'Categories',
+  },
+  {
+    title: 'Currency',
+  },
+];
+
 export default function CategoryPage(props: PageProps) {
-  const breadcrumbs = getBreadcrumbConfig();
-
-  const [category, setCategory] = useState<any>({});
-
-  const getCategoryDetail = async ({
-    time = TIME_FILTER['24H'],
-  }: {
-    time?: TIME_FILTER;
-  } = {}) => {
-    const response = await FetchCategoryDetail({ id: props.params.id, time });
-    setCategory(response);
-  };
-
-  useEffect(() => {
-    getCategoryDetail();
-  }, [props.params]);
-
   return (
     <Page
       classnames='category-page'
       contentClassnames='py-8'
       breadcrumbs={breadcrumbs}
     >
-      <CategoryOverview onFilter={getCategoryDetail} category={category} />
-      <CategoryTable />
+      <CategoryDetail {...props} />
     </Page>
   );
 }

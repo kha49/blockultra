@@ -30,6 +30,10 @@ export default function HeadFilter(props: PropsType) {
     props.onFilter({ search_key: selectedProjects });
   };
 
+  const submitFilter = (value: string[]) => {
+    setSelectedProjects(value);
+    props.onFilter({ search_key: value });
+  };
   return (
     <Flex vertical gap={16} className='header-filter'>
       <Flex wrap='wrap' gap={16} className='header-filter__options'>
@@ -46,16 +50,15 @@ export default function HeadFilter(props: PropsType) {
       </Flex>
 
       <Flex gap={8} wrap='wrap' align='center' className='relative'>
-        <SelectProject
-          category={category}
-          onFilterChange={(values) => setSelectedProjects(values)}
-        />
+        <SelectProject category={category} onFilterChange={submitFilter} />
         <Button
-          disabled={selectedProjects.length === 0}
+          // disabled={selectedProjects.length === 0}
+          disabled
+          className='!bg-white !text-grey-500'
           size='large'
           onClick={handleFilter}
         >
-          <Flex className='text-[#333747]'>
+          <Flex>
             <IconFilterCoinTab />
             <span className='ml-1'>Filters</span>
           </Flex>

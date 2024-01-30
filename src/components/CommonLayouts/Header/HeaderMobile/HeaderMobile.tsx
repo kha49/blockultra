@@ -29,7 +29,7 @@ const HeaderMobile = () => {
   };
   return (
     <div className='block xl:hidden'>
-      <div className='w-full px-8 py-3'>
+      <div className='w-full px-8 py-3 border-b md:border-none'>
         <Marquee />
       </div>
       <div className='w-full px-8 py-3 flex items-center justify-between'>
@@ -40,10 +40,8 @@ const HeaderMobile = () => {
         </div>
         <div className='actions'>
           <div className='flex items-center gap-5'>
-            <div>
-              <IconSearch />
-            </div>
-            <div onClick={() => openMobileHandler()}>
+            <IconSearch />
+            <div className={'cursor-pointer'} onClick={openMobileHandler}>
               <IconMenu />
             </div>
           </div>
@@ -59,7 +57,7 @@ const HeaderMobile = () => {
           <Link href={'/'}>
             <Image src={'/logo.png'} width={131} height={31} alt='Logo' />
           </Link>
-          <div onClick={() => closeMobileHandler()}>
+          <div onClick={closeMobileHandler} className={'cursor-pointer'}>
             <IconClose />
           </div>
         </div>
@@ -99,7 +97,7 @@ const HeaderMobile = () => {
           'overlay transition-all ' + (activeMenuMobile ? '' : 'hidden')
         }
         onClick={() => closeMobileHandler()}
-      ></div>
+      />
     </div>
   );
 };

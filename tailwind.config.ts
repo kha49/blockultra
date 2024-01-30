@@ -39,7 +39,7 @@ const config: Config = {
         md: '768px',
         lg: '1024px',
         xl: '1280px',
-        '2xl': '1408px',
+        '2xl': '1536px',
       },
       boxShadow: {
         primary: '0px 0px 16px 0px rgba(51, 55, 71, 0.08)',

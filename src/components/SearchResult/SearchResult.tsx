@@ -4,7 +4,6 @@ import './index.scss';
 import { IGlobalSearch, IRecent } from '../SearchInput/props';
 import { nFormatter, percentFormat } from '@/helpers';
 import { IconRecent } from '@/assets/icons/home/IconRecent';
-import { notFound } from 'next/navigation';
 import { get } from 'lodash';
 
 const SearchResult = ({
@@ -97,7 +96,7 @@ const SearchResult = ({
                 </div>
                 <div className='coin-info__content__price flex items-center'>
                   <span className='price text-xs font-medium font-jm'>
-                    {nFormatter(e.price.USD, 2, '$')}
+                    {nFormatter(e.price, 2, '$')}
                   </span>
                   <span className='price text-xs font-medium font-jm'>
                     {e.priceChangeIn24h
@@ -249,7 +248,7 @@ const SearchResult = ({
           <div className='coin p-2 flex justify-between items-center'>
             <div className='coin-info flex items-center gap-4'>
               <div className='coin-info__image'>
-                <img src={e.icon} width={32} height={32} alt={e.name} />
+                <img src={e.image} width={32} height={32} alt={e.name} />
               </div>
               <div className='coin-info__content'>
                 <div className='coin-info__content__name flex gap-2'>

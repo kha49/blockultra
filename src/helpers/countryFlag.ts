@@ -1000,11 +1000,16 @@ const countriesCode = [
 ];
 
 export const getFlagCountry = (name: string) => {
+  if (!name) return '';
   const country = countriesCode.find(
-    (c) => c.Code.toLowerCase() === name.toLowerCase()
+    (c) =>
+      c.Code.toLowerCase() === name.toLowerCase() ||
+      c.Name.toLowerCase() === name.toLowerCase()
   );
 
-  const code = get(country, 'Code', 'us');
+  const code = get(country, 'Code', '');
 
-  return `https://flags.fmcdn.net/data/flags/mini/${code}.png`;
+  if (!code) return '';
+
+  return `https://flags.fmcdn.net/data/flags/mini/${code.toLocaleLowerCase()}.png`;
 };

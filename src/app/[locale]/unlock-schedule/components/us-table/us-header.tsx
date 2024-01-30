@@ -1,6 +1,6 @@
 import { Checkbox, Flex, Select, Tag } from 'antd';
 import CustomSelect from '@/components/CustomSelect';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { CloseCircleOutlined } from '@ant-design/icons';
 import FilterCustom from '@/components/FilterCustom';
@@ -57,7 +57,12 @@ export const UsHeader = (props: UsHeaderProps) => {
     setDataSelected(newStage);
   };
 
+  const initRef = useRef(false)
   useEffect(() => {
+    if(!initRef.current) {
+      initRef.current = true
+      return;
+    };
     onFilter?.(dataSelected);
   }, [dataSelected]);
 

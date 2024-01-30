@@ -33,8 +33,8 @@ export default function HeadFilter({ onChange, layout }: IHeaderFilter) {
 
       <Flex gap={8} wrap='wrap'>
         <SearchSelect layout={layout} onChange={onChange} />
-        <Button className='ml-1' size='large'>
-          <Flex className='text-[#333747]'>
+        <Button className='ml-1 !bg-white !text-grey-500' size='large' disabled>
+          <Flex className='items-center'>
             <IconFilterCoinTab />
             <span className='ml-1'>Filters</span>
           </Flex>

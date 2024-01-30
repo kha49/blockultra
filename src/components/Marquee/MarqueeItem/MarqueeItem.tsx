@@ -1,10 +1,13 @@
-import React from 'react';
+'use client';
+import React, { useState } from 'react';
 import { IMarqueeItem } from '../props';
 import { nFormatter, percentFormat, secondsToHms } from '@/helpers';
-import { IconDown } from '@/assets/icons/home/header/IconDown';
 import { Tooltip } from 'antd';
+import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
 
 const MarqueeItem = ({ data }: { data: IMarqueeItem }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const _renderTextDetail = () => {
     if (!data.isGas) {
       return _renderTextNotGas();
@@ -14,7 +17,7 @@ const MarqueeItem = ({ data }: { data: IMarqueeItem }) => {
 
   const _renderTextNotGas = () => {
     return (
-      <>
+      <div className={'flex items-center gap-2'}>
         <span className='text-xs leading-5 font-semibold text text-grey-700'>
           {nFormatter(Number(data.coinPrice), 2, '$')}
         </span>
@@ -22,20 +25,25 @@ const MarqueeItem = ({ data }: { data: IMarqueeItem }) => {
           Number(data.percent),
           'text-xs leading-5 font-semibold text'
         )}
-      </>
+      </div>
     );
   };
 
   const _renderTextGas = () => {
     return (
-      <span className='text-xs leading-5 font-semibold text text-grey-700'>
-        {data.percent} Gwei
-      </span>
+      <div className='flex items-center gap-2 text-xs leading-5 font-semibold text text-grey-700'>
+        {percentFormat(Number(data.percent))}
+        Gwei
+        {isOpen ? (
+          <CaretUpOutlined style={{ color: '#9FA4B7' }} />
+        ) : (
+          <CaretDownOutlined style={{ color: '#9FA4B7' }} />
+        )}
+      </div>
     );
   };
 
   const _renderGwei = () => {
-    console.log(data.isGas);
     if (!data.isGas || !data.child) return null;
     const elements: JSX.Element[] = data.child.map((item, index) => {
       return (
@@ -47,7 +55,7 @@ const MarqueeItem = ({ data }: { data: IMarqueeItem }) => {
             {item.coinPrice} gwei
           </div>
           <div className='text text-gray-400 text-xs'>
-            ≈{secondsToHms(item.percent)}
+            ~{secondsToHms(item.percent)}
           </div>
         </div>
       );
@@ -57,6 +65,8 @@ const MarqueeItem = ({ data }: { data: IMarqueeItem }) => {
 
   return (
     <Tooltip
+      open={isOpen}
+      onOpenChange={setIsOpen}
       overlayClassName='gas-tooltip'
       className={`flex items-center gap-2 xl:gap-6 md:gap-6 ${
         data.isGas ? 'gas' : ''
@@ -66,9 +76,9 @@ const MarqueeItem = ({ data }: { data: IMarqueeItem }) => {
     >
       <div className='flex items-center gap-2'>
         {data.icon ? data.icon : ''}
-        <span className='text-xs leading-5 font-semibold text text-grey-500'>
+        <div className='text-xs leading-5 font-semibold text text-grey-500'>
           {data.coinName}
-        </span>
+        </div>
         {_renderTextDetail()}
       </div>
     </Tooltip>

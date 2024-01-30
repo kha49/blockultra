@@ -1,8 +1,11 @@
-import DetailTabs from './components/exchange-detail-table/tabs';
-import CoinInformation from './components/exchange-detail-overview';
 import { Flex } from 'antd';
-import CoinTableInfo from './components/exchange-detail-table';
 import { Page } from '@/components/page';
+import dynamic from 'next/dynamic';
+
+const DetailTabs = dynamic(() => import('./components/exchange-detail-table/tabs'), { ssr: false });
+const CoinInformation = dynamic(() => import('./components/exchange-detail-overview'), { ssr: false });
+const CoinTableInfo = dynamic(() => import('./components/exchange-detail-table'), { ssr: false });
+
 type PageProps = {
   params: {
     locale: 'vi' | 'en';
@@ -27,9 +30,9 @@ export default function Detail({ params }: PageProps) {
   ];
   return (
     <Page  breadcrumbs={breadcrumbs}>
-      <Flex vertical gap={16}>
+      <Flex vertical>
         <CoinInformation />
-        <Flex className='shadow rounded-lg p-6' vertical gap={16}>
+        <Flex className='box-shadow-common rounded-lg p-6' vertical gap={16}>
           <DetailTabs />
           <CoinTableInfo />
         </Flex>

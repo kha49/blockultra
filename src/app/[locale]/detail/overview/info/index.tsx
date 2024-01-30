@@ -14,7 +14,7 @@ const AdvancedRealTimeChart = dynamic(
   }
 );
 
-export default async function InfoCharts(props: any) {
+export default function InfoCharts(props: any) {
   const [data, setData] = useState(props.data)
   const launchDate = new Date(data?.listingDate);
 
@@ -57,7 +57,7 @@ export default async function InfoCharts(props: any) {
             <div className='value font-medium text-base font-jm'>
               <div className='price font-semibold'>
                 {currencyFormat(
-                  data?.price?.USD * (1-data?.price_change_in_24h),
+                  data?.price * (1-data?.price_change_in_24h),
                   '$'
                 )}
               </div>
@@ -72,12 +72,12 @@ export default async function InfoCharts(props: any) {
               <div className='time text-xs'>{data?.athPrice?.date}</div>
             </div>
             <div className='value font-medium text-base font-jm'>
-              <div className='price font-semibold'>
+              <div className='price font-semibold text-right'>
                 {currencyFormat(data?.athPrice?.USD, '$')}
               </div>
               <div className='percent-increment text-sm text-right'>
                 {percentFormat(
-                  ((data?.price.USD - data?.athPrice?.USD) * 100) /
+                  ((data?.price - data?.athPrice?.USD) * 100) /
                     data?.athPrice?.USD
                 )}
               </div>
@@ -94,7 +94,7 @@ export default async function InfoCharts(props: any) {
               </div>
               <div className='percent-increment text-sm text-right'>
                 {percentFormat(
-                  (data?.price?.USD - data?.atlPrice?.USD) / data?.atlPrice?.USD
+                  (data?.price - data?.atlPrice?.USD) / data?.atlPrice?.USD
                 )}
               </div>
             </div>
@@ -115,7 +115,7 @@ export default async function InfoCharts(props: any) {
             <div className='label font-medium text-base font-jm'>
               <div>Trade Launch Date</div>
             </div>
-            <div className='value font-medium text-base font-jm'>
+            <div className='value font-medium text-base font-jm text-right'>
               <div className='price font-semibold'>
                 {moment(launchDate).format('DD/MM/YYYY')}
               </div>

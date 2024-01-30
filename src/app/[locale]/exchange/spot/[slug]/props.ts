@@ -29,6 +29,7 @@ export interface CoinAllocation {
 
 export interface ICoinTable {
   key: string;
+  key2: string;
   logo: string;
   name: string;
   pair: string;

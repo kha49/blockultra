@@ -6,7 +6,7 @@ export const FetchCategoryDetail = (params) =>
   apiClient.get(`api/category`, params);
 
 export const FetchCategoryCoins = (params) =>
-  apiClient.get(`api/coins`, params);
+  apiClient.get(`api/category/coins`, params);
 
 export const CategoryCoinsSearch = (params) =>
   apiClient.get(`api/categories/search`, params);

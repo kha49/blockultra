@@ -1,4 +1,5 @@
 import { IconDiamond } from '@/assets/icons';
+import IconDarkMode from '@/assets/icons/IconDarkMode';
 import { IconPortfolio } from '@/assets/icons/IconPortfolio';
 import { IconWatch } from '@/assets/icons/IconWatch';
 import Button from '@/components/Button/Button';
@@ -34,6 +35,9 @@ const HeaderDesktop = () => {
                 <Button type='primary'>Sign Up</Button>
               </div>
             </div>
+            <button className='w-9 h-9 flex items-center justify-center'>
+              <IconDarkMode />
+            </button>
           </div>
         </div>
       </div>

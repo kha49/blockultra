@@ -1,10 +1,12 @@
 import { IconDown } from '@/assets/icons/home/IconDown';
 import { IconUp } from '@/assets/icons/home/IconUp';
+import { Tooltip } from 'antd';
 import { round } from 'lodash';
 
 interface IoptionCurrencyFormat {
   isAutoZero?: boolean;
   numberRound?: number;
+  addToolTip?: boolean;
 }
 
 export const sleep = (time: number) => {
@@ -16,8 +18,7 @@ export const sleep = (time: number) => {
 };
 
 export const renderSortIcon = (props: any) => {
-  if (!props.sortOrder) return null;
-  console.log(props.sortOrder);
+  if (!props.sortOrder) return <></>;
   return props.sortOrder === 'ascend' ? <IconUp /> : <IconDown />;
 };
 
@@ -46,6 +47,10 @@ export const currencyFormat = (
     .format(round(price, roundNumber))
     .replace('$', '');
 
+  if (options?.addToolTip && priceFomat.length > 7) {
+    return tooltipMaxLength(priceFomat, currencySymbol);
+  }
+
   return (
     <span className='whitespace-nowrap'>
       {currencySymbol} {priceFomat}
@@ -55,7 +60,7 @@ export const currencyFormat = (
 
 export const percentFormat = (value: number, className?: string) => {
   if (!value) {
-    return 0
+    value = 0;
   }
   try {
     const roundValue = round(value, 2);
@@ -79,9 +84,40 @@ export const percentFormat = (value: number, className?: string) => {
   }
 };
 
-export const nFormatter = (num: number, digits: number, symbol: string, positionSymbolEnd?:boolean) => {
+export const percentFormat2 = (value: number, className?: string) => {
+  if (!value) {
+    return '-';
+  }
+  try {
+    const roundValue = round(value, 2);
+    let textStyle = 'text-gray-10';
+    if (roundValue === 0) {
+      textStyle = 'text-gray-500';
+    } else if (roundValue > 0) {
+      textStyle = 'text-sp-green-500';
+    } else {
+      textStyle = 'text-red-500';
+    }
+
+    return (
+      <p className={`${textStyle} whitespace-nowrap ${className}`}>
+        {value >= 0 ? '+' : ''}
+        {roundValue !== 0 ? roundValue : '0.00'}%
+      </p>
+    );
+  } catch (error) {
+    return 'N/A';
+  }
+};
+
+export const nFormatter = (
+  num: number,
+  digits: number,
+  symbol: string,
+  positionSymbolEnd?: boolean
+) => {
   if (!num) {
-    return 0
+    return 0;
   }
   const lookup = [
     { value: 1, symbol: '' },
@@ -104,7 +140,42 @@ export const nFormatter = (num: number, digits: number, symbol: string, position
     : '0';
   return (
     <span className='whitespace-nowrap'>
-      {positionSymbolEnd?price +' '+symbol:  symbol+ ' '+ price  }
+      {positionSymbolEnd ? price + symbol : symbol + price}
+    </span>
+  );
+};
+
+export const nFormatter2 = (
+  num: number,
+  digits: number,
+  symbol: string,
+  positionSymbolEnd?: boolean
+) => {
+  if (!num) {
+    return '-';
+  }
+  const lookup = [
+    { value: 1, symbol: '' },
+    { value: 1e3, symbol: 'K' },
+    { value: 1e6, symbol: 'M' },
+    { value: 1e9, symbol: 'B' },
+    { value: 1e12, symbol: 'T' },
+    { value: 1e15, symbol: 'P' },
+    { value: 1e18, symbol: 'E' },
+  ];
+  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  var item = lookup
+    .slice()
+    .reverse()
+    .find(function (item) {
+      return num >= item.value;
+    });
+  const price = item
+    ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
+    : '0';
+  return (
+    <span className='whitespace-nowrap'>
+      {positionSymbolEnd ? price + symbol : symbol + price}
     </span>
   );
 };
@@ -150,3 +221,35 @@ export const fancyTimeFormat = (duration: number) => {
 };
 
 export * from './countryFlag';
+
+export const convertNumberToThreeDot = (num: any) => {
+  let formattedNumber = '';
+  const numConvert = num?.toString() || '0';
+  if (numConvert.length < 7) {
+    formattedNumber = round(num, 4).toString();
+  } else {
+    const start = numConvert.slice(0, 3);
+    const end = numConvert.slice(numConvert.length - 3, numConvert.length);
+    formattedNumber = start.concat('...').concat(end);
+  }
+  return (
+    <Tooltip title={num}>
+      <span>${formattedNumber}</span>
+    </Tooltip>
+  );
+};
+
+export const tooltipMaxLength = (value: string | number, symbol: string) => {
+  value = value.toString();
+  if (value.length < 7) return value;
+  const start = value.slice(0, 3);
+  const end = value.slice(value.length - 3, value.length);
+  const tooltipData = start.concat('...').concat(end);
+  return (
+    <Tooltip title={value.toString()}>
+      <span className='whitespace-nowrap'>
+        {symbol} {tooltipData}
+      </span>
+    </Tooltip>
+  );
+};

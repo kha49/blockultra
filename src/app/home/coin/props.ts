@@ -7,7 +7,7 @@ export interface IHomeCoin {
   image: Image;
   category?: string;
   icon?: any;
-  price: Price;
+  price: number;
   average24h?: any;
   volume24h: string;
   marketCap: string;
@@ -20,7 +20,7 @@ export interface ISearchFilter {
   name: string;
   symbol: string;
   image: Image;
-  price: Price;
+  price: number;
   id?: string;
   slug?: string;
   [key: string]: any;

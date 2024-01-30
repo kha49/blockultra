@@ -2,7 +2,7 @@ import Doughnut from '@/components/DoughnutChart';
 import { nFormatter, percentFormat } from '@/helpers';
 import { Select } from 'antd';
 import { CategoryOverviewType } from '../../types';
-import GraphLine from '../graph-line'; 
+import GraphLine from '../graph-line';
 import { TIME_FILTER } from '@/helpers/constants';
 
 const filterData: { label: string; value: TIME_FILTER }[] = [

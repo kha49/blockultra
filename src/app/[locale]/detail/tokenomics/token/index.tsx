@@ -6,7 +6,7 @@ import { COLOR_CHART } from '@/helpers/constants';
 import ReactECharts from 'echarts-for-react';
 import { useEffect, useState } from 'react';
 import { nFormatter } from '@/helpers';
-import { setDatasets } from 'react-chartjs-2/dist/utils';
+import moment from 'moment';
 
 // interface IAllocation {
 //   id?: number;
@@ -18,22 +18,33 @@ import { setDatasets } from 'react-chartjs-2/dist/utils';
 export default function TokenAllocation(props: any) {
   const [allocations, setAllocations] = useState<ITokenomics[]>([]);
   const [cirChart, setCirChart] = useState([]);
+  const [schedule, setSchedule] = useState([]);
+  const [time, setTime] = useState([])
   
   useEffect(() => {
-    let cirChartTemp = props.data[0]?.chart  || [];
-    const propAllocation = props.data[0]?.allocations || [];
-    for (let i in propAllocation) {
-      cirChartTemp.push({ value: propAllocation[i].tokens_percent });
-      propAllocation[i].activeColor = COLOR_CHART.MALACHITE;
-      propAllocation[i].isActive = true;
-      // propAllocation[i].name = 'asdsds';
-  // console.log('====================================');
-  // console.log('propAllocation', propAllocation);
-  // console.log('====================================');
+    let cirChartTemp: any = [];
+    let timeTemp: any = [];
+    let scheduleTemp = props.data?.chart || [];
+    const propAllocation = props.data?.datas?.allocations || [];
+    if (propAllocation.length > 0) {
+      propAllocation.map((item: any, i: number) => {
+        cirChartTemp.push({ value: item.tokens_percent });
+        item.activeColor = Object.values(COLOR_CHART)[i];
+        item.isActive = true;
+      })
+    }
+    if (scheduleTemp.length > 0) {
+      scheduleTemp.map((item: any) => {
+        item.data = item.tokens
+      })
+      timeTemp = scheduleTemp[0]?.times && scheduleTemp[0]?.times.length > 0 ? scheduleTemp[0]?.times.map((item: any) => {
+        return item = moment(item).format('DD/MM/YYYY')
+      }) : []
     }
     setAllocations(propAllocation);
-  
+    setSchedule(scheduleTemp);
     setCirChart(cirChartTemp);
+    setTime(timeTemp);
   },[])
 
   const optionPie = {
@@ -113,7 +124,7 @@ export default function TokenAllocation(props: any) {
       {
         type: 'category',
         boundaryGap: false,
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        data: time,
       },
     ],
     yAxis: [
@@ -121,198 +132,8 @@ export default function TokenAllocation(props: any) {
         type: 'value',
       },
     ],
-    series: [
-      {
-        name: 'Private',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [120, 132, 101, 134, 90, 230, 210],
-      },
-      {
-        name: 'Seed Round',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [220, 182, 191, 234, 290, 330, 310],
-      },
-      {
-        name: 'Strategic Round',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [150, 232, 201, 154, 190, 330, 410],
-      },
-      {
-        name: 'Public Round',
-        type: 'line',
-        stack: 'Total',
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [320, 332, 301, 334, 390, 330, 320],
-      },
-      {
-        name: 'Team',
-        type: 'line',
-        stack: 'Total',
-        label: {
-          show: false,
-          position: 'top',
-        },
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-      },
-      {
-        name: 'Airdrops',
-        type: 'line',
-        stack: 'Total',
-        label: {
-          show: false,
-          position: 'top',
-        },
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-      },
-      {
-        name: 'Marketing',
-        type: 'line',
-        stack: 'Total',
-        label: {
-          show: false,
-          position: 'top',
-        },
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-      },
-      {
-        name: 'Advisors',
-        type: 'line',
-        stack: 'Total',
-        label: {
-          show: false,
-          position: 'top',
-        },
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-      },
-      {
-        name: 'Foundation',
-        type: 'line',
-        stack: 'Total',
-        label: {
-          show: false,
-          position: 'top',
-        },
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-      },
-      {
-        name: 'Ecosystem',
-        type: 'line',
-        stack: 'Total',
-        label: {
-          show: false,
-          position: 'top',
-        },
-        areaStyle: {},
-        emphasis: {
-          focus: 'series',
-        },
-        data: [820, 932, 901, 934, 1290, 1330, 1320],
-      },
-    ],
+    series: schedule,
   };
-
-  // const [listAllocation] = useState<ITokenomics[]>(allocations);
-
-  // const [listAllocation] = useState<ITokenomics[]>([
-  //   {
-  //     id: 1,
-  //     name: 'Private',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.BITTER_LEMON,
-  //   },
-  //   {
-  //     id: 2,
-  //     title: 'Seed Round',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.MALACHITE,
-  //   },
-  //   {
-  //     id: 3,
-  //     title: 'Strategic Round',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.PAOLO_VERONESE_GREEN,
-  //   },
-  //   {
-  //     id: 4,
-  //     title: 'Public Round',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.TURQUOISE_SURF,
-  //   },
-  //   {
-  //     id: 5,
-  //     title: 'Team',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.CERULEAN_FROST,
-  //   },
-  //   {
-  //     id: 6,
-  //     title: 'Airdrops',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.PLUMP_PURPLE,
-  //   },
-  //   {
-  //     id: 7,
-  //     title: 'Marketing',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.PURPUREUS,
-  //   },
-  //   {
-  //     id: 8,
-  //     title: 'Advisors',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.JAZZBERRY_JAM,
-  //   },
-  //   {
-  //     id: 9,
-  //     title: 'Foundation',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.CERISE,
-  //   },
-  //   {
-  //     id: 10,
-  //     title: 'Ecosystem',
-  //     isActive: true,
-  //     activeColor: COLOR_CHART.SUNSET_ORANGE,
-  //   },
-  // ]);
 
   const handler = (e: { id: string; isActive: boolean }) => {
     console.log('e', e);
@@ -338,14 +159,11 @@ export default function TokenAllocation(props: any) {
           </div>
           <div className='note'>
             {allocations && allocations.length > 0
-              ? allocations.map((item) => {
-                  console.log('====================================');
-                  console.log(item);
-                  console.log('====================================');
+              ? allocations.map((item, index) => {
                   return (
                     <div
                       className='flex items-center justify-between gap-4 mb-6'
-                      key={item.id}
+                      key={index}
                     >
                       <SwitchAllocation
                         id={item.id}
@@ -378,7 +196,11 @@ export default function TokenAllocation(props: any) {
             Today, 21 Apr 2023
           </div>
         </div>
-        <ReactECharts option={optionStackArea} />
+        {
+          schedule && schedule.length > 0 ? (
+            <ReactECharts option={optionStackArea} />
+          ) : ''
+        }
       </div>
     </div>
   );

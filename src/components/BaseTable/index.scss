@@ -17,4 +17,42 @@
   .pagination-mobile {
     display: none;
   }
+
+  .table-header {
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Plus Jakarta Sans Medium';
+    color: black;
+  }
+
+  .ant-table-thead {
+    .ant-table-cell {
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Plus Jakarta Sans Medium';
+      color: black;
+      background: #fff !important;
+      border-top: 1px solid #f0f0f0;
+      border-bottom: 1px solid #f0f0f0;
+
+      &::before {
+        width: 0px !important;
+      }
+    }
+  }
+
+  .ant-table-tbody {
+    font-family: 'Plus Jakarta Sans Medium';
+    color: black;
+    font-size: 14px;
+  }
+
+  .ant-pagination-item {
+    color: #333747;
+    font-family: "Plus Jakarta Sans Medium" !important;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 20px;
+  }
 }

@@ -51,6 +51,10 @@ export const FetchCoinFundraising = (params) =>
 export const FetchCoinIDOIEO = (params) =>
   apiClient.get(`${prefix}coin-ieoido`, params);
 
+  export const FetchSearchExchange = (params) =>
+  apiClient.get(`${prefix}market/spot/search`, params);
+
+
 
 
 

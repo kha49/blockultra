@@ -96,3 +96,30 @@ export enum TIME_FILTER {
   '7D' = '7d',
   '1M' = '1m',
 }
+
+export const TIME_FILTER_ALL = [
+  {
+    key: '1d',
+    label: '24h',
+  },
+  {
+    key: '7d',
+    label: '7d',
+  },
+  {
+    key: '1m',
+    label: '1m',
+  },
+  {
+    key: '3m',
+    label: '3m',
+  },
+  {
+    key: '6m',
+    label: '6m',
+  },
+  {
+    key: '1y',
+    label: '1y',
+  },
+];

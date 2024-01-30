@@ -65,7 +65,7 @@ export default function Allocation(props: Props) {
     ],
   };
   return (
-    <div className='allocations '>
+    <div className='allocations'>
       <div className='text-neutral-600 flex justify-center text-base font-jb leading-normal items-center'>
         Launched Project Categories
       </div>

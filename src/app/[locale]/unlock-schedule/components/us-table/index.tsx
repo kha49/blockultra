@@ -1,54 +1,66 @@
 'use client';
+
 import {
   Avatar,
-  Flex,
   Modal,
   Pagination,
-  Progress,
-  Table,
   Tag,
-  Tooltip,
 } from 'antd';
 import { ColumnsType } from 'antd/es/table';
 import { UsHeader } from './us-header';
-import { IUnlock, IUnlockData, Launchpad } from '../../types';
-import Image from 'next/image';
-import clsx from 'clsx';
+import { IUnlock, Launchpad } from '../../types';
 import React, { useCallback, useEffect, useState } from 'react';
 import SelectItemTable from '@/components/SelectItemTable';
 import { IResponseAxios } from '@/models/IResponse';
 import { FetchTokenUnlock } from '@/usecases/token-unlock';
 import { ORDER } from '@/helpers/constants';
-import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
+import {
+  currencyFormat,
+  nFormatter,
+  percentFormat,
+  renderSortIcon,
+} from '@/helpers';
 import NextUnlock from '../nextUnlock';
 import Link from 'next/link';
+import { isArray, round } from 'lodash';
+import CommonTable from '@/components/CommonTable/common-table';
 
 export default function UsTable() {
   const columns: ColumnsType<IUnlock> = [
+    {
+      key: 'id',
+      title: '#',
+      width: 24,
+      align: 'left',
+      fixed: true,
+      render: (_, value, index) => {
+        return index + 1;
+      },
+    },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
       fixed: true,
-      width: '200px',
+      width: 180,
+      sortIcon: renderSortIcon,
+      sorter: true,
       render: (_, value) => {
         return (
-          <Flex align={'center'} gap={8}>
-            <Link
-              href={`/en/detail/${value.key}`}
-              className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'
-            >
-              {value.image ? (
-                <img src={value.image} alt={'icon'} width={24} height={24} />
-              ) : (
-                ''
-              )}
-              <span>{value.name}</span>
-              <Tag className={'bg-[#F1F4F7]'} bordered={false}>
-                {value.symbol}
-              </Tag>
-            </Link>
-          </Flex>
+          <Link
+            href={`/en/detail/${value.key}`}
+            className='flex gap-2'
+          >
+            {value.image ? (
+              <img src={value.image} alt={'icon'} width={24} height={24} />
+            ) : (
+              ''
+            )}
+            <span className='font-bold font-jb text-grey-700 hover:text-primary-500 truncate max-w-[160px]'>{value.name}</span>
+            <Tag className={'bg-grey-200'} bordered={false}>
+              <span className='text-grey-500 text-xs font-medium font-jm'>{value.symbol}</span>
+            </Tag>
+          </Link>
         );
       },
     },
@@ -57,14 +69,15 @@ export default function UsTable() {
       dataIndex: 'price',
       key: 'price',
       align: 'right',
+      width: 112,
+      sortIcon: renderSortIcon,
+      sorter: true,
       render: (_, { price, priceChangeIn24h }) => {
         return (
-          <Flex vertical align={'center'} gap={8}>
-            <span>
-              {currencyFormat(Number(price), '$', { isAutoZero: true })}
-            </span>
-            {percentFormat(priceChangeIn24h)}
-          </Flex>
+          <div className='text-right'>
+            <div className='text-sm text-grey-700 font-semibold font-jsb'>{currencyFormat(Number(price), '$', { isAutoZero: true, numberRound: 4 })}</div>
+            <div className='font-bold font-jb text-sm'>{percentFormat(priceChangeIn24h)}</div>
+          </div>
         );
       },
     },
@@ -72,8 +85,14 @@ export default function UsTable() {
       title: 'Market Cap',
       dataIndex: 'marketCap',
       key: 'marketCap',
+      sortIcon: renderSortIcon,
+      sorter: true,
+      width: 92,
+      align: 'right',
       render: (_, { marketCap }) => {
-        return nFormatter(marketCap, 2, '$');
+        return (
+          <div className='text-grey-700 text-sm font-semibold font-jsb text-right'>{nFormatter(marketCap, 2, '$')}</div>
+        );
       },
     },
 
@@ -82,6 +101,9 @@ export default function UsTable() {
       dataIndex: 'launchpadList',
       key: 'launchpadList',
       align: 'right',
+      sortIcon: renderSortIcon,
+      width: 94,
+      sorter: false,
       render: (_, { launchpads }) => {
         if (!launchpads) return null;
         return (
@@ -111,17 +133,53 @@ export default function UsTable() {
       title: 'IDO/IEO ROI',
       dataIndex: 'roi',
       key: 'roi',
+      sortIcon: renderSortIcon,
+      sorter: true,
+      width: 88,
+      align: 'right',
       render: (_, { roi }) => {
         if (!roi) return '-';
-        return <>{currencyFormat(Number(roi), '', { isAutoZero: true })}x</>;
+        return <div className='text-grey-700 text-sm font-semibold font-jsb text-right'>{currencyFormat(Number(roi), '', { isAutoZero: true })}x</div>;
+      },
+    },
+    {
+      title: 'Unlock Progress',
+      dataIndex: 'unlockedTokensPercent',
+      key: 'unlockedTokensPercent',
+      width: 210,
+      render: (_, { unlockedTokensPercent }) => {
+        if (!unlockedTokensPercent) return '-';
+        return (
+          <div>
+            <div className='mb-1 text-sm text-grey-700 font-jsb font-semibold'>{round(unlockedTokensPercent, 2) || 0}%</div>
+            <div className='relative w-full max-w-[150px]'>
+              {
+                unlockedTokensPercent ? (
+                  <div
+                    className='unlock absolute top-1/2 left-0 -translate-y-1/2 bg-primary-500 h-1.5 rounded-xl z-1'
+                    style={{ width: unlockedTokensPercent + '%' }}
+                  ></div>
+                ) : (
+                  <div
+                    className='unlock absolute top-1/2 left-0 -translate-y-1/2 bg-primary-500 h-1.5 rounded-xl z-1'
+                    style={{ width: 0 + '%' }}
+                  ></div>
+                )
+              }
+              <div className='locked bg-grey-300 w-full h-1.5 rounded-xl'></div>
+            </div>
+          </div>
+        );
       },
     },
     {
       title: 'Next Unlock',
       dataIndex: 'nextTokenPrice',
       key: 'nextTokenPrice',
-      width: '300px',
+      width: 302,
       align: 'center',
+      sortIcon: renderSortIcon,
+      sorter: false,
       render: (
         _,
         { nextTokenPrice, nextTokenPricePercent, nextUnlockDate }
@@ -192,7 +250,7 @@ export default function UsTable() {
 
   useEffect(() => {
     getTokenUnlock();
-  }, [getTokenUnlock, pageSize, currentPage, order, filter]);
+  }, [pageSize, currentPage, order, filter]);
 
   const _setFilter = (value: any[]) => {
     setFilter(value);
@@ -210,10 +268,20 @@ export default function UsTable() {
     <div className={'us-table'}>
       <UsHeader onFilter={_setFilter} />
       <div className='overflow-x-auto'>
-        <Table
+        <CommonTable
           columns={columns}
           dataSource={data}
           pagination={{ position: ['none'], pageSize }}
+          showSorterTooltip={false}
+          onChange={(_page, _filter, sort) => {
+            const itemSort = isArray(sort) ? sort[0] : sort;
+            setOrder({
+              columnKey: itemSort.columnKey
+                ? itemSort.columnKey.toString()
+                : '',
+              order: itemSort.order ? itemSort.order.toString() : '',
+            });
+          }}
         />
       </div>
 
@@ -267,4 +335,4 @@ export default function UsTable() {
       </Modal>
     </div>
   );
-};
+}

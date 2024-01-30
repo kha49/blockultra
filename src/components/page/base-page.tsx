@@ -1,3 +1,4 @@
+'use client';
 import { Breadcrumb } from 'antd';
 import clsx from 'clsx';
 import { PageProps } from './props';
@@ -7,7 +8,7 @@ export default function BasePage(props: PageProps) {
     breadcrumbs,
     children,
     classnames,
-    contentClassnames = 'px-3 py-8',
+    contentClassnames = 'py-6',
   } = props;
   return (
     <div className={clsx('mx-auto max-w-2xl px-4 py-3', classnames)}>

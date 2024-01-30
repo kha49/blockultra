@@ -1,33 +1,7 @@
 import { Dropdown, Space } from 'antd';
-import { DownOutlined } from '@ant-design/icons';
 import { useState } from 'react';
-
-const times = [
-  {
-    key: '1d',
-    label: '24h',
-  },
-  {
-    key: '7d',
-    label: '7d',
-  },
-  {
-    key: '1m',
-    label: '1m',
-  },
-  {
-    key: '3m',
-    label: '3m',
-  },
-  {
-    key: '6m',
-    label: '6m',
-  },
-  {
-    key: '1y',
-    label: '1y',
-  },
-];
+import IconSelectArrow from '@/assets/icons/IconSelectArrow';
+import { TIME_FILTER_ALL } from '@/helpers/constants';
 
 const allCoin = [
   {
@@ -74,7 +48,7 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
   };
 
   const _onChangeTime = ({ key }: { key: string }) => {
-    const item = times.find((a) => a?.key === key);
+    const item = TIME_FILTER_ALL.find((a) => a?.key === key);
     if (!item) return;
     setTimeSelected({
       ...item,
@@ -83,7 +57,7 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
   };
 
   return (
-    <div className='flex flex-col sm:flex-col md:flex-row xl:flex-row items-center sm:items-start bg-[#FCFCFD] justify-between mx-6'>
+    <div className='flex flex-col sm:flex-col md:flex-row xl:flex-row items-center sm:items-start justify-between'>
       {/* <div className='gainers-header items-center justify-between mx-6 bg-[#FCFCFD] flex-col xl:flex-row md:flex-row sm:flex-col sm:items-start'> */}
       <h3 className='font-bold text-black text-[28px] tracking-[0] leading-[28px] whitespace-nowrap sm:mb-3'>
         Top Coin Gainers & Losers
@@ -99,23 +73,23 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
           trigger={['click']}
           className='justify-center h-9 w-28 rounded border hover:cursor-pointer'
         >
-          <Space>
-            {coinSelected.label} <DownOutlined />
-          </Space>
+          <div className='flex justify-between items-center py-2 px-4 text-sm font-medium font-jm'>
+            {coinSelected.label} <IconSelectArrow />
+          </div>
         </Dropdown>
         <Dropdown
           overlayClassName='overlay-menu-center'
           menu={{
-            items: times,
+            items: TIME_FILTER_ALL,
             onClick: _onChangeTime,
           }}
           arrow
           trigger={['click']}
           className='justify-center h-9 w-28 rounded border hover:cursor-pointer'
         >
-          <Space>
-            {timeSelected.label} <DownOutlined />
-          </Space>
+          <div className='flex justify-between items-center py-2 px-4 text-sm font-medium font-jm'>
+            {timeSelected.label} <IconSelectArrow />
+          </div>
         </Dropdown>
       </Space>
     </div>

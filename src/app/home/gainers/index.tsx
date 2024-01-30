@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import './style.scss';
-import { Space } from 'antd';
 import { FetchGainers, FetchLosers } from '../../../usecases/home';
 import GainersHeader from './gainers-header';
 import TopData from './top-data';
@@ -65,12 +64,12 @@ const Gainers = () => {
   return (
     <div className='gainer-tab hide-scroll'>
       <GainersHeader onFilterCoins={setFilterCoin} onFilterTime={setTime} />
-      <div className='p-6'>
+      <div className='pt-6'>
         <div className='flex flex-col xl:flex-row xl:gap-20'>
           <TopData
             title='Top Gainers'
             data={gainers}
-            onChangeOrder={setOrderGainer}
+            onChangeOrder={() => {}}
           />
           <TopData
             title='Top Losers'

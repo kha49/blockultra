@@ -14,6 +14,8 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     key: 'id',
     title: '#',
     align: 'left',
+    fixed: true,
+
     render: (_, _value, index) => index + 1,
   },
   {
@@ -71,6 +73,7 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     render: (_, { price24hPercent }) => {
       return percentFormat(price24hPercent);
     },
+    sorter: true,
   },
   {
     key: 'volume24h',
@@ -80,6 +83,7 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     render: (_, value: any) => {
       return nFormatter(value.volume24h, 2, '$');
     },
+    sorter: true,
   },
   {
     key: 'marketCap',
@@ -89,6 +93,7 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     render: (_, value) => {
       return nFormatter(Number(value.marketCap), 2, '$');
     },
+    sorter: true,
   },
 ];
 

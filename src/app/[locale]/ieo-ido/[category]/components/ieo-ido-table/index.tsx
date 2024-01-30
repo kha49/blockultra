@@ -17,6 +17,8 @@ import { IIeoIdoData, IIeoIdoFilterType } from '../../types';
 import HeadFilter from '../head-filter';
 import HeadFilterInformation from '../head-filter-information';
 import './styles.scss';
+import { isArray } from 'lodash';
+import CommonTable from '@/components/CommonTable/common-table';
 
 export const IeoIdoTable = () => {
   const {
@@ -100,7 +102,7 @@ export const IeoIdoTable = () => {
       ) : (
         <HeadFilter onFilter={getIeoIdoUpComing} />
       )}
-      <Table
+      <CommonTable
         onRow={
           category === IeoIdoCategory.topIdoLaunchpads
             ? (record) => {
@@ -119,7 +121,15 @@ export const IeoIdoTable = () => {
         }
         dataSource={data}
         pagination={false}
+        showSorterTooltip={false}
         className='overflow-x-auto overflow-y-hidden'
+        onChange={(_page, _filter, sort) => {
+          const itemSort = isArray(sort) ? sort[0] : sort;
+          setOrder({
+            columnKey: itemSort.columnKey ? itemSort.columnKey.toString() : '',
+            order: itemSort.order ? itemSort.order.toString() : '',
+          });
+        }}
       />
       <div className='pt-6 flex-col md:flex-row flex items-center justify-center table-pagination pagination-mobile'>
         <Pagination

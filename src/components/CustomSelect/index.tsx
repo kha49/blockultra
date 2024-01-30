@@ -21,7 +21,16 @@ const SelectWrapper = styled.div`
   }
 
   && .ant-select .ant-select-selector {
-    padding-left: calc(3rem - 15px);
+    padding-left: 2.25rem;
+    height: 44px;
+
+    .ant-select-selection-search {
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      display: -webkit-box;
+      max-width: 220px;
+    }
   }
 
   .ant-select .ant-select-arrow {
@@ -34,6 +43,8 @@ const SelectWrapper = styled.div`
   .ant-select-selection-placeholder {
     font-size: 14px;
     font-weight: 500;
+    inset-inline-start: 20px;
+    inset-inline-end: 30px;
   }
 
   .ant-select-selection-search {

@@ -9,7 +9,7 @@ const Overview = (props: any) => {
 
   // for (let i in data) {
   //   totalRaise += data[i].raise?.USD | 0
-  //   totalePrice += data[i].price?.USD |0
+  //   totalePrice += data[i].price |0
   //   totalTokens += data[i].tokensForSale | 0;
   // }
   return (

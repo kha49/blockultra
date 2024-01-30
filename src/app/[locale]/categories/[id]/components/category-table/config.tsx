@@ -2,10 +2,9 @@ import { ColumnsType } from 'antd/es/table';
 import { Flex, Tag } from 'antd';
 import Image from 'next/image';
 import { nFormatter, percentFormat } from '@/helpers';
-import { StarIcon } from '@heroicons/react/24/outline';
-import GraphLine from '../graph-line';
 import { CategoryCoinsType } from '../../types';
 import { IconStar } from '@/assets/icons';
+import Link from 'next/link';
 
 export const FundraisingCategory = {
   FundingRounds: 'funding-rounds',
@@ -32,16 +31,26 @@ export const categoryColumns: ColumnsType<CategoryCoinsType> = [
     title: '#',
     dataIndex: 'id',
     key: 'id',
+    fixed: true,
+    width: 24,
+    sorter: true,
   },
   {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
+    sorter: true,
     fixed: true,
-    render: (_, { name, image, symbol }) => (
+    width: 200,
+    render: (_, { name, image, symbol, key }) => (
       <Flex align={'center'} gap={8}>
-        <Image src={image.icon} alt={'icon'} width={24} height={24} />
-        <span>{name}</span>
+        <img src={image.icon} alt={'icon'} width={24} height={24} />
+        <Link
+          href={`/en/detail/${key}`}
+          className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'
+        >
+          {name}
+        </Link>
         <Tag>{symbol}</Tag>
       </Flex>
     ),
@@ -50,6 +59,8 @@ export const categoryColumns: ColumnsType<CategoryCoinsType> = [
     title: 'Rate',
     dataIndex: 'rate',
     key: 'rate',
+    sorter: true,
+    width: 60,
     render: (value) =>
       value ? (
         <div className='flex items-center gap-1'>
@@ -64,23 +75,31 @@ export const categoryColumns: ColumnsType<CategoryCoinsType> = [
     title: 'Price',
     dataIndex: 'price',
     key: 'price',
-    render: (price) => nFormatter(price.USD, 2, '$'),
+    sorter: true,
+    width: 120,
+    render: (price) => nFormatter(price, 2, '$'),
   },
   {
     title: '24h %',
     dataIndex: 'priceChangeIn24h',
+    width: 120,
+    sorter: true,
     key: 'priceChangeIn24h',
     render: (value) => <>{percentFormat(value)}</>,
   },
   {
     title: 'Volume (24h)',
     dataIndex: 'volume24h',
+    sorter: true,
+    width: 120,
     key: 'volume24h',
     render: (volume) => nFormatter(Number(volume), 2, '$'),
   },
   {
     title: 'Market Cap',
     dataIndex: 'marketCap',
+    width: 120,
+    sorter: true,
     key: 'marketCap',
     render: (marketCap) => nFormatter(marketCap, 2, '$'),
   },

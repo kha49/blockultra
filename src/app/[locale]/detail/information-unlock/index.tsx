@@ -5,54 +5,11 @@ import ReactECharts from 'echarts-for-react';
 import './style.scss';
 import CountdownTimer from '@/components/CountdownTimer/CountDownTimer';
 import { IconUnLock } from '@/assets/icons';
-import { FetchUnlockToken } from '@/usecases/coin-info';
-import { useEffect, useState } from 'react';
 import { currencyFormat } from '@/helpers';
-import { IUnlock } from '../../unlock-schedule/types';
 import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
 
-// export interface IUnlock {
-//   date: Date;
-//   lockedTokensPercent: number;
-//   unlockedTokensPercent: number;
-//   lockedTokens: number;
-//   unlockedTokens: number;
-//   nextUnlockPercent: number;
-// }
-
 export default function InformationUnlock({data} : any) {
-  // const [data, setData] = useState<ITotalUnlockProgress>({
-  //   totalRemainingTime: new Date(),
-  //   totalUnlockedPercent: 0,
-  //   totalUnlockedToken: 0,
-  //   totalUnlockedValue: 0,
-  //   totalLockedPercent: 0,
-  //   totalLockedToken: 0,
-  //   totalLockedValue: 0,
-  //   totalNextUnlockPercent: 0,
-  //   totalNextUnlockToken: 0,
-  //   totalNextUnlockValue: 0,
-  //   remainingTime: new Date(),
-  //   percentOfMarketCap: 0,
-  // });
-
-  async function fetchUnlock() {
-    // let data: any = await FetchUnlockToken({ coin_key: 'avalanche' });
-    //   const tokenUnlock: any = fetchUnlock() || {};
-    //   const lockedTokens = tokenUnlock.lockedTokens;
-    //   const lockedTokensPercent = tokenUnlock.lockedTokensPercent;
-    //   const unlockedTokens = tokenUnlock.unlockedTokens;
-    //   const nextUnlockPercent = tokenUnlock.nextUnlockPercent;
-    //   const dateNextUnlock = tokenUnlock.date;
-    //  const totalToken = (lockedTokens * 100) / lockedTokensPercent;
-    // setData(data);
-  }
-
-  // useEffect(() => {
-  //   fetchUnlock();
-  // }, []);
-
-  const countDownTime = data?.nextUnlock ? new Date(data?.nextUnlock[data?.nextUnlock?.length -1]?.date) : new Date();
+  const countDownTime = data?.tokenUnlock ? new Date(data?.tokenUnlock.unlockChartRemainingTime) : new Date();
 
   const option = {
     color: [
@@ -68,6 +25,7 @@ export default function InformationUnlock({data} : any) {
       ]),
       'rgb(247, 147, 26)',
       '#ECEEFE',
+      '#F1F4F7',
     ],
     series: [
       {
@@ -91,11 +49,16 @@ export default function InformationUnlock({data} : any) {
           focus: false,
           scale: false,
         },
-        data: data?.chart ? [
-          { value: data?.chart?.unlockedTokensPercent, name: 'Unlock' },
-          { value: data?.chart?.nextUnlockPercent, name: 'Next unlock' },
-          { value:data?.chart?.lockedTokensPercent, name: 'Block' },
-        ] : [{ value: 100, name: 'Unlock'}],
+        data: data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 ? [
+          { value: data?.tokenUnlock?.unlockChartLocked, name: 'Unlock' },
+          { value: data?.tokenUnlock?.unlockChartNextUnlock, name: 'Next unlock' },
+          { value: data?.tokenUnlock?.unlockChartUnlocked, name: 'Block' },
+        ] : [
+          { value: 0, name: 'Unlock'},
+          { value: 0, name: 'Next unlock' },
+          { value: 0, name: 'Block' },
+          { value: 100, name: 'N/A'}
+        ],
       },
     ],
   };
@@ -104,25 +67,33 @@ export default function InformationUnlock({data} : any) {
     <div className='chart'>
       <div className='relative'>
         <div className='chart__unlock'>
-          <IconUnLock />
-          <div className='percent'>
-            {data?.chart ? currencyFormat(data?.chart?.unlockedTokensPercent, '') : 100}%
+          { data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 ? <IconUnLock /> : '' }
+          <div>
+            {data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 ? (
+              <div className='text-2xl text-primary-500 font-jb font-bold'>
+                {currencyFormat(data?.tokenUnlock?.unlockChartLocked, '')} %
+              </div>
+            ) : (<span className='text-grey-200 text-2xl'>N/A</span>)}
           </div>
         </div>
         <ReactECharts option={option} />
       </div>
 
       {
-        data?.chart ? (
+        data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 ? (
           <CountdownTimer
             countDownName={'Next Unlock'}
             targetDate={countDownTime}
           />
-        ) : (
+        ) : ''
+      }
+
+      {
+        data && data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 && data?.tokenUnlock?.unlockChartLocked === 100 ? (
           <div className='flex items-center justify-center gap-2'>
             Fully Vested <IconCheckedCompleted />
           </div>
-        )
+        ) : ''
       }
       
     </div>

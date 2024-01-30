@@ -23,7 +23,7 @@ export interface ICoin {
   name: string;
   symbol: string;
   image: IImage;
-  price: IPrice;
+  price: number;
   priceChangeIn24h: number;
 }
 export interface IPrice {
@@ -43,7 +43,7 @@ export interface IFundraising {
   key: string;
   name: string;
   symbol: any;
-  icon: string;
+  image: string;
   price: IPrice;
   priceChangeIn24h: number;
 }

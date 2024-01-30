@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import HomeTabs from '../tabs';
 import Coins from '../coin';
 import Categories from '../categories';
@@ -8,24 +8,14 @@ import Gainers from '../gainers';
 import Trending from '../trending';
 import Fundraising from '../fundraising';
 import UpComing from '../up-coming';
-
-// const tabs: any = {
-//   categories: <Categories />,
-//   gainers: <Gainers />,
-//   trending: <Trending />,
-//   fundraising: <Fundraising />,
-//   all_coin: <AllCoin />,
-// };
+import { useSearchParams } from 'next/navigation';
 
 const RenderTabs = () => {
-  const [currentTab, setCurrentTab] = useState<string>('all_coin');
-
-  const handleChangeTab = (tab: string) => {
-    setCurrentTab(tab);
-  };
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab') ?? 'all_coin';
 
   const renderTableContent = () => {
-    switch (currentTab) {
+    switch (tab) {
       case 'categories':
         return <Categories />;
       case 'gainers':
@@ -43,9 +33,11 @@ const RenderTabs = () => {
   };
 
   return (
-    <div className='mx-auto max-w-2xl px-4 py-3'>
-      <HomeTabs currentTab={currentTab} setCurrentTab={handleChangeTab} />
-      <div className='p-6 border rounded-lg'>{renderTableContent()}</div>
+    <div className='mx-auto max-w-2xl px-4'>
+      <HomeTabs currentTab={tab} />
+      <div className='p-6 md:border md:rounded-lg my-4'>
+        {renderTableContent()}
+      </div>
     </div>
   );
 };

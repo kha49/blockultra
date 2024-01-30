@@ -21,6 +21,7 @@ import {
   FetchFunRound,
   FetchPortfollios,
 } from '@/usecases/fundraising';
+import CommonTable from '@/components/CommonTable/common-table';
 
 interface IPropsTableData {
   tabKey: string;
@@ -161,7 +162,7 @@ const TableData = (props: IPropsTableData) => {
               isSortSelected='alphabet'
             />
             <div className='hidden xl:block md:block'>
-              <Button className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'>
+              <Button className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm !bg-white !text-grey-500' disabled>
                 <div className='flex'>
                   <IconFilterCoinTab />
                   <span className='ml-1'>Filters</span>
@@ -171,7 +172,7 @@ const TableData = (props: IPropsTableData) => {
           </div>
         </div>
         <div className='overflow-x-auto hide-scroll'>
-          <Table
+          <CommonTable
             columns={
               tabFundraisingTable[tabKey as keyof typeof tabFundraisingTable]
             }

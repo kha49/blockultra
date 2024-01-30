@@ -20,6 +20,7 @@ export default function HeadFilter({
           onFilterChange={(keys) => {
             if (keys.length) {
               setSearchKeys(keys);
+              onFilter({ search_key: keys });
             } else {
               onFilter({});
             }
@@ -27,8 +28,9 @@ export default function HeadFilter({
         />
         <div className='hidden xl:block md:block'>
           <Button
-            disabled={keys.length === 0}
-            className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'
+            // disabled={keys.length === 0}
+            disabled
+            className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm !bg-white !text-grey-500'
             onClick={() => onFilter({ search_key: keys })}
           >
             <div className='flex'>
@@ -41,7 +43,7 @@ export default function HeadFilter({
       <div className='hidden xl:block md:block'>
         <Button
           disabled
-          className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm'
+          className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm !bg-white !text-grey-500'
         >
           <div className='flex'>
             <IconFilterCoinTab />

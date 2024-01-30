@@ -54,7 +54,7 @@ export default function BankersModal(props: BankersModalProps) {
         footer={null}
         styles={{
           content: {
-            height: 500,
+            height: 'auto',
             overflowY: 'auto',
           },
         }}

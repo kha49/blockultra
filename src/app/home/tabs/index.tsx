@@ -1,17 +1,14 @@
-import { useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import './style.scss';
-import {
-  IconCategories,
-  IconCoin,
-  IconGainers,
-  IconTrending,
-} from '@/assets/icons';
+import { IconCategories, IconCoin, IconGainers } from '@/assets/icons';
 import IconFundraising from '@/assets/icons/IconFundraising';
 import IconUpcomingIEOIDO from '@/assets/icons/IconUpcomingIEOIDO';
-import animationData from "./icons/tablet.json";
-import Lottie from "lottie-react";
+import animationData from './icons/trending.json';
+import Lottie from 'lottie-react';
+import Link from 'next/link';
+import { usePathname, useSearchParams } from 'next/navigation';
 
-const data: any = [
+const data = [
   {
     id: 'all_coin',
     icon: <IconCoin />,
@@ -32,9 +29,7 @@ const data: any = [
   },
   {
     id: 'trending',
-    icon: <Lottie
-      animationData={animationData}
-    />,
+    icon: <Lottie animationData={animationData} />,
     label: 'Trending',
     isActive: false,
   },
@@ -54,50 +49,40 @@ const data: any = [
 
 interface IProps {
   currentTab: string;
-  setCurrentTab: (tab: string) => void;
 }
 
-const HomeTabs = ({ currentTab, setCurrentTab }: IProps) => {
-  const [tabs, setTabs] = useState<any>([]);
+const HomeTabs = ({ currentTab }: IProps) => {
+  const pathname = usePathname();
 
-  useEffect(() => {
-    const newTabs = data.map((tab: any) => ({
-      ...tab,
-      isActive: tab.id === currentTab,
-    }));
-    setTabs(newTabs);
-  }, [currentTab]);
+  const searchParams = useSearchParams();
 
+  const createQueryString = useCallback(
+    (value: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('tab', value);
+
+      return params.toString();
+    },
+    [searchParams]
+  );
+  // TODO: fix scroll to active item
   return (
-    <>
-      <div className='hide-scroll flex items-center justify-normal lg:justify-center home-tabs md:mt-8 w-full gap-6 lg:gap-9 overflow-x-auto'>
-        {tabs.map((tab: any) => (
-          <div
-            key={tab.id}
-            className={`home-tab flex items-center gap-2 cursor-pointer ${
-              tab.isActive ? 'active' : ''
-            }`}
-            onClick={() => setCurrentTab(tab.id)}
-          >
-            <div className='min-w-[20px]'>{tab.icon}</div>
-            <span className='text-lg lg:text-xl whitespace-nowrap'>
-              {tab.label}
-            </span>
-          </div>
-        ))}
-      </div>
-      <div className='flex py-6 justify-center gap-[6px]'>
-        {tabs.map((tab: any) => (
-          <div
-            key={tab.id}
-            className={`home-tab-thumb hidden lg:block ${
-              tab.isActive ? 'active' : ''
-            }`}
-            onClick={() => setCurrentTab(tab.id)}
-          ></div>
-        ))}
-      </div>
-    </>
+    <div className='hide-scroll flex items-center justify-normal lg:justify-center home-tabs md:mt-8 w-full gap-6 lg:gap-9 overflow-x-auto py-6 border-b md:border-none'>
+      {data.map((tab) => (
+        <Link
+          href={`${pathname}?${createQueryString(tab.id)}`}
+          key={tab.id}
+          className={`home-tab flex items-center gap-2 cursor-pointer ${
+            tab.id === currentTab ? 'active' : ''
+          }`}
+        >
+          <div className='min-w-[20px]'>{tab.icon}</div>
+          <span className='text-lg lg:text-xl whitespace-nowrap'>
+            {tab.label}
+          </span>
+        </Link>
+      ))}
+    </div>
   );
 };
 

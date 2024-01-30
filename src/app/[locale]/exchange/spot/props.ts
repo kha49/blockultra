@@ -5,10 +5,11 @@ export interface IExchangeSpot {
   dataChart: DataChart;
   icon: string;
   key: string;
+  key2: string;
   name: string;
   percentVolume: number;
   tier: string;
-  volumn24h: number;
+  volume24h: number;
   volumn24hPercent: number;
 }
 interface DataChart {

@@ -1,6 +1,6 @@
 export type TTopCoin = {
   money: string;
-  date: string;
+  nextUnlockDate: string;
   key: string;
   symbol: string;
   image: string;
@@ -75,6 +75,7 @@ export interface IUnlock {
   nextTokenPrice?: number;
   nextTokenPricePercent?: number;
   nextUnlockDate?: string;
+  unlockedTokensPercent?: number;
 }
 
 export interface Nextunlock {

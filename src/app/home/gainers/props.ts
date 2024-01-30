@@ -36,7 +36,7 @@ export interface IGainer {
   volume24h: string;
   noData: boolean;
   volatility: IVolatility;
-  price: IPrice;
+  price: number;
   histPrices: IHistPrices;
   atlPrice: IAtlPrice;
   icoStatus?: string;

@@ -14,6 +14,7 @@ const Fundraising = dynamic(() => import('../fundraising/Fundraising'), { ssr: f
 
 
 const CoinTabInfo = (props: any) => {
+  const data = props?.data ;
   const tabs = [
     {
       id: '1',
@@ -35,27 +36,27 @@ const CoinTabInfo = (props: any) => {
     },
     {
       id: '4',
-      disable: false,
+      disable: data?.fundraisings ? false : true,
       label: 'Fundraising',
       component: <Fundraising data={props.data} slug={props.slug} />,
     },
     {
       id: '5',
-      disable: false,
+      disable: data?.ieoido ? false : true,
       label: 'IDO/IEO',
       component: <IEOIDODetail data={props.data} slug={props.slug} />,
     },
     {
       id: '6',
-      disable: false,
+      disable: data?.tokenomics ? false : true,
       label: 'Tokenomics',
-      component: <Tokenomics tokenInfo={props.data} />,
+      component: <Tokenomics tokenInfo={props.data} slug={props.slug} />,
     },
     {
       id: '7',
-      disable: false,
+      disable: data?.unlocks ? false : true,
       label: 'Unlock',
-      component: <Unlock tokenInfo={props.data} />,
+      component: <Unlock tokenInfo={props.data} slug={props.slug} />,
     },
     {
       id: '8',

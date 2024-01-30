@@ -1,4 +1,5 @@
 interface IFundraisings {
+  id: number;
   type: string;
   date: any;
   linkToAnnouncement: string;
@@ -13,4 +14,5 @@ interface IFundraisings {
   unlockedTokens: number;
   unlockedValue: number;
   backersCount: number;
+  isVisible: boolean;
 }

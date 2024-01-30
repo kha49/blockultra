@@ -12,22 +12,13 @@ export const metadata: Metadata = {
   },
 };
 
-// export default function RootLayout({
-//   children,
-// }: {
-//   children: React.ReactNode;
-// }) {
-//   return children;
-// }
-
 import type { PropsWithChildren } from 'react';
 import { RootStyleRegistry } from '@/components/RootStyle';
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
-    <html lang='es'>
-      <head />
-      <body>
+    <html lang='en' suppressHydrationWarning={true}>
+      <body className={'font-jm font-medium text-base'}>
         <RootStyleRegistry>{children}</RootStyleRegistry>
       </body>
     </html>

@@ -35,7 +35,7 @@ const DetailTabs = () => {
         <Button
           key={tag.value}
           disabled={tag.disabled}
-          className={clsx(/*params.category*/'spot' === tag.value && 'active')}
+          className={'font-jm font-medium text-sm ' + ('spot' === tag.value ? ' active' : '') + (tag.disabled ? 'opacity-50 !text-grey-700' : '')}
           // onClick={() =>
           //   router.push(`/${params.locale}/exchanges/`)
           // }
@@ -49,7 +49,7 @@ const DetailTabs = () => {
       <Button
           key={trans.value}
           disabled={trans.disabled}
-          className={clsx(/*params.category*/'spot' === trans.value && 'active')}
+          className={'font-jm font-medium text-sm ' + ('spot' === trans.value ? ' active' : '') + (trans.disabled ? 'opacity-50 !text-grey-700' : '')}
           // onClick={() =>
           //   router.push(`/${params.locale}/exchanges/`)
           // }

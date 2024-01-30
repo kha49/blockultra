@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import './style.scss';
 import { Checkbox, Select, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
@@ -14,24 +14,20 @@ import {
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
-import {
-  renderSortIcon,
-  nFormatter,
-  percentFormat,
-} from '@/helpers';
+import { renderSortIcon, nFormatter, percentFormat } from '@/helpers';
 import { IExchangeSpot } from '../props';
 import { COLOR_CHART, ORDER } from '@/helpers/constants';
 import { useDebounce } from 'usehooks-ts';
 import { ISearchFilter } from '../props';
 import { isArray } from 'lodash';
-import Image from 'next/image';
 
 const columns: ColumnsType<IExchangeSpot> = [
   {
     key: 'id',
     title: '#',
-    width: 56,
+    width: 50,
     align: 'left',
+    fixed: true,
     render: (_, value, index) => {
       return index + 1;
     },
@@ -39,15 +35,16 @@ const columns: ColumnsType<IExchangeSpot> = [
   {
     key: 'name',
     title: 'Name',
-    width: 400,
+    width: 294,
     align: 'left',
+    fixed: true,
     render: (_, value) => {
       return (
         <span className='table-header'>
-          <Link href={`spot/${value.key}`}>
+          <Link href={`spot/${value.key2}`}>
             <div className='inline-flex items-center'>
               <img src={value.icon} alt={value.name} className='w-8 h-8' />
-              <div className='mx-2 text-zinc-700 text-sm font-bold  hover:text-primary-500'>
+              <div className='mx-2 text-grey-700 text-sm font-bold font-jb hover:text-primary-500 truncate max-w-full'>
                 {value.name}
               </div>
             </div>
@@ -61,66 +58,70 @@ const columns: ColumnsType<IExchangeSpot> = [
   {
     key: 'tier',
     title: 'Tier',
-    width: 120,
+    dataIndex: 'tier',
+    width: 26,
     align: 'center',
+    sorter: true,
     render: (_, value) => {
-      return (
-        <p className='text-center'>
-          {value.tier}
-        </p>
-      );
+      return <p className='text-right font-jsb'>{value.tier ? value.tier : '-'}</p>;
     },
   },
   {
-    key: 'volumn24h',
-    title: 'Volumn (24h)',
-    width: 200,
-    align: 'center',
+    key: 'volume24h',
+    title: 'Volume (24h)',
+    dataIndex: 'volume24h',
+    width: 128,
+    align: 'right',
+    sorter: true,
     render: (_, value) => {
       return (
-        <div className='text-center'>
-          <p className='text-zinc-700 text-sm font-semibold'>
-            {nFormatter(value.volumn24h, 2, '$')}
+        <div className='text-right font-jsb'>
+          <p className='text-grey-700 text-sm font-semibold'>
+            {nFormatter(value.volume24h, 2, '$')}
           </p>
           {percentFormat(value.volumn24hPercent, 'text-sm font-bold')}
         </div>
       );
     },
     sortIcon: renderSortIcon,
-    sorter: true,
   },
   {
-    key: 'coins',
+    key: 'currenciesCount',
     title: 'Coins',
-    width: 150,
-    align: 'center',
+    width: 96,
+    align: 'right',
     render: (_, value) => {
-      return <p className='text-center'>{value.currenciesCount}</p>;
+      return <p className='text-right font-jsb'>{value.currenciesCount}</p>;
     },
+    sorter: true,
+    sortIcon: renderSortIcon,
   },
   {
     key: 'country',
     title: 'Country',
-    width: 200,
+    width: 130,
     align: 'center',
     render: (_, value: any) => {
-      return (
-        (value.country? (
-          <div className='flex justify-center items-center'>
-            <img className='w-8 h-4.5' src= {`/Flag/Country=${value.country}, Style=Flag, Radius=Off.svg`}/>
-            {/* <div>{value.country}</div> */}
-          </div>
-        ): (
-          <div>-</div>
-        ))
+      return value.country ? (
+        <div className='flex justify-center items-center'>
+          <img
+            className='w-8 h-4.5'
+            src={`/Flag/Country=${value.country}, Style=Flag, Radius=Off.svg`}
+          />
+          {/* <div>{value.country}</div> */}
+        </div>
+      ) : (
+        <div className='text-grey-700'>-</div>
       );
     },
   },
   {
     key: 'marketShare',
     title: 'Market Share',
-    width: 200,
+    dataIndex: 'marketShare',
+    width: 148,
     align: 'left',
+    sorter: false,
     render: (_, value) => {
       return (
         <div className='flex items-center gap-2'>
@@ -138,7 +139,7 @@ const columns: ColumnsType<IExchangeSpot> = [
                 left: 0,
                 top: 0,
                 right: 0,
-                bottom: 0
+                bottom: 0,
               },
               series: [
                 {
@@ -177,7 +178,7 @@ const columns: ColumnsType<IExchangeSpot> = [
               ],
             }}
           />
-          <span className='ml-1'>{value.percentVolume} %</span>
+          <span className='font-jsb'>{value.percentVolume}%</span>
         </div>
       );
     },
@@ -185,8 +186,10 @@ const columns: ColumnsType<IExchangeSpot> = [
   {
     key: 'graph',
     title: 'Volume Graph (7d)',
-    width: 230,
+    dataIndex: 'graph',
+    width: 162,
     align: 'right',
+    sorter: false,
     render: (_, value) => {
       try {
         return (
@@ -208,7 +211,7 @@ const columns: ColumnsType<IExchangeSpot> = [
                   left: 0,
                   top: 0,
                   right: 0,
-                  bottom: 0
+                  bottom: 0,
                 },
                 series: [
                   {
@@ -222,13 +225,34 @@ const columns: ColumnsType<IExchangeSpot> = [
                         x2: 0,
                         y2: 1,
                         colorStops: [
-                          { offset: 0, color: (value.dataChart.volumes[99] - value.dataChart.volumes[0]) < 0? 'rgba(255, 0, 0, 0.5)' : 'rgba(0, 128, 0, 0.5)' },
-                          { offset: 1, color: (value.dataChart.volumes[99] - value.dataChart.volumes[0]) < 0? 'rgba(255, 0, 0, 0)' : 'rgba(0, 128, 0, 0)' },    // Điểm cuối gradient color
+                          {
+                            offset: 0,
+                            color:
+                              value.dataChart.volumes[99] -
+                                value.dataChart.volumes[0] <
+                              0
+                                ? 'rgba(255, 0, 0, 0.5)'
+                                : 'rgba(0, 128, 0, 0.5)',
+                          },
+                          {
+                            offset: 1,
+                            color:
+                              value.dataChart.volumes[99] -
+                                value.dataChart.volumes[0] <
+                              0
+                                ? 'rgba(255, 0, 0, 0)'
+                                : 'rgba(0, 128, 0, 0)',
+                          }, // Điểm cuối gradient color
                         ],
                       },
                     },
                     lineStyle: {
-                      color: (value.dataChart.volumes[99] - value.dataChart.volumes[0]) < 0? 'rgba(255, 0, 0, 0.5)' : 'rgba(0, 128, 0, 0.5)', // Màu xanh lá cây cho đường line
+                      color:
+                        value.dataChart.volumes[99] -
+                          value.dataChart.volumes[0] <
+                        0
+                          ? 'rgba(255, 0, 0, 0.5)'
+                          : 'rgba(0, 128, 0, 0.5)', // Màu xanh lá cây cho đường line
                     },
                     showSymbol: false,
                   },
@@ -247,17 +271,17 @@ const columns: ColumnsType<IExchangeSpot> = [
 
 const ExchangeTable = () => {
   const [data, setData] = useState<IExchangeSpot[]>([]);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(999);
   const [order, setOrder] = useState({
-    columnKey: '',
-    order: '',
+    columnKey: 'volume24h',
+    order: 'desc',
   });
   const [keyFilter, setKeyFilter] = useState<string[]>([]);
   const debouncedValue = useDebounce<string[]>(keyFilter, 300);
 
-  const getCoins = useCallback(async () => {
+  const getCoins = async () => {
     const response: any = await FetchList({
       limit: pageSize,
       page: currentPage,
@@ -268,15 +292,24 @@ const ExchangeTable = () => {
 
     if (!response) return;
     const { data, total } = response;
-    setData(data);
+    if (data && data.length > 0) {
+      const dataClone = data.map((item: any, index: number) => ({
+        ...item,
+        key2: item.key,
+        key: index,
+      }));
+      setData(dataClone);
+    } else {
+      setData(data);
+    }
     setTotal(total!!);
 
     /* #endregion */
-  }, [pageSize, currentPage, order, debouncedValue]);
+  };
 
   useEffect(() => {
     getCoins();
-  }, [getCoins, pageSize, currentPage, order, debouncedValue]);
+  }, [pageSize, currentPage, order, debouncedValue]);
 
   const _onChangePage = (page: number) => {
     setCurrentPage(page);
@@ -365,7 +398,7 @@ const ExchangeTable = () => {
           />
         </div>
       </div>
-      <div className='table-price desktop-show overflow-x-auto'>
+      <div className='table-price overflow-x-auto'>
         <BaseTable
           columns={columns}
           data={data}
@@ -380,8 +413,8 @@ const ExchangeTable = () => {
             setOrder({
               columnKey: itemSort.columnKey
                 ? itemSort.columnKey.toString()
-                : '',
-              order: itemSort.order ? itemSort.order.toString() : '',
+                : 'volume24h',
+              order: itemSort.order ? itemSort.order.toString() : 'ascend',
             });
           }}
         />

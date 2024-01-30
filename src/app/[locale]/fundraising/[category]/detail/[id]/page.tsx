@@ -4,7 +4,7 @@ import Link from 'next/link';
 import './index.scss';
 import dynamic from 'next/dynamic';
 
-const Main = dynamic(() => import('./main'), { ssr: false })
+const Main = dynamic(() => import('./main'), { ssr: false });
 
 type PageProps = {
   params: {
@@ -44,7 +44,7 @@ export default async function FundraisingDetail({
   ];
 
   return (
-    <Page breadcrumbs={breadcrumbs} contentClassnames=''>
+    <Page breadcrumbs={breadcrumbs} contentClassnames='pt-4 pb-3'>
       <Main params={params} />
     </Page>
   );

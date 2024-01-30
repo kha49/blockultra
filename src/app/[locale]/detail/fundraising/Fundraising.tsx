@@ -1,16 +1,9 @@
 'use client';
 
-import IconA16ZCrypto from '@/assets/icons/IconA16ZCrypto';
 import { IconArrowDown } from '@/assets/icons/IconArrowDown';
-import IconBinStarter from '@/assets/icons/IconBinStarter';
-import IconDWFLabs from '@/assets/icons/IconDWFLabs';
-import IconFTXIEOs from '@/assets/icons/IconFTXIEOs';
-import IconGateio from '@/assets/icons/IconGateio';
 import { nFormatter } from '@/helpers';
 import { FetchCoinFundraising } from '@/usecases/coin-info';
-import { AxiosResponse } from 'axios';
-import React, { useEffect, useState } from 'react';
-import Backers from './Backers';
+import { useEffect, useState } from 'react';
 import BackerList from '@/components/BackerList/BackerList';
 
 
@@ -29,20 +22,23 @@ const Fundraising = (props:any) => {
   }, []);
 
   async function fetchFundraising() {
-    const res: any = await FetchCoinFundraising({
-      coin_key: 'optimism',
+    let res: any = await FetchCoinFundraising({
+      coin_key: props.slug,
       limit: 100,
     });
     setOverview(res?.overview);
-    setFundraisings(res?.fundraisings);
-    console.log('====================================');
-    console.log('fetchFundraising', overView, fundraisings);
-    console.log('====================================');
+    let fundraisings = res?.fundraisings || [];
+  
+    for (let i in fundraisings) {
+      fundraisings[i].id = i;
+      fundraisings[i].isVisible = false;
+    }
+    setFundraisings(fundraisings);
     return res;
   }
 
   const handleToggle = (itemId: any) => {
-    setItems((prevItems) => {
+    setFundraisings((prevItems) => {
       return prevItems.map((item) =>
         item.id === itemId ? { ...item, isVisible: !item.isVisible } : item
       );
@@ -143,82 +139,15 @@ const Fundraising = (props:any) => {
             <h1 className='text-grey-700 text-base font-bold'>
               Backer{' '}
               <span className='text-grey-500 ml-1'>
-                {overView.backers?.length}
+                {overView?.backers?.length}
               </span>
             </h1>
           </div>
-          {/* <Backers backers={overView.backers} /> */}
-          <BackerList backers={overView.backers} initNumber={4} type={'backer'} />
-          {/* <div className='w-full p-6 flex flex-wrap items-center justify-between gap-4'>
-            <div className='flex justify-center items-center gap-2'>
-              <div className='w-12 h-12'>
-                <IconA16ZCrypto />
-              </div>
-              <div>
-                <p className='text-grey-700 font-semibold text-sm mb-1'>
-                  A16z Crypto
-                </p>
-                <div className='bg-grey-200 rounded-sm inline-block px-1'>
-                  <p className='text-grey-500 text-xs font-medium'>Tier 1</p>
-                </div>
-              </div>
-            </div>
-            <div className='flex justify-center items-center gap-2'>
-              <div className='w-12 h-12'>
-                <IconFTXIEOs />
-              </div>
-              <div>
-                <p className='text-grey-700 font-semibold text-sm mb-1'>
-                  FTX IEOs
-                </p>
-                <div className='bg-grey-200 rounded-sm inline-block px-1'>
-                  <p className='text-grey-500 text-xs font-medium'>Tier 1</p>
-                </div>
-              </div>
-            </div>
-            <div className='flex justify-center items-center gap-2'>
-              <div className='w-12 h-12'>
-                <IconGateio />
-              </div>
-              <div>
-                <p className='text-grey-700 font-semibold text-sm mb-1'>
-                  Gate.io
-                </p>
-                <div className='bg-grey-200 rounded-sm inline-block px-1'>
-                  <p className='text-grey-500 text-xs font-medium'>Tier 1</p>
-                </div>
-              </div>
-            </div>
-            <div className='flex justify-center items-center gap-2'>
-              <div className='w-12 h-12'>
-                <IconBinStarter />
-              </div>
-              <div>
-                <p className='text-grey-700 font-semibold text-sm mb-1'>
-                  BinStarter
-                </p>
-                <div className='bg-grey-200 rounded-sm inline-block px-1'>
-                  <p className='text-grey-500 text-xs font-medium'>Tier 1</p>
-                </div>
-              </div>
-            </div>
-            <div className='flex justify-center items-center gap-2'>
-              <div className='w-12 h-12'>
-                <IconDWFLabs />
-              </div>
-              <div>
-                <p className='text-grey-700 font-semibold text-sm mb-1'>
-                  DWF Labs
-                </p>
-                <div className='bg-grey-200 rounded-sm inline-block px-1'>
-                  <p className='text-grey-500 text-xs font-medium'>Tier 1</p>
-                </div>
-              </div>
-            </div>
-            <div className='flex justify-center items-center'>
-              <p className='text-primary-500 text-xs font-medium'>+15Backers</p>
-            </div>
-          </div> */}
+          <BackerList
+            backers={overView?.backers}
+            initNumber={4}
+            type={'backer'}
+          />
         </div>
 
         <div className='w-full flex items-center justify-start'>
@@ -238,13 +167,13 @@ const Fundraising = (props:any) => {
                   {item.type}
                 </div>
               </div>
-              {/* {item.isVisible ? ( */}
-              <div className='text-primary-500 text-sm font-semibold'>
-                {new Date(item.date || Date.now()).toLocaleDateString()}
-              </div>
-              {/* ) : (
+              {item.isVisible ? (
+                <div className='text-primary-500 text-sm font-semibold'>
+                  {new Date(item.date || Date.now()).toLocaleDateString()}
+                </div>
+              ) : (
                 ''
-              )} */}
+              )}
             </div>
             <div className='flex flex-col gap-6 item-center'>
               <div className='text-center'>
@@ -253,16 +182,16 @@ const Fundraising = (props:any) => {
                   {nFormatter(item.price || 0, 2, '$')}
                 </div>
               </div>
-              {/* {item.isVisible ? ( */}
-              <div className='text-grey-500 text-sm'>
-                Valuation:
-                <span className='font-semibold'>
-                  {nFormatter(item.valuation || 0, 2, '$')}
-                </span>
-              </div>
-              {/* ) : (
+              {item.isVisible ? (
+                <div className='text-grey-500 text-sm'>
+                  Valuation:
+                  <span className='font-semibold'>
+                    {nFormatter(item.valuation || 0, 2, '$')}
+                  </span>
+                </div>
+              ) : (
                 ''
-              )} */}
+              )}
             </div>
             <div className='flex flex-col gap-6 item-center'>
               <div className='text-center'>
@@ -271,17 +200,17 @@ const Fundraising = (props:any) => {
                   {nFormatter(item.raised | 0, 2, '$')}
                 </div>
               </div>
-              {/* {item.isVisible ? ( */}
-              <div className='text-grey-500 text-sm'>
-                Tokens Offered:{' '}
-                <span className='font-semibold'>
-                  {nFormatter(item.tokensOffered || 0, 2, '$')}(
-                  {nFormatter(item.percenOfTokens || 0, 2, '%', true)})
-                </span>
-              </div>
-              {/* ) : (
+              {item.isVisible ? (
+                <div className='text-grey-500 text-sm'>
+                  Tokens Offered:{' '}
+                  <span className='font-semibold'>
+                    {nFormatter(item.tokensOffered || 0, 2, '$')}(
+                    {nFormatter(item.percenOfTokens || 0, 2, '%', true)})
+                  </span>
+                </div>
+              ) : (
                 ''
-              )} */}
+              )}
             </div>
             <div className='flex flex-col gap-6 item-center'>
               <div className='text-center'>
@@ -290,16 +219,16 @@ const Fundraising = (props:any) => {
                   {nFormatter(item.roi || 0, 2, 'x', true)}
                 </div>
               </div>
-              {/* {item.isVisible ? ( */}
-              <div className='text-grey-500 text-sm'>
-                ATH ROI:
-                <span className='font-semibold'>
-                  {nFormatter(item.athROI || 0, 2, 'x', true)}
-                </span>
-              </div>
-              {/* ) : (
+              {item.isVisible ? (
+                <div className='text-grey-500 text-sm'>
+                  ATH ROI:
+                  <span className='font-semibold'>
+                    {nFormatter(item.athROI || 0, 2, 'x', true)}
+                  </span>
+                </div>
+              ) : (
                 ''
-              )} */}
+              )}
             </div>
             <div className='flex flex-col gap-6 item-center'>
               <div className='text-center'>
@@ -308,18 +237,18 @@ const Fundraising = (props:any) => {
                   {nFormatter(item.unlockedPercent | 0, 2, '%', true)}
                 </div>
               </div>
-              {/* {item.isVisible ? ( */}
-              <div className='text-grey-500 text-sm'>
-                {nFormatter(item.unlockedTokens || 0, 2, symbol)}~
-                <span className='font-semibold'>
-                  {nFormatter(item.unlockedValue || 0, 2, symbol)}
-                </span>
-              </div>
-              {/* ) : (
+              {item.isVisible ? (
+                <div className='text-grey-500 text-sm'>
+                  {nFormatter(item.unlockedTokens || 0, 2, symbol)}~
+                  <span className='font-semibold'>
+                    {nFormatter(item.unlockedValue || 0, 2, symbol)}
+                  </span>
+                </div>
+              ) : (
                 ''
-              )} */}
+              )}
             </div>
-            {/* <div
+            <div
               className={
                 'min-w-[100px] flex items-start justify-center ' +
                 (item.isVisible ? 'rotate-180' : '')
@@ -327,7 +256,7 @@ const Fundraising = (props:any) => {
               onClick={() => handleToggle(item.id)}
             >
               <IconArrowDown />
-            </div> */}
+            </div>
           </div>
         ))}
       </div>

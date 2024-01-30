@@ -19,31 +19,35 @@ export const roundsColumns: ColumnsType<any> = [
         <span>{name}</span>
       </Flex>
     ),
+    sorter: true,
   },
   {
     title: 'Date',
-    dataIndex: 'date',
-    key: 'date',
-    render: (value) => formatDate(value),
+    dataIndex: 'announceDate',
+    key: 'announceDate',
+    render: (_, { announceDate }) => formatDate(announceDate),
+    sorter: true,
   },
   {
     title: 'Amount Raised',
     dataIndex: 'raise',
-    key: 'raise',
+    key: 'fundsRaised',
     align: 'right',
     render: (raise) => nFormatter(raise, 2, '$'),
+    sorter: true,
   },
   {
     title: 'Round',
     dataIndex: 'stage',
     key: 'stage',
   },
-  {
-    title: 'Valuation',
-    dataIndex: 'raise',
-    key: 'raise',
-    render: (_, { raise }) => nFormatter(raise, 2, '$'),
-  },
+  // {
+  //   title: 'Valuation',
+  //   dataIndex: 'raise',
+  //   key: 'fundsRaised',
+  //   render: (_, { raise }) => nFormatter(raise, 2, '$'),
+  //   sorter: true,
+  // },
   {
     title: 'Backers',
     dataIndex: 'funds',
@@ -58,7 +62,8 @@ export const roundsColumns: ColumnsType<any> = [
     title: 'Category',
     dataIndex: 'category',
     key: 'category',
-    render: (_, { category }) => category?.name,
+    render: (_, { category }) => category,
+    sorter: true,
   },
 ];
 

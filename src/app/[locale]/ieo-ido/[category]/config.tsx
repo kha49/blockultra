@@ -4,7 +4,7 @@ import Image from 'next/image';
 import BankersModal from './components/bankers-modal';
 import DataGroup from '@/components/DataGroup';
 import LaunchpadModal from './components/launchpad-modal';
-import { nFormatter } from '@/helpers';
+import { nFormatter, renderSortIcon } from '@/helpers';
 import { formatDate } from '@/helpers/datetime';
 import Doughnut from '@/components/DoughnutChart';
 import IconWeb from '@/assets/icons/IconWeb';
@@ -79,13 +79,20 @@ export const IeoIdoCategoryPath = {
 const columnsUpcoming: ColumnsType<any> = [
   {
     title: '#',
+    fixed: true,
     render: (_text, _record, index) => `${index + 1}`,
+    width: 24,
+    align: 'center',
   },
   {
     title: 'Project',
     dataIndex: 'project',
-    key: 'project',
+    key: 'name',
+    sorter: true,
     fixed: true,
+    width: 196,
+    align: 'left',
+    sortIcon: renderSortIcon,
     render: (project, { symbol, image, isHot }) => (
       <Flex wrap='wrap' gap={8}>
         <Image src={image} alt={'icon'} width={24} height={24} />
@@ -101,18 +108,30 @@ const columnsUpcoming: ColumnsType<any> = [
     title: 'Initial Cap',
     dataIndex: 'initialCap',
     key: 'initialCap',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    width: 123,
+    align: 'right',
     render: (_, { initialCap }) => nFormatter(initialCap, 2, '$'),
   },
   {
     title: 'Total Raise',
     dataIndex: 'totalRaise',
     key: 'totalRaise',
+    sorter: true,
+    sortIcon: renderSortIcon,
+    align: 'right',
+    width: 135,
     render: (_, { totalRaise }) => nFormatter(totalRaise, 2, '$'),
   },
   {
     title: 'Backers',
     dataIndex: 'backers',
     key: 'backers',
+    sortIcon: renderSortIcon,
+    sorter: false,
+    width: 149,
+    align: 'left',
     render: (backers, { ido_platform_id }) => (
       <BankersModal data={backers} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={backers} onClick={onOpen} />}
@@ -121,14 +140,22 @@ const columnsUpcoming: ColumnsType<any> = [
   },
   {
     title: 'Category',
-    dataIndex: 'category',
-    key: 'category',
-    render: (category) => `${category}`,
+    dataIndex: 'category_name',
+    key: 'category_name',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    width: 165,
+    align: 'left',
+    render: (category_name) => `${category_name}`,
   },
   {
     title: 'Launchpad',
     dataIndex: 'launchpads',
     key: 'launchpads',
+    width: 165,
+    align: 'left',
+    sortIcon: renderSortIcon,
+    sorter: false,
     render: (_, { launchpads, ido_platform_id }) => (
       <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
@@ -138,7 +165,11 @@ const columnsUpcoming: ColumnsType<any> = [
   {
     title: 'Start Date',
     dataIndex: 'startedDate',
-    key: 'startedDate',
+    key: 'start_date',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    width: 84,
+    align: 'center',
     render: (_, { start_date }) => formatDate(start_date),
   },
 ];
@@ -151,8 +182,10 @@ const columnsUpcomingDetail: ColumnsType<any> = [
   {
     title: 'Project',
     dataIndex: 'project',
-    key: 'project',
+    key: 'name',
     fixed: true,
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (project, { symbol, image, isHot }) => (
       <Flex wrap='wrap' gap={8}>
         <Image src={image} alt={'icon'} width={24} height={24} />
@@ -168,18 +201,24 @@ const columnsUpcomingDetail: ColumnsType<any> = [
     title: 'Initial Cap',
     dataIndex: 'initialCap',
     key: 'initialCap',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { initialCap }) => nFormatter(initialCap, 2, '$'),
   },
   {
     title: 'Total Raise',
     dataIndex: 'totalRaise',
     key: 'totalRaise',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { totalRaise }) => nFormatter(totalRaise, 2, '$'),
   },
   {
     title: 'Backers',
     dataIndex: 'backers',
     key: 'backers',
+    sortIcon: renderSortIcon,
+    sorter: false,
     render: (backers, { ido_platform_id }) => (
       <BankersModal data={backers} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={backers} onClick={onOpen} />}
@@ -190,12 +229,16 @@ const columnsUpcomingDetail: ColumnsType<any> = [
     title: 'Category',
     dataIndex: 'category',
     key: 'category',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (category) => `${category}`,
   },
   {
     title: 'Launchpad',
     dataIndex: 'launchpads',
     key: 'launchpads',
+    sortIcon: renderSortIcon,
+    sorter: false,
     render: (_, { launchpads, ido_platform_id }) => (
       <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
@@ -206,6 +249,8 @@ const columnsUpcomingDetail: ColumnsType<any> = [
     title: 'Start Date',
     dataIndex: 'startedDate',
     key: 'startedDate',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { start_date }) => formatDate(start_date),
   },
 ];
@@ -214,11 +259,19 @@ const columnsEnded: ColumnsType<any> = [
   {
     title: '#',
     render: (_text, _record, index) => `${index + 1}`,
+    fixed: true,
+    width: 24,
+    align: 'center',
   },
   {
     title: 'Project',
     dataIndex: 'project',
-    key: 'project',
+    key: 'name',
+    align: 'left',
+    sortIcon: renderSortIcon,
+    width: 194,
+    sorter: true,
+    fixed: true,
     render: (_, { project, image, tag }) => (
       <Flex align={'center'} gap={8}>
         <Image src={image} alt={'icon'} width={24} height={24} />
@@ -233,30 +286,50 @@ const columnsEnded: ColumnsType<any> = [
     title: 'Current Price',
     dataIndex: 'price',
     key: 'price',
+    sortIcon: renderSortIcon,
+    align: 'right',
+    width: 122,
+    sorter: true,
     render: (_, { price }) => nFormatter(price, 2, '$'),
   },
   {
     title: 'Total Raise',
     dataIndex: 'totalRaise',
     key: 'totalRaise',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    align: 'right',
+    width: 140,
     render: (totalRaise) => nFormatter(totalRaise, 2, '$'),
   },
   {
     title: 'ROI',
     dataIndex: 'roi',
     key: 'roi',
+    sortIcon: renderSortIcon,
+    width: 140,
+    align: 'right',
+    sorter: true,
     render: (_, { roi }) => nFormatter(roi, 2, '$'),
   },
   {
     title: 'ATH ROI',
     dataIndex: 'auth_roi',
-    key: 'auth_roi',
+    key: 'athRoi',
+    sortIcon: renderSortIcon,
+    width: 140,
+    align: 'right',
+    sorter: true,
     render: (_, { auth_roi }) => nFormatter(auth_roi, 2, '$'),
   },
   {
     title: 'Launchpad',
     dataIndex: 'launchpadList',
     key: 'launchpadList',
+    sortIcon: renderSortIcon,
+    width: 211,
+    align: 'left',
+    sorter: false,
     render: (_, { launchpads, ido_platform_id }) => (
       <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
@@ -267,6 +340,10 @@ const columnsEnded: ColumnsType<any> = [
     title: 'End Date',
     dataIndex: 'updated_at',
     key: 'updated_at',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    align: 'left',
+    width: 92,
     render: (_, { updated_at }) => formatDate(updated_at),
   },
 ];
@@ -275,11 +352,16 @@ const columnsEndedDetail: ColumnsType<any> = [
   {
     title: '#',
     render: (_text, _record, index) => `${index + 1}`,
+    fixed: true,
+    width: 24,
   },
   {
     title: 'Project',
     dataIndex: 'project',
-    key: 'project',
+    key: 'name',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    fixed: true,
     render: (_, { project, icon, symbol }) => (
       <Flex align={'center'} gap={8}>
         <Image src={icon} alt={'icon'} width={24} height={24} />
@@ -293,31 +375,41 @@ const columnsEndedDetail: ColumnsType<any> = [
   {
     title: 'Current Price',
     dataIndex: 'currentPrice',
-    key: 'currentPrice',
+    key: 'price',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (value) => nFormatter(value, 2, '$'),
   },
   {
     title: 'Total Raise',
     dataIndex: 'totalRaised',
-    key: 'totalRaised',
+    key: 'raise',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (value) => nFormatter(value, 2, '$'),
   },
   {
     title: 'ROI',
     dataIndex: 'roi',
     key: 'roi',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { roi }) => nFormatter(roi, 2, '$'),
   },
   {
     title: 'ATH ROI',
     dataIndex: 'athRoi',
     key: 'athRoi',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (value) => nFormatter(value, 2, '$'),
   },
   {
     title: 'Launchpad',
-    dataIndex: 'launchpadList',
-    key: 'launchpadList',
+    dataIndex: 'launchpads',
+    key: 'launchpads',
+    sortIcon: renderSortIcon,
+    sorter: false,
     render: (_, { launchpads, ido_platform_id }) => (
       <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
@@ -327,7 +419,9 @@ const columnsEndedDetail: ColumnsType<any> = [
   {
     title: 'End Date',
     dataIndex: 'endDate',
-    key: 'endDate',
+    key: 'start_date',
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (value) => formatDate(value),
   },
 ];
@@ -336,11 +430,19 @@ const columnsTopIdoLaunchpads: ColumnsType<any> = [
   {
     title: '#',
     render: (_text, _record, index) => `${index + 1}`,
+    width: 24,
+    fixed: true,
+    align: 'center',
   },
   {
     title: 'Name',
     dataIndex: 'project',
-    key: 'project',
+    key: 'name',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    fixed: true,
+    align: 'left',
+    width: 144,
     render: (_, { name, image, tag }) => (
       <Flex align={'center'} gap={8}>
         <Image src={image} alt={'icon'} width={24} height={24} />
@@ -355,40 +457,68 @@ const columnsTopIdoLaunchpads: ColumnsType<any> = [
     title: 'Tier',
     dataIndex: 'tier',
     key: 'tier',
+    sortIcon: renderSortIcon,
+    sorter: false,
+    align: 'right',
+    width: 71,
   },
   {
     title: 'ROI',
     dataIndex: 'roi',
-    key: 'roi',
-    render: (value) => `${value.toFixed(2)}x`,
+    key: 'avg_roi_current',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    align: 'right',
+    width: 116,
+    render: (_, { roi }) => (roi ? `${roi.toFixed(2)}x` : ''),
   },
   {
     title: 'ATH ROI',
     dataIndex: 'athRoi',
-    key: 'athRoi',
-    render: (value) => `${value.toFixed(2)}x`,
+    key: 'avg_roi_ath',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    align: 'right',
+    width: 121,
+    render: (_, { athRoi }) => (athRoi ? `${athRoi.toFixed(2)}x` : ''),
   },
   {
     title: 'IDOs',
     dataIndex: 'idos',
-    key: 'idos',
+    key: 'projectsCount',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    align: 'right',
+    width: 130,
   },
   {
     title: 'Sum Market Cap',
     dataIndex: 'sumMarketCap',
-    key: 'sumMarketCap',
+    key: 'marketCap',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    align: 'right',
+    width: 178,
     render: (_, { sumMarketCap }) => nFormatter(sumMarketCap, 2, '$'),
   },
   {
     title: 'Entry',
-    dataIndex: 'entry',
-    key: 'entry',
+    dataIndex: 'enterPrice',
+    key: 'enterPrice',
+    align: 'right',
+    width: 143,
+    sortIcon: renderSortIcon,
+    sorter: true,
     render: (_, { entry }) => nFormatter(entry, 2, '$'),
   },
   {
     title: 'Gainers',
     dataIndex: 'gainer',
-    key: 'gainer',
+    key: 'gainers',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    align: 'right',
+    width: 143,
     render: (value, {}) => (
       <div className='flex gap-3 items-center'>
         <Doughnut

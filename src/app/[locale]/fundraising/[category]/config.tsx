@@ -4,7 +4,12 @@ import Image from 'next/image';
 import BackersModal from './components/backers-modal';
 import DataGroup from '@/components/DataGroup';
 import { formatDate } from '@/helpers/datetime';
-import { nFormatter, percentFormat, renderSortIcon } from '@/helpers';
+import {
+  getFlagCountry,
+  nFormatter,
+  percentFormat,
+  renderSortIcon,
+} from '@/helpers';
 
 export const FundraisingCategory = {
   FundingRounds: 'funding-rounds',
@@ -53,10 +58,28 @@ export const getBreadcrumbConfig = (category?: FundraisingType) => {
 
 const roundsColumns: ColumnsType<any> = [
   {
+    title: '#',
+    dataIndex: 'index',
+    key: 'index',
+    fixed: true,
+    align: 'left',
+    width: 24,
+    render: (_, value, index) => {
+      return (
+        <div className='text-zinc-700 text-sm font-jb leading-tight'>
+          {index + 1}
+        </div>
+      );
+    },
+  },
+  {
     title: 'Project',
     dataIndex: 'name',
     key: 'name',
+    sortIcon: renderSortIcon,
+    sorter: true,
     fixed: true,
+    width: 163,
     render: (_, { name, icon, _id }) => (
       <Flex align={'center'} gap={8}>
         <img src={icon} alt={'icon'} width={24} height={24} />
@@ -66,8 +89,9 @@ const roundsColumns: ColumnsType<any> = [
   },
   {
     title: 'Date',
-    dataIndex: 'date',
-    key: 'date',
+    dataIndex: 'announceDate',
+    key: 'announceDate',
+    width: 99,
     sortIcon: renderSortIcon,
     sorter: true,
     render: (value) => formatDate(value),
@@ -75,8 +99,9 @@ const roundsColumns: ColumnsType<any> = [
   {
     title: 'Amount Raised',
     dataIndex: 'raise',
-    key: 'raise',
+    key: 'fundsRaised',
     align: 'right',
+    width: 138,
     sortIcon: renderSortIcon,
     sorter: true,
     render: (raise) => nFormatter(raise, 2, '$'),
@@ -85,23 +110,25 @@ const roundsColumns: ColumnsType<any> = [
     title: 'Round',
     dataIndex: 'stage',
     key: 'stage',
+    width: 135,
     sortIcon: renderSortIcon,
     sorter: true,
   },
-  {
-    title: 'Valuation',
-    dataIndex: 'raise',
-    key: 'raise',
-    sortIcon: renderSortIcon,
-    sorter: true,
-    render: (_, { raise }) => nFormatter(raise, 2, '$'),
-  },
+  // {
+  //   title: 'Valuation',
+  //   dataIndex: 'raise',
+  //   key: 'raise',
+  //   sortIcon: renderSortIcon,
+  //   sorter: true,
+  //   render: (_, { raise }) => nFormatter(raise, 2, '$'),
+  // },
   {
     title: 'Backers',
     dataIndex: 'funds',
     key: 'funds',
+    width: 225,
     sortIcon: renderSortIcon,
-    sorter: true,
+    sorter: false,
     render: (_, { funds }) => (
       <BackersModal data={funds}>
         {({ onOpen }) => <DataGroup data={funds} onClick={onOpen} />}
@@ -112,6 +139,7 @@ const roundsColumns: ColumnsType<any> = [
     title: 'Category',
     dataIndex: 'category',
     key: 'category',
+    width: 186,
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, { category }) => category?.name,
@@ -120,16 +148,32 @@ const roundsColumns: ColumnsType<any> = [
 
 const topBackersColumns: ColumnsType<any> = [
   {
+    title: '#',
+    dataIndex: 'index',
+    key: 'index',
+    fixed: true,
+    align: 'left',
+    width: 24,
+    render: (_, value, index) => {
+      return (
+        <div className='text-zinc-700 text-sm font-jb leading-tight'>
+          {index + 1}
+        </div>
+      );
+    },
+  },
+  {
     title: 'Name',
     dataIndex: 'name',
     key: 'name',
     fixed: true,
+    width: 216,
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, { name, logo, id }) => (
       <a href={`funding-rounds/detail/${id}?name=${name}`}>
         <Flex align={'center'} gap={8}>
-          <Image src={logo} alt={'icon'} width={24} height={24} />
+          <Image src={logo ?? ''} alt={'icon'} width={24} height={24} />
           <span>{name}</span>
         </Flex>
       </a>
@@ -139,6 +183,8 @@ const topBackersColumns: ColumnsType<any> = [
     title: 'Tier',
     dataIndex: 'tier',
     key: 'tier',
+    width: 83,
+    align: 'left',
     sortIcon: renderSortIcon,
     sorter: true,
   },
@@ -146,6 +192,8 @@ const topBackersColumns: ColumnsType<any> = [
     title: 'Type',
     dataIndex: 'type',
     key: 'type',
+    width: 114,
+    align: 'left',
     sortIcon: renderSortIcon,
     sorter: true,
   },
@@ -154,14 +202,22 @@ const topBackersColumns: ColumnsType<any> = [
     dataIndex: 'location',
     key: 'location',
     sortIcon: renderSortIcon,
+    width: 71,
     sorter: true,
-    render: (_, { country }) => <>{country}</>,
+    align: 'left',
+    render: (_, { country }) => {
+      const flag = getFlagCountry(country);
+      if (!flag) return '';
+      return <img alt={country} src={flag} width={32} height={18} />;
+    },
   },
   {
     title: 'Investments',
     dataIndex: 'investments',
-    key: 'investments',
+    key: 'totalInvestments',
     sortIcon: renderSortIcon,
+    width: 120,
+    align: 'right',
     sorter: true,
     render: (_, { investments }) => <>{investments}</>,
   },
@@ -169,8 +225,10 @@ const topBackersColumns: ColumnsType<any> = [
     title: 'Market Cap',
     dataIndex: 'marketCap',
     key: 'marketCap',
+    width: 134,
     sortIcon: renderSortIcon,
-    sorter: true,
+    sorter: false,
+    align: 'right',
     render: (_, { marketCap, mCapChangeIn24h }) => (
       <Flex vertical>
         <span>{nFormatter(marketCap, 2, '$')}</span>

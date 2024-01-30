@@ -47,5 +47,5 @@ export default function UnlockTimeTop() {
       />
     ));
   };
-  return <div className={'us-time py-3'}>{_renderUnlockTime()}</div>;
+  return <div className={'grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6'}>{_renderUnlockTime()}</div>;
 };

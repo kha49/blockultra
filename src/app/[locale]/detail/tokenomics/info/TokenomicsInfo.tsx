@@ -1,21 +1,22 @@
 'use client';
 
+import CommonTable from '@/components/CommonTable/common-table';
 import HexagonItem from '@/components/Hexa/Hexagon';
-import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
+import { nFormatter } from '@/helpers';
 import { COLOR_CHART } from '@/helpers/constants';
-import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 
 const columns: ColumnsType<ITokenomics> = [
   {
     key: 'round',
     title: 'Round',
-    width: 200,
+    width: 184,
     align: 'left',
+    fixed: true,
     render: (_, value) => {
       return (
-        <div className='flex items-center gap-3'>
-          {/* <HexagonItem color={value..color} /> */}
+        <div key={value.id} className='flex items-center gap-3'>
+          <HexagonItem color={value.activeColor} />
           <span className='text-grey-700 text-sm font-jm font-semibold'>
             {value.name}
           </span>
@@ -26,165 +27,86 @@ const columns: ColumnsType<ITokenomics> = [
   {
     key: 'allowcationPercent',
     title: 'Allocation (%)',
-    width: 150,
+    width: 107,
     align: 'left',
     render: (_, value) => {
-      let allocation = currencyFormat(value.tokens_percent, '%');
+      let allocation = nFormatter(value.tokens_percent, 2, '%', true);
       return allocation;
     },
   },
   {
     key: 'allowcationToken',
     title: 'Allocation (Token)',
-    width: 150,
+    width: 140,
     align: 'left',
     render: (_, value) => {
-      return nFormatter(value.tokens,2,"");
+      return nFormatter(value.tokens, 2, '');
     },
   },
   {
     key: 'tgeUnlock',
     title: 'TGE Unlock',
-    width: 150,
+    width: 104,
     align: 'left',
     render: (_, value) => {
       let baches = value.batches;
       let tge = 0;
       for (let i in baches) {
         if (baches[i].is_tge) {
-          tge+=baches[i].unlock_percent
+          tge += baches[i].unlock_percent;
         }
       }
-      return tge + "%";
+      return tge + '%';
     },
   },
   {
     key: 'tokenReleaseSchedule',
     title: 'Token Release Schedule',
     align: 'left',
+    width: 318,
     render: (_, value) => {
-      return (
-      "every "+
-      value.unlock_frequency_value +" "+
-      value.unlock_frequency_type +
-      ' in ' +
-      value.vesting_duration_value+" "+ value.unlock_frequency_type 
-    );
-    
+      return getTokenReleaseSchedule(
+        value.unlock_frequency_value,
+        value.unlock_frequency_type,
+        value.vesting_duration_value
+      );
     },
   },
 ];
+function getTokenReleaseSchedule(
+  unlockFreValue: number,
+  unlockFreType: string,
+  vestingDurValue: number
+) {
+  if (
+    unlockFreType != null &&
+    unlockFreValue != null &&
+    vestingDurValue != null
+  ) {
+    return (
+      'Every ' +
+      unlockFreValue +
+      ' ' +
+      unlockFreType +
+      ' in ' +
+      vestingDurValue +
+      ' ' +
+      unlockFreType
+    );
+  } else {
+    return '-';
+  }
+}
 
 const TokenomicsInfo = (props: any) => {
- 
-  const allocations = props.data[0]?.allocations;
+  const allocations = props.data?.datas?.allocations || [];
   const tokenInfo = props.tokenInfo;
-   console.log('====================================');
-   console.log('allocations', allocations);
-   console.log('====================================');
-  const data = [
-    {
-      id: 0,
-      round: {
-        color: COLOR_CHART.BITTER_LEMON,
-        label: 'Private',
-      },
-      allowcationPercent: '25%',
-      allowcationToken: '250,000,000',
-      tgeUnlock: '20%',
-      tokenReleaseSchedule: '20.0% TGE, 12 months cliff, 5.0% quaterly',
-    },
-    {
-      id: 0,
-      round: {
-        color: COLOR_CHART.BITTER_LEMON,
-        label: 'Private',
-      },
-      allowcationPercent: '25%',
-      allowcationToken: '250,000,000',
-      tgeUnlock: '20%',
-      tokenReleaseSchedule: '20.0% TGE, 12 months cliff, 5.0% quaterly',
-    },
-    {
-      id: 0,
-      round: {
-        color: COLOR_CHART.BITTER_LEMON,
-        label: 'Private',
-      },
-      allowcationPercent: '25%',
-      allowcationToken: '250,000,000',
-      tgeUnlock: '20%',
-      tokenReleaseSchedule: '20.0% TGE, 12 months cliff, 5.0% quaterly',
-    },
-    {
-      id: 0,
-      round: {
-        color: COLOR_CHART.BITTER_LEMON,
-        label: 'Private',
-      },
-      allowcationPercent: '25%',
-      allowcationToken: '250,000,000',
-      tgeUnlock: '20%',
-      tokenReleaseSchedule: '20.0% TGE, 12 months cliff, 5.0% quaterly',
-    },
-    {
-      id: 0,
-      round: {
-        color: COLOR_CHART.BITTER_LEMON,
-        label: 'Private',
-      },
-      allowcationPercent: '25%',
-      allowcationToken: '250,000,000',
-      tgeUnlock: '20%',
-      tokenReleaseSchedule: '20.0% TGE, 12 months cliff, 5.0% quaterly',
-    },
-    {
-      id: 0,
-      round: {
-        color: COLOR_CHART.BITTER_LEMON,
-        label: 'Private',
-      },
-      allowcationPercent: '25%',
-      allowcationToken: '250,000,000',
-      tgeUnlock: '20%',
-      tokenReleaseSchedule: '20.0% TGE, 12 months cliff, 5.0% quaterly',
-    },
-    {
-      id: 0,
-      round: {
-        color: COLOR_CHART.BITTER_LEMON,
-        label: 'Private',
-      },
-      allowcationPercent: '25%',
-      allowcationToken: '250,000,000',
-      tgeUnlock: '20%',
-      tokenReleaseSchedule: '20.0% TGE, 12 months cliff, 5.0% quaterly',
-    },
-    {
-      id: 0,
-      round: {
-        color: COLOR_CHART.BITTER_LEMON,
-        label: 'Private',
-      },
-      allowcationPercent: '25%',
-      allowcationToken: '250,000,000',
-      tgeUnlock: '20%',
-      tokenReleaseSchedule: '20.0% TGE, 12 months cliff, 5.0% quaterly',
-    },
-    {
-      id: 0,
-      round: {
-        color: COLOR_CHART.BITTER_LEMON,
-        label: 'Private',
-      },
-      allowcationPercent: '25%',
-      allowcationToken: '250,000,000',
-      tgeUnlock: '20%',
-      tokenReleaseSchedule: '20.0% TGE, 12 months cliff, 5.0% quaterly',
-    },
-  ];
 
-
+  if (allocations.length > 0) {
+    allocations.map((item: any, i: number) => {
+      item.activeColor = Object.values(COLOR_CHART)[i];
+    });
+  }
 
   return (
     <div className='tokenomics-info grid grid-cols-12 gap-4 mb-6'>
@@ -216,7 +138,7 @@ const TokenomicsInfo = (props: any) => {
             <div className='flex items-center justify-between mb-3'>
               <div className='text-grey-500 text-sm'>Initial Maket Cap</div>
               <div className='text-grey-700 text-sm'>
-                {nFormatter(tokenInfo.marketCap, 2, "$")}
+                {nFormatter(tokenInfo.marketCap, 2, '$')}
               </div>
             </div>
             <div className='flex items-center justify-between mb-3'>
@@ -239,7 +161,7 @@ const TokenomicsInfo = (props: any) => {
       <div className='col-span-12 lg:col-span-9'>
         <div className='box-shadow-common p-6 rounded-lg'>
           <div className='overflow-x-auto hide-scroll'>
-            <Table
+            <CommonTable
               columns={columns}
               dataSource={allocations}
               pagination={{ position: ['none'] }}
