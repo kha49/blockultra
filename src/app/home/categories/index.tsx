@@ -58,6 +58,7 @@ const Categories = () => {
 
   return (
     <CoreTable
+      className={'md:p-6'}
       data={data}
       type={'home_categories'}
       onChange={handleOnChange}

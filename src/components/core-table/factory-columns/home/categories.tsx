@@ -1,54 +1,32 @@
 import type { ColumnsType } from 'antd/es/table';
 import Link from 'next/link';
-import { nFormatter, percentFormat, renderSortIcon } from '@/helpers';
-import { round } from 'lodash';
+import {
+  nFormatter,
+  percentFormat,
+  renderColumnId,
+  renderSortIcon,
+} from '@/helpers';
+import { get, round } from 'lodash';
 import ReactECharts from 'echarts-for-react';
 import { COLOR_CHART } from '@/helpers/constants';
+import { CoreCellName } from '@/components/core-table/core-cell-name';
 
 const columns: ColumnsType<IHomeCategory> = [
-  {
-    key: 'id',
-    title: '#',
-    width: 24,
-    align: 'left',
-    fixed: true,
-    render: (_, value, index) => {
-      return index + 1;
-    },
-  },
+  renderColumnId(),
   {
     key: 'name',
     title: 'Name',
     width: 288,
     align: 'left',
     fixed: true,
-    render: (_, value) => {
-      const { rankedCoins } = value;
-      const elements: JSX.Element[] = rankedCoins?.map((e, index) => {
-        return (
-          <img
-            style={{ marginLeft: -index * 5, zIndex: index + 1 }}
-            className='rounded-full border w-6 h-6'
-            src={e.iconUrl}
-            width={24}
-            height={24}
-            alt={e.name}
-            key={e.key}
-          />
-        );
-      });
-      return (
-        <div className='flex'>
-          <div className='flex'>{elements}</div>
-          <Link
-            href={`/en/categories/${value.id}`}
-            className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[55px] md:max-w-[160px]'
-          >
-            {value.name}
-          </Link>
-        </div>
-      );
-    },
+    render: (value) => (
+      <CoreCellName
+        imagesUrl={value.rankedCoins}
+        name={value.name}
+        symbol={value.symbol}
+        link={`/en/categories/${value.id}`}
+      />
+    ),
     sortIcon: renderSortIcon,
     sorter: true,
   },

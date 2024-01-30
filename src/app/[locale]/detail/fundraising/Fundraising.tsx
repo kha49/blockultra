@@ -1,24 +1,20 @@
 'use client';
 
-import { IconArrowDown } from '@/assets/icons/IconArrowDown';
 import { nFormatter } from '@/helpers';
 import { FetchCoinFundraising } from '@/usecases/coin-info';
 import { useEffect, useState } from 'react';
-import BackerList from '@/components/BackerList/BackerList';
+import BackerList, { BackerItem } from '@/components/BackerList/BackerList';
+import IconFundraisingRoundsDetail from '@/assets/icons/IconFundraisingRoundsDetail';
+import IconFundraisingRoundsArrow from '@/assets/icons/IconFundraisingRoundsArrow';
 
 
 const Fundraising = (props:any) => {
-  const [items, setItems] = useState([
-    { id: 1, isVisible: false },
-    { id: 2, isVisible: false },
-    // ... other items
-  ]);
   const [overView, setOverview] = useState<any>([]);
   const [fundraisings, setFundraisings] = useState<IFundraisings[]>([]);
   const symbol = props.data?.symbol || '';
 
   useEffect(() => {
-    const res = fetchFundraising();
+    fetchFundraising();
   }, []);
 
   async function fetchFundraising() {
@@ -47,122 +43,118 @@ const Fundraising = (props:any) => {
 
   return (
     <div>
-      <h1>Fundraising Overview</h1>
-      <div className='flex flex-col gap-4'>
-        <div className='grid grid-cols-12 gap-4 mt-2'>
-          <div className='col-span-12 md:col-span-6 bg-white rounded-lg box-shadow-common'>
-            <div>
-              <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
-                <h1 className='text-grey-700 text-base font-bold'>Summary</h1>
-              </div>
-              <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
-                <div className='text-center'>
-                  <p className='text-grey-500 font-medium text-xs mb-2'>
-                    Total Funds Raised
-                  </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>
-                    {nFormatter(overView?.totalFundRaised | 0, 2, '$')}
-                  </h2>
-                </div>
-                <div className='text-center'>
-                  <p className='text-grey-500 font-medium text-xs mb-2'>
-                    AVG Price
-                  </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>
-                    {nFormatter(overView?.avgPrice | 0, 2, '$')}
-                  </h2>
-                </div>
-                <div className='text-center'>
-                  <p className='text-grey-500 font-medium text-xs mb-2'>
-                    Rounds
-                  </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>
-                    {overView?.round_number}
-                  </h2>
-                </div>
-                <div className='text-center'>
-                  <p className='text-grey-500 font-medium text-xs mb-2'>
-                    Lead Backers
-                  </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>
-                    {overView?.leadBackers}
-                  </h2>
-                </div>
-              </div>
+      <h1 className='text-grey-700 text-xl font-bold mb-2'>Overview</h1>
+      <div className='grid grid-cols-12 gap-4 mb-6'>
+        <div className='col-span-12 md:col-span-6 bg-white rounded-lg box-shadow-common'>
+          <div>
+            <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
+              <h1 className='text-grey-700 text-base font-bold'>Summary</h1>
             </div>
-          </div>
-          <div className='col-span-12 md:col-span-6 bg-white rounded-lg box-shadow-common'>
-            <div className='flex flex-col gap-2'>
-              <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
-                <h1 className='text-grey-700 text-base font-bold'>
-                  Price Per Round{' '}
-                </h1>
+            <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
+              <div className='text-center'>
+                <p className='text-grey-500 font-medium text-xs mb-2'>
+                  Total Funds Raised
+                </p>
+                <h2 className='text-grey-700 text-base font-semibold'>
+                  {overView?.totalFundRaised ? nFormatter(overView?.totalFundRaised | 0, 2, '$') : '-'}
+                </h2>
               </div>
-              <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
-                <div className='text-center'>
-                  <p className='text-grey-500 font-medium text-xs mb-2'>
-                    Private
-                  </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>
-                    {nFormatter(overView?.pricePerRoundPrice, 2, '$')}
-                  </h2>
-                </div>
-                <div className='text-center'>
-                  <p className='text-grey-500 font-medium text-xs mb-2'>
-                    Strategic
-                  </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>
-                    {nFormatter(overView?.strategic, 2, '$')}
-                  </h2>
-                </div>
-                <div className='text-center'>
-                  <p className='text-grey-500 font-medium text-xs mb-2'>Seed</p>
-                  <h2 className='text-grey-700 text-base font-semibold'>
-                    {nFormatter(overView?.seed, 2, '$')}
-                  </h2>
-                </div>
-                <div className='text-center'>
-                  <p className='text-grey-500 font-medium text-xs mb-2'>
-                    Pre-Seed
-                  </p>
-                  <h2 className='text-grey-700 text-base font-semibold'>
-                    {nFormatter(overView?.pre_seed, 2, '$')}
-                  </h2>
-                </div>
+              <div className='text-center'>
+                <p className='text-grey-500 font-medium text-xs mb-2'>
+                  AVG Price
+                </p>
+                <h2 className='text-grey-700 text-base font-semibold'>
+                  {overView?.avgPrice ? nFormatter(overView?.avgPrice | 0, 2, '$') : '-'}
+                </h2>
+              </div>
+              <div className='text-center'>
+                <p className='text-grey-500 font-medium text-xs mb-2'>
+                  Rounds
+                </p>
+                <h2 className='text-grey-700 text-base font-semibold'>
+                  {overView?.round_number ? overView?.round_number : '-'}
+                </h2>
+              </div>
+              <div className='text-center'>
+                <p className='text-grey-500 font-medium text-xs mb-2'>
+                  Lead Backers
+                </p>
+                <h2 className='text-grey-700 text-base font-semibold'>
+                  {overView?.leadBackers ? overView?.leadBackers : '-'}
+                </h2>
               </div>
             </div>
           </div>
         </div>
-
-        <div className='flex flex-col gap-2 bg-white rounded-lg box-shadow-common'>
-          <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
-            <h1 className='text-grey-700 text-base font-bold'>
-              Backer{' '}
-              <span className='text-grey-500 ml-1'>
-                {overView?.backers?.length}
-              </span>
-            </h1>
+        <div className='col-span-12 md:col-span-6 bg-white rounded-lg box-shadow-common'>
+          <div className='flex flex-col gap-2'>
+            <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
+              <h1 className='text-grey-700 text-base font-bold'>
+                Price Per Round
+              </h1>
+            </div>
+            <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
+              <div className='text-center'>
+                <p className='text-grey-500 font-medium text-xs mb-2'>
+                  Private
+                </p>
+                <h2 className='text-grey-700 text-base font-semibold'>
+                  {overView?.pricePerRoundPrice ? nFormatter(overView?.pricePerRoundPrice, 2, '$') : '-'}
+                </h2>
+              </div>
+              <div className='text-center'>
+                <p className='text-grey-500 font-medium text-xs mb-2'>
+                  Strategic
+                </p>
+                <h2 className='text-grey-700 text-base font-semibold'>
+                  {overView?.strategic ? nFormatter(overView?.strategic, 2, '$') : '-'}
+                </h2>
+              </div>
+              <div className='text-center'>
+                <p className='text-grey-500 font-medium text-xs mb-2'>Seed</p>
+                <h2 className='text-grey-700 text-base font-semibold'>
+                  {overView?.seed ? nFormatter(overView?.seed, 2, '$') : '-'}
+                </h2>
+              </div>
+              <div className='text-center'>
+                <p className='text-grey-500 font-medium text-xs mb-2'>
+                  Pre-Seed
+                </p>
+                <h2 className='text-grey-700 text-base font-semibold'>
+                  {overView?.pre_seed ? nFormatter(overView?.pre_seed, 2, '$') : '-'}
+                </h2>
+              </div>
+            </div>
           </div>
-          <BackerList
-            backers={overView?.backers}
-            initNumber={4}
-            type={'backer'}
-          />
         </div>
-
-        <div className='w-full flex items-center justify-start'>
-          <h1 className='text-grey-700 text-xl font-bold'>
-            Details of Fundraising Rounds
+      </div>
+      <div className='bg-white rounded-lg box-shadow-common mb-6'>
+        <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
+          <h1 className='text-grey-700 text-base font-bold'>
+            Backer
+            <span className='text-grey-500 ml-1'>
+              {overView?.backers?.length}
+            </span>
           </h1>
         </div>
-        {fundraisings.map((item, index) => (
-          <div
-            key={index}
-            className='box-shadow-common p-4 flex items-center justify-between flex-wrap gap-6 mb-6'
-          >
+        <BackerList
+          backers={overView?.backers}
+          initNumber={4}
+          type={'backer'}
+        />
+      </div>
+      <h1 className='text-grey-700 text-xl font-bold mb-2'>
+        Details
+      </h1>
+      {fundraisings.map((item, index) => (
+        <div
+          key={index}
+          className='box-shadow-common mb-6'
+        >
+          <div className='flex items-center justify-between flex-wrap gap-6 p-4'>
             <div className='flex flex-col gap-6 item-center'>
               <div className='flex items-center gap-2'>
-                <img src='/Dao.svg' alt='dao' />
+                <IconFundraisingRoundsDetail />
                 <div className='text-sm text-grey-700 font-bold'>
                   {item.type}
                 </div>
@@ -250,16 +242,27 @@ const Fundraising = (props:any) => {
             </div>
             <div
               className={
-                'min-w-[100px] flex items-start justify-center ' +
+                'min-w-[100px] flex items-start justify-center transition-all ' +
                 (item.isVisible ? 'rotate-180' : '')
               }
               onClick={() => handleToggle(item.id)}
             >
-              <IconArrowDown />
+              <IconFundraisingRoundsArrow />
             </div>
           </div>
-        ))}
-      </div>
+          {
+            item?.backers && item?.backers.length > 0 ? (
+              <div className={'w-full p-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 items-start border-t border-grey-300 ' + (item.isVisible ? '' : 'hidden') }>
+                {item?.backers.map((item: any, index: any) => (
+                  <div className='flex justify-start items-center'>
+                    <BackerItem key={index} item={item} />
+                  </div>
+                ))}
+              </div>
+            ) : ''
+          }
+        </div>
+      ))}
     </div>
   );
 };

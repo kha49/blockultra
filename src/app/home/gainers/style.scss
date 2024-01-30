@@ -1,16 +1,9 @@
-.gainer-tab {
-
-  .ant-table-tbody {
-    font-family: 'Plus Jakarta Sans Medium';
-    color: black;
-    font-size: 14px;
-  }
-}
-
-.overlay-menu-center {
-  .ant-dropdown-menu-title-content {
-    justify-content: center;
-    align-items: center;
-    display: flex;
+.gains-mobile {
+  .ant-tabs-nav-list {
+    width: 100%;
+    .ant-tabs-tab {
+      flex: 1;
+     justify-content: center;
+    }
   }
 }

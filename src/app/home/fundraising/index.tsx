@@ -55,6 +55,7 @@ const Fundraising = () => {
 
   return (
     <CoreTable
+      className={'md:p-6'}
       data={fundraisings}
       type={'home_fundraising'}
       onChange={handleOnChange}

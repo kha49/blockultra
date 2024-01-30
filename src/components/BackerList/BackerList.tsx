@@ -14,7 +14,7 @@ const BackerList = ({ backers, initNumber, type }: any) => {
   return (
     <div>
       {backers && (
-        <div className='flex flex-col gap-4'>
+        <div>
           <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
             {visibleItems?.map((item: any, index: any) => (
               <BackerItem key={index} item={item} />
@@ -50,15 +50,23 @@ const BackerList = ({ backers, initNumber, type }: any) => {
 
 export const BackerItem = ({ item  }:any) => {
   return (
-    <div className='flex justify-center items-center gap-2'>
-      <div className='w-12 h-12'>
-        <Image src={changeImageUrl(item?.logo)} height={50} width={50} alt={item.name} />
-      </div>
+    <div className='flex justify-center items-center gap-4'>
+      {
+        item?.logo ? (
+          <div className='w-12 h-12'>
+            <Image src={changeImageUrl(item?.logo)} height={50} width={50} alt={item.name} />
+          </div>
+        ) : ''
+      }
       <div>
         <p className='text-grey-700 font-semibold text-sm mb-1'>{item.name}</p>
-        <div className='bg-grey-200 rounded-sm inline-block px-1'>
-          <p className='text-grey-500 text-xs font-medium'>Tier 1</p>
-        </div>
+        {
+          item?.tier ? (
+            <div className='bg-grey-200 rounded-sm inline-block px-2 py-0.5'>
+              <p className='text-grey-500 text-xs font-medium'>{item.tier ? `Tier ${item.tier}` : '-'}</p>
+            </div>
+          ) : ''
+        }
       </div>
     </div>
   );

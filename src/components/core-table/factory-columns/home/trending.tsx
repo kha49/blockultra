@@ -3,22 +3,15 @@ import {
   currencyFormat,
   nFormatter2,
   percentFormat2,
+  renderColumnId,
   renderSortIcon,
 } from '@/helpers';
 import Link from 'next/link';
 import { get } from 'lodash';
+import { CoreCellName } from '@/components/core-table/core-cell-name';
 
 const columns: ColumnsType<any> = [
-  {
-    key: 'id',
-    title: '#',
-    width: 24,
-    align: 'left',
-    fixed: true,
-    render: (_, value, index) => {
-      return index + 1;
-    },
-  },
+  renderColumnId(),
   {
     key: 'name',
     title: 'Name',
@@ -27,40 +20,16 @@ const columns: ColumnsType<any> = [
     fixed: true,
     sortIcon: renderSortIcon,
     sorter: false,
-    render: (_, value) => {
-      const imageSource = get(value, 'image.x60', '');
-
-      return (
-        <div className='flex items-center gap-2'>
-          <img src={imageSource} alt={value.name} className='w-7 h-7' />
-          <div className='flex items-start gap-1 justify-start flex-col md:flex-row'>
-            <Link
-              href={`/en/detail/${value.key}`}
-              className='md:mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[55px] md:max-w-[160px]'
-            >
-              {value.name}
-            </Link>
-            <span className='px-2 rounded py-0 bg-grey-200 text-grey-500 leading-5 coin-code'>
-              {value.symbol}
-            </span>
-          </div>
-        </div>
-      );
-    },
+    render: (value) => (
+      <CoreCellName
+        imagesUrl={[get(value, 'image.x60', '')]}
+        name={value.name}
+        symbol={value.symbol}
+        link={`/en/detail/${value.key}`}
+      />
+    ),
   },
-  // {
-  //   key: 'rate',
-  //   title: 'Rate',
-  //   width: 91,
-  //   align: 'left',
-  //   render: (_, value) => {
-  //     return (
-  //       <p className='inline-flex items-center'>
-  //         <span className='mr-1'>{value.rate}</span> <IconStar />
-  //       </p>
-  //     );
-  //   },
-  // },
+
   {
     key: 'price',
     title: 'Price',

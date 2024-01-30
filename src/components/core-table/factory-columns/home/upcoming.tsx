@@ -1,22 +1,13 @@
 import type { ColumnsType } from 'antd/es/table';
-import { nFormatter2, renderSortIcon } from '@/helpers';
-import Link from 'next/link';
+import { nFormatter2, renderColumnId, renderSortIcon } from '@/helpers';
 import BackersModal from '@/app/[locale]/fundraising/[category]/components/backers-modal';
 import DataGroup from '@/components/DataGroup';
 import LaunchpadModal from '@/app/[locale]/fundraising/[category]/components/launchpad-modal';
 import moment from 'moment/moment';
+import { CoreCellName } from '@/components/core-table/core-cell-name';
 
 const columns: ColumnsType<any> = [
-  {
-    key: 'id',
-    title: '#',
-    width: 24,
-    align: 'left',
-    fixed: true,
-    render: (_, value, index) => {
-      return index + 1;
-    },
-  },
+  renderColumnId(),
   {
     key: 'name',
     title: 'Project',
@@ -25,24 +16,14 @@ const columns: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     sorter: true,
     fixed: true,
-    render: (_, value) => {
-      return (
-        <div className='flex items-center gap-2'>
-          <img src={value.image} alt={value.name} className='w-7 h-7' />
-          <div className='flex items-start gap-1 justify-start flex-col md:flex-row'>
-            <Link
-              href={`/en/detail/${value.key}`}
-              className='md:mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[55px] md:max-w-[160px]'
-            >
-              {value.project}
-            </Link>
-            <span className='px-2 rounded py-0 bg-grey-200 text-grey-500 leading-5 coin-code'>
-              {value.symbol}
-            </span>
-          </div>
-        </div>
-      );
-    },
+    render: (value) => (
+      <CoreCellName
+        imagesUrl={[value.image]}
+        name={value.project}
+        symbol={value.symbol}
+        link={`/en/detail/${value.key}`}
+      />
+    ),
   },
   {
     key: 'initialCap',

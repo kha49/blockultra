@@ -10,7 +10,7 @@ import {
 import { PencilSquareIcon } from '@heroicons/react/24/outline';
 import Image from 'next/image';
 import InformationUnlock from '../information-unlock';
-import { Popover, Select } from 'antd';
+import { Popover, Select, Tooltip } from 'antd';
 import './style.scss';
 import IntroduceCoin from './popup/introduce-coin/IntroduceCoin';
 import IconFdv from '@/assets/icons/IconFdv';
@@ -130,15 +130,21 @@ export default function CoinInformation({ data }: any) {
               </div>
               <div className='block mt-4 md:mt-0'>
                 <div className='flex justify-start md:justify-end flex-wrap gap-4 coin__actions mb-3'>
-                  <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
-                    <IconSave />
-                  </button>
-                  <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
-                    <PencilSquareIcon className='w-5 h-5' />
-                  </button>
-                  <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
-                    <IconBell />
-                  </button>
+                  <Tooltip title='Add to Watchlist'>
+                    <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
+                      <IconSave />
+                    </button>
+                  </Tooltip>
+                  <Tooltip title='Edit'>
+                    <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
+                      <PencilSquareIcon className='w-5 h-5' />
+                    </button>
+                  </Tooltip>
+                  <Tooltip title='Price Alert'>
+                    <button className='action p-2 rounded border border-grey-300 hover:bg-grey-200'>
+                      <IconBell />
+                    </button>
+                  </Tooltip>
                 </div>
                 <div className='flex justify-start md:justify-end flex-wrap gap-2'>
                   <span className='text-sm text-grey-500'>Categories</span>

@@ -134,7 +134,6 @@ const Trending = () => {
     <div className='tab-trending flex flex-col'>
       <Tabs
         tabBarExtraContent={!isMobile && renderDropdown()}
-        defaultActiveKey='1'
         moreIcon={null}
         items={tabs.map((label, i) => {
           const id = String(i + 1);
@@ -145,6 +144,7 @@ const Trending = () => {
               <>
                 {isMobile && <div className='pb-4'>{renderDropdown()}</div>}
                 <CoreTable
+                  className={'md:p-6'}
                   data={trendings}
                   type={'home_trending'}
                   onChange={handleOnChange}

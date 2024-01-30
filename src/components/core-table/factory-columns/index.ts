@@ -5,6 +5,7 @@ import home_fundraising, {
   fundraisingMobileColumnsKey,
 } from './home/fundraising';
 import home_upcoming, { upComingMobileColumnsKey } from './home/upcoming';
+import home_gainers, { gainersMobileColumnsKey } from './home/gainers';
 
 export const factoryColumns = {
   home_all_coins,
@@ -12,6 +13,7 @@ export const factoryColumns = {
   home_trending,
   home_fundraising,
   home_upcoming,
+  home_gainers,
 };
 
 export const factoryMobileColumnsKey = {
@@ -20,5 +22,6 @@ export const factoryMobileColumnsKey = {
   home_trending: trendingMobileColumnsKey,
   home_fundraising: fundraisingMobileColumnsKey,
   home_upcoming: upComingMobileColumnsKey,
+  home_gainers: gainersMobileColumnsKey,
 };
 export type FactoryColumns = keyof typeof factoryColumns;

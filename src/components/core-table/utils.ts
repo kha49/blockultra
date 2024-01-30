@@ -9,7 +9,6 @@ import { renderSortIcon } from '@/helpers';
 import { ICoreTableHeaderProps } from './core-table-header';
 import { CoreTableProps } from '@/components/core-table/index';
 import { CoreTableFooterProps } from '@/components/core-table/core-table-footer';
-
 export const getColumns = <T = AnyObject>(
   type: FactoryColumns,
   isMobile?: boolean,

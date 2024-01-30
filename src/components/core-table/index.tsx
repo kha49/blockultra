@@ -12,7 +12,9 @@ import {
 import { useMediaQuery } from 'usehooks-ts';
 import { CoreTableHeader, ICoreTableHeaderProps } from './core-table-header';
 import CommonTable from '../CommonTable/common-table';
-import React from 'react';
+import React, { HTMLAttributes, useMemo } from 'react';
+import { getIndexTable } from '@/helpers';
+import clsx from 'clsx';
 
 export type CoreTableProps<T = AnyObject> = TableProps<T> & {
   data: T[];
@@ -25,6 +27,8 @@ export type CoreTableProps<T = AnyObject> = TableProps<T> & {
   mobileColumnsKey?: string[];
   renderHeader?: () => React.ReactNode;
   renderFooter?: () => React.ReactNode;
+  fixedWidth?: boolean;
+  className?: HTMLAttributes<HTMLDivElement>['className'];
 } & ICoreTableHeaderProps;
 
 export const CoreTable = <T extends AnyObject = AnyObject>(
@@ -34,18 +38,37 @@ export const CoreTable = <T extends AnyObject = AnyObject>(
     pagination = false,
     data = [],
     type,
-    mobileColumnsKey = [],
+    mobileColumnsKey,
     renderFooter,
     renderHeader,
+    className,
     ...rest
   } = props;
 
   const isMobile = useMediaQuery('(max-width: 640px)');
 
-  const columns = getColumns<AnyObject>(type, isMobile);
+  const columns = useMemo(
+    () => getColumns<AnyObject>(type, isMobile, mobileColumnsKey),
+    [type, isMobile, mobileColumnsKey]
+  );
+
+  const formattedData = useMemo(
+    () =>
+      data.map((item, index) => {
+        return {
+          ...item,
+          _index: getIndexTable(
+            props.currentPage || 1,
+            props.pageSize || 10,
+            index
+          ),
+        };
+      }),
+    [props]
+  );
 
   return (
-    <div className={'core-table'}>
+    <div className={clsx('core-table', className)}>
       {renderHeader ? (
         renderHeader()
       ) : (
@@ -54,7 +77,7 @@ export const CoreTable = <T extends AnyObject = AnyObject>(
 
       <CommonTable
         columns={columns}
-        dataSource={data}
+        dataSource={formattedData}
         pagination={pagination}
         scroll={{ x: 'max-content' }}
         showSorterTooltip={false}

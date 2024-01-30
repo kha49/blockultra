@@ -35,9 +35,7 @@ const RenderTabs = () => {
   return (
     <div className='mx-auto max-w-2xl px-4'>
       <HomeTabs currentTab={tab} />
-      <div className='p-6 md:border md:rounded-lg my-4'>
-        {renderTableContent()}
-      </div>
+      <div className='md:border md:rounded-lg my-4'>{renderTableContent()}</div>
     </div>
   );
 };

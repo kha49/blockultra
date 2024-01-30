@@ -15,4 +15,5 @@ interface IFundraisings {
   unlockedValue: number;
   backersCount: number;
   isVisible: boolean;
+  backers: any[];
 }

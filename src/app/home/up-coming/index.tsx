@@ -57,6 +57,7 @@ const UpComing = () => {
 
   return (
     <CoreTable
+      className={'md:p-6'}
       data={upcomings}
       type={'home_upcoming'}
       onChange={handleOnChange}

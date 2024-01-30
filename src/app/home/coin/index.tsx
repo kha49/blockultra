@@ -60,6 +60,7 @@ const Coins = () => {
 
   return (
     <CoreTable
+      className={'md:p-6'}
       data={data}
       type={'home_all_coins'}
       onChange={handleOnChange}

@@ -57,12 +57,15 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
   };
 
   return (
-    <div className='flex flex-col sm:flex-col md:flex-row xl:flex-row items-center sm:items-start justify-between'>
-      {/* <div className='gainers-header items-center justify-between mx-6 bg-[#FCFCFD] flex-col xl:flex-row md:flex-row sm:flex-col sm:items-start'> */}
-      <h3 className='font-bold text-black text-[28px] tracking-[0] leading-[28px] whitespace-nowrap sm:mb-3'>
+    <div className='flex flex-col md:flex-row xl:flex-row items-start justify-between gap-3 mb-3'>
+      <h3 className='font-bold text-black text-lg md:text-[28px] tracking-[0] leading-[28px] whitespace-nowrap'>
         Top Coin Gainers & Losers
       </h3>
-      <Space>
+      <div
+        className={
+          'flex items-center justify-between md:justify-end w-full md:gap-4'
+        }
+      >
         <Dropdown
           overlayClassName='overlay-menu-center'
           menu={{
@@ -91,7 +94,7 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
             {timeSelected.label} <IconSelectArrow />
           </div>
         </Dropdown>
-      </Space>
+      </div>
     </div>
   );
 };

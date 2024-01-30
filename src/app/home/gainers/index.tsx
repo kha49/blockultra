@@ -1,10 +1,22 @@
 import { useEffect, useState } from 'react';
 import './style.scss';
-import { FetchGainers, FetchLosers } from '../../../usecases/home';
+import { FetchGainers, FetchLosers } from '@/usecases/home';
 import GainersHeader from './gainers-header';
 import TopData from './top-data';
 import { caculatorAverage24h } from '@/helpers/functions';
 import { ORDER } from '@/helpers/constants';
+import { Tabs } from 'antd';
+
+const tabs = [
+  {
+    id: 1,
+    label: 'Top Gainers',
+  },
+  {
+    id: 2,
+    label: 'Top Losers',
+  },
+];
 
 const Gainers = () => {
   const [gainers, setGainers] = useState([]);
@@ -54,27 +66,49 @@ const Gainers = () => {
   }
 
   useEffect(() => {
-    getLosers();
-  }, [filterTime, filterCoin, orderLoser]);
-
-  useEffect(() => {
     getGainers();
+    getLosers();
   }, [filterTime, filterCoin, orderGainer]);
 
+  const renderTopData = (id: number, isMobile?: boolean) => {
+    if (id === 1) {
+      return (
+        <TopData
+          title={isMobile ? '' : 'Top Gainers'}
+          data={gainers}
+          onChangeOrder={() => {}}
+        />
+      );
+    }
+    if (id === 2) {
+      return (
+        <TopData
+          title={isMobile ? '' : 'Top Losers'}
+          data={losers}
+          onChangeOrder={setOrderLoser}
+        />
+      );
+    }
+  };
+
   return (
-    <div className='gainer-tab hide-scroll'>
-      <GainersHeader onFilterCoins={setFilterCoin} onFilterTime={setTime} />
-      <div className='pt-6'>
-        <div className='flex flex-col xl:flex-row xl:gap-20'>
-          <TopData
-            title='Top Gainers'
-            data={gainers}
-            onChangeOrder={() => {}}
-          />
-          <TopData
-            title='Top Losers'
-            data={losers}
-            onChangeOrder={setOrderLoser}
+    <div className='hide-scroll'>
+      <div className={'md:p-6'}>
+        <GainersHeader onFilterCoins={setFilterCoin} onFilterTime={setTime} />
+        <div className='flex-col xl:flex-row gap-10 lg:gap-20 hidden md:flex'>
+          {tabs.map((tab) => renderTopData(tab.id, false))}
+        </div>
+        <div className={'block md:hidden gains-mobile'}>
+          <Tabs
+            centered
+            size={'large'}
+            items={tabs.map((tab) => {
+              return {
+                label: tab.label,
+                key: tab.label,
+                children: renderTopData(tab.id),
+              };
+            })}
           />
         </div>
       </div>

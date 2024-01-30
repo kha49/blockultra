@@ -1,5 +1,9 @@
 .tab-trending {
   .ant-tabs {
+
+    .ant-tabs-nav {
+      height: 56px;
+    }
     .ant-tabs-tab {
       @media screen and (min-width: 1024px) {
         font-size: 16px;

@@ -2,6 +2,7 @@ import { IconDown } from '@/assets/icons/home/IconDown';
 import { IconUp } from '@/assets/icons/home/IconUp';
 import { Tooltip } from 'antd';
 import { round } from 'lodash';
+import { ColumnType } from 'antd/es/table/interface';
 
 interface IoptionCurrencyFormat {
   isAutoZero?: boolean;
@@ -252,4 +253,21 @@ export const tooltipMaxLength = (value: string | number, symbol: string) => {
       </span>
     </Tooltip>
   );
+};
+
+export const getIndexTable = (page: number, pageSize: number, index: number) =>
+  (+page - 1) * +pageSize + index + 1;
+
+export const renderColumnId = <T = any,>(
+  props?: Partial<ColumnType<T>>
+): Partial<ColumnType<T>> => {
+  const { key = '_index', title = '#' } = props || {};
+  return {
+    key,
+    title,
+    width: 24,
+    align: 'left',
+    fixed: true,
+    render: (value) => value._index,
+  };
 };

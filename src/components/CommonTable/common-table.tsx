@@ -48,7 +48,7 @@ function convertColumn(column: IColumnCustomTable) {
 }
 
 interface IWapperTable extends TableProps<any> {
-  fixedWidth?: true;
+  fixedWidth?: boolean;
 }
 
 const WapperTable = forwardRef((props: IWapperTable, ref?: any) => {
