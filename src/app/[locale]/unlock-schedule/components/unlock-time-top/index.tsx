@@ -21,13 +21,13 @@ export default function UnlockTimeTop() {
     const thisWeek = {
       title: 'Unlocks This Week',
       money: nextUnlockThisWeek,
-      coins: top4NextUnlockNextWeek,
+      coins: top4NextUnlockThisWeek,
     };
 
     const nextWeek = {
       title: 'Unlocks Next Week',
       money: nextUnlockNextWeek,
-      coins: top4NextUnlockThisWeek,
+      coins: top4NextUnlockNextWeek,
     };
 
     setData([thisWeek, nextWeek]);

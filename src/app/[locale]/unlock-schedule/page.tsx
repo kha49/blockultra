@@ -13,7 +13,7 @@ const breadcrumbConfig = [
     title: <a href='/'>BlockUltra</a>,
   },
   {
-    title: <a href='#'>Unlock</a>,
+    title: 'Unlock',
   },
 ];
 

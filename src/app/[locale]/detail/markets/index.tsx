@@ -51,7 +51,7 @@ const columns: ColumnsType<ISpot> = [
     render: (_, { name, icon }) => (
       <div className='flex items-center gap-2'>
         { icon ?  (
-          <Image src={changeImageUrl(icon)} alt={'icon'} width={24} height={24} />
+          <Image src={changeImageUrl(icon)} alt={'icon'} width={32} height={32} />
         ) : '' }
         <span className='text-sm text-grey-700 font-bold font-jb'>{name}</span>
       </div>

@@ -1,5 +1,5 @@
 import { TUnlockTime } from '../../types';
-import { nFormatter } from '@/helpers';
+import { currencyFormat, nFormatter } from '@/helpers';
 import { Tooltip } from 'antd';
 import { round } from 'lodash';
 import moment from 'moment';
@@ -13,7 +13,7 @@ export const UnlockTime = (props: UnlockTimeProps) => {
     <div className={'box-shadow-common rounded'}>
       <div className='border-b flex items-center justify-center gap-4 py-2 px-6'>
         <div className='text-grey-700 text-base font-medium'>{title}</div>
-        <div className='text-grey-700 text-xl font-bold font-jb'>${parseFloat(money) > 0 ? round(parseFloat(money), 2) : 0}</div>
+        <div className='text-grey-700 text-xl font-bold font-jb'>{parseFloat(money) > 0 ? currencyFormat(parseFloat(money), '$') : `$ 0`}</div>
       </div>
 
       <div className='p-6 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8'>
