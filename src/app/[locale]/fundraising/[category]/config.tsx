@@ -66,7 +66,7 @@ const roundsColumns: ColumnsType<any> = [
     width: 24,
     render: (_, value, index) => {
       return (
-        <div className='text-zinc-700 text-sm font-jb leading-tight'>
+        <div className='text-grey-700 text-sm font-jb leading-tight'>
           {index + 1}
         </div>
       );
@@ -82,7 +82,11 @@ const roundsColumns: ColumnsType<any> = [
     width: 163,
     render: (_, { name, icon, _id }) => (
       <Flex align={'center'} gap={8}>
-        <img src={icon} alt={'icon'} width={24} height={24} />
+        {
+          icon ? (
+            <img src={icon} alt={'icon'} width={32} height={32} />
+          ) : ''
+        }
         <span>{name}</span>
       </Flex>
     ),
@@ -156,7 +160,7 @@ const topBackersColumns: ColumnsType<any> = [
     width: 24,
     render: (_, value, index) => {
       return (
-        <div className='text-zinc-700 text-sm font-jb leading-tight'>
+        <div className='text-grey-700 text-sm font-jb leading-tight'>
           {index + 1}
         </div>
       );
@@ -173,8 +177,12 @@ const topBackersColumns: ColumnsType<any> = [
     render: (_, { name, logo, id }) => (
       <a href={`funding-rounds/detail/${id}?name=${name}`}>
         <Flex align={'center'} gap={8}>
-          <Image src={logo ?? ''} alt={'icon'} width={24} height={24} />
-          <span>{name}</span>
+          {
+            logo ? (
+              <Image src={`data:image/png;base64,${logo}`} alt={'logo'} width={32} height={32} />
+            ) : ''
+          }
+          <span className='text-base text-grey-700 font-bold font-jb truncate max-w-[55px] md:max-w-[160px] lg:max-w-[200px]'>{name}</span>
         </Flex>
       </a>
     ),
@@ -207,7 +215,7 @@ const topBackersColumns: ColumnsType<any> = [
     align: 'left',
     render: (_, { country }) => {
       const flag = getFlagCountry(country);
-      if (!flag) return '';
+      if (!flag) return <div className='text-center'>-</div>;
       return <img alt={country} src={flag} width={32} height={18} />;
     },
   },

@@ -49,17 +49,17 @@ export default function UsTable() {
         return (
           <Link
             href={`/en/detail/${value.key}`}
-            className='flex gap-2'
+            className='flex gap-2 items-center'
           >
             {value.image ? (
-              <img src={value.image} alt={'icon'} width={24} height={24} />
+              <img src={`data:image/png;base64,${value?.image}`} alt={'icon'} width={32} height={32} />
             ) : (
               ''
             )}
             <span className='font-bold font-jb text-grey-700 hover:text-primary-500 truncate max-w-[160px]'>{value.name}</span>
-            <Tag className={'bg-grey-200'} bordered={false}>
+            <div className={'bg-grey-200 rounded px-2'}>
               <span className='text-grey-500 text-xs font-medium font-jm'>{value.symbol}</span>
-            </Tag>
+            </div>
           </Link>
         );
       },
@@ -110,7 +110,7 @@ export default function UsTable() {
           <Avatar.Group
             maxCount={3}
             maxPopoverTrigger='click'
-            size={24}
+            size={32}
             maxStyle={{
               color: '#333747',
               backgroundColor: '#E5E6EB',

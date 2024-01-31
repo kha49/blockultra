@@ -17,9 +17,9 @@ const Backers = (props: any) => {
               return (
                 <div key={item} className={backers[item] ? '' : 'hidden'}>
                   {
-                    backers[item] ? (
+                    backers[item]?.logo ? (
                       <img
-                        src={changeImageUrl(backers[item]?.logo)}
+                        src={`data:image/png;base64,${backers[item]?.logo}`}
                         width={28}
                         height={28}
                         alt='backers-1'
@@ -62,7 +62,7 @@ export function DialogBackers(props: any) {
       {...Array.from(Array(backers.length).keys()).map((item) => {
         return (
           <img
-            src={changeImageUrl(backers[item]?.logo)}
+            src={`data:image/png;base64,${backers[item]?.logo}`}
             width={28}
             height={28}
             alt='backers-1'

@@ -45,7 +45,7 @@ const columns: ColumnsType<IExchangeSpot> = [
             <div className='inline-flex items-center'>
               {
                 value?.icon ? (
-                  <img src={value.icon} alt={value.name} className='w-8 h-8' />
+                  <img src={`data:image/png;base64,${value.icon}`} alt={value.name} className='w-8 h-8' />
                 ) : ''
               }
               <div className='mx-2 text-grey-700 text-sm font-bold font-jb hover:text-primary-500 truncate max-w-full'>

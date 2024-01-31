@@ -41,6 +41,6 @@ export interface IMarqueeItem {
   coinPrice: string | number;
   percent: string | number;
   icon?: string | ReactNode;
-  child?: IMarqueeItem[];
+  child?: any[];
   isGas?: boolean;
 }

@@ -15,7 +15,11 @@ export const roundsColumns: ColumnsType<any> = [
     fixed: true,
     render: (_, { name, icon }) => (
       <Flex align={'center'} gap={8}>
-        <Image src={icon} alt={'icon'} width={24} height={24} />
+        {
+          icon ? (
+            <Image src={`data:image/png;base64,${icon}`} alt={'icon'} width={24} height={24} />
+          ) : ''
+        }
         <span>{name}</span>
       </Flex>
     ),
@@ -75,7 +79,11 @@ const topBackersColumns: ColumnsType<any> = [
     fixed: true,
     render: (_, { name, logo }) => (
       <Flex align={'center'} gap={8}>
-        <Image src={logo} alt={'icon'} width={24} height={24} />
+        {
+          logo ? (
+            <Image src={`data:image/png;base64,${logo}`} alt={'logo'} width={24} height={24} />
+          ) : ''
+        }
         <span>{name}</span>
       </Flex>
     ),

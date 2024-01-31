@@ -8,13 +8,17 @@ const PriceUnlock = memo((props: INextUnlock) => {
   const { nextTokenPrice, nextTokenPricePercent } = props;
   return (
     <div className='justify-center mr-11'>
-      <p className='text-sm text-center'>
-        {nFormatter(nextTokenPrice || 0, 2, '$')}
+      <p className='text-sm text-center font-semibold font-jsb'>
+        {nextTokenPrice ? nFormatter(nextTokenPrice || 0, 2, '$') : '-'}
       </p>
-      <p className='text-xs text-grey-400 text-center mt-1'>
-        {currencyFormat(nextTokenPricePercent || 0, '', { isAutoZero: true })}%
-        of M.Cap
-      </p>
+      {
+        nextTokenPricePercent ? (
+          <p className='text-xs text-grey-400 text-center mt-1 font-normal'>
+            {currencyFormat(nextTokenPricePercent || 0, '', { isAutoZero: true })}%
+            of M.Cap
+          </p>
+        ) : '-'
+      }
     </div>
   );
 });
@@ -63,19 +67,19 @@ const NextTimeUnlock = (props: INextUnlock) => {
           <div className='w-11 h-8 rounded leading-8 bg-grey-200'>
             {date.hrs}
           </div>
-          <div className='text-grey-500'>H</div>
+          <div className='text-grey-500 text-sm font-bold font-jb'>H</div>
         </div>
         <div className='w-11 justify-center'>
           <div className='w-11 h-8 rounded leading-8 bg-grey-200'>
             {date.mins}
           </div>
-          <div className='text-grey-500'>M</div>
+          <div className='text-grey-500 text-sm font-bold font-jb'>M</div>
         </div>
         <div className='w-11 justify-center'>
           <div className='w-11 h-8 rounded leading-8 bg-grey-200'>
             {date.secs}
           </div>
-          <div className='text-grey-500'>S</div>
+          <div className='text-grey-500 text-sm font-bold font-jb'>S</div>
         </div>
       </div>
     );

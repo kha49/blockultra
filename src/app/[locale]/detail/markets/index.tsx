@@ -53,7 +53,7 @@ const columns: ColumnsType<ISpot> = [
         { icon ?  (
           <Image src={changeImageUrl(icon)} alt={'icon'} width={24} height={24} />
         ) : '' }
-        <span>{name}</span>
+        <span className='text-sm text-grey-700 font-bold font-jb'>{name}</span>
       </div>
     ),
   },
@@ -65,7 +65,7 @@ const columns: ColumnsType<ISpot> = [
     width: 72,
     sortIcon: renderSortIcon,
     sorter: false,
-    render: (_, { tier }) => <>{tier ? tier : '-'}</>,
+    render: (_, { tier }) => <div className='text-sm text-grey-700 font-semibold font-jsb'>{tier ? tier : '-'}</div>,
   },
   {
     title: 'Pair',
@@ -75,7 +75,7 @@ const columns: ColumnsType<ISpot> = [
     align: 'right',
     sortIcon: renderSortIcon,
     sorter: true,
-    render: (_, { pair }) => <>{pair ? pair : '-'}</>,
+    render: (_, { pair }) => <div className='text-sm text-grey-700 font-semibold font-jsb'>{pair ? pair : '-'}</div>,
   },
   {
     title: 'Price',
@@ -85,7 +85,7 @@ const columns: ColumnsType<ISpot> = [
     width: 198,
     sortIcon: renderSortIcon,
     sorter: true,
-    render: (_, { price }) => <>{currencyFormat(price, '$')}</>,
+    render: (_, { price }) => <div className='text-sm text-grey-700 font-semibold font-jsb'>{currencyFormat(price, '$')}</div>,
   },
   {
     title: 'Volume (24h)',
@@ -95,7 +95,7 @@ const columns: ColumnsType<ISpot> = [
     width: 198,
     sortIcon: renderSortIcon,
     sorter: true,
-    render: (_, { volume24h }) => <>{nFormatter(volume24h, 2, '$')}</>,
+    render: (_, { volume24h }) => <div className='text-sm text-grey-700 font-semibold font-jsb'>{nFormatter(volume24h, 2, '$')}</div>,
   },
   {
     title: 'Market Share',
@@ -105,7 +105,7 @@ const columns: ColumnsType<ISpot> = [
     align: 'right',
     sortIcon: renderSortIcon,
     sorter: true,
-    render: (_, { marketShare }) => <>{percentFormat(marketShare)}</>,
+    render: (_, { marketShare }) => <div className='text-sm text-grey-700 font-semibold font-jsb'>{percentFormat(marketShare)}</div>,
   },
 ];
 
@@ -117,7 +117,7 @@ const columnsHistoricals: ColumnsType<IHistorical> = [
     width: 100,
     sorter: true,
     sortIcon: renderSortIcon,
-    render: (_, { date }) => <span>{date ? moment(date).format('DD/MM/YYYY') : '-'}</span>,
+    render: (_, { date }) => <div className='text-sm text-grey-700 font-semibold font-jsb'>{date ? moment(date).format('DD MMM YYYY') : '-'}</div>,
   },
   {
     title: 'Open',
@@ -125,8 +125,9 @@ const columnsHistoricals: ColumnsType<IHistorical> = [
     key: 'open',
     width: 100,
     sorter: true,
+    align: 'right',
     sortIcon: renderSortIcon,
-    render: (_, { open }) => <>{currencyFormat(open, '$')}</>,
+    render: (_, { open }) => <div className='text-right text-sm text-grey-700 font-semibold font-jsb'>{open ? currencyFormat(open, '$') : '-'}</div>,
   },
   {
     title: 'High',
@@ -134,44 +135,49 @@ const columnsHistoricals: ColumnsType<IHistorical> = [
     key: 'high',
     width: 100,
     sorter: true,
+    align: 'right',
     sortIcon: renderSortIcon,
-    render: (_, { high }) => <>{currencyFormat(high, '$')}</>,
+    render: (_, { high }) => <div className='text-right text-sm text-grey-700 font-semibold font-jsb'>{high ? currencyFormat(high, '$') : '-'}</div>,
   },
   {
     title: 'Low',
     dataIndex: 'low',
     key: 'low',
     sorter: true,
+    align: 'right',
     sortIcon: renderSortIcon,
     width: 100,
-    render: (_, { low }) => <>{currencyFormat(low, '$')}</>,
+    render: (_, { low }) => <div className='text-right text-sm text-grey-700 font-semibold font-jsb'>{low ? currencyFormat(low, '$') : '-'}</div>,
   },
   {
     title: 'Close',
     dataIndex: 'close',
     key: 'close',
     sorter: true,
+    align: 'right',
     sortIcon: renderSortIcon,
     width: 100,
-    render: (_, { close }) => <>{currencyFormat(close, '$')}</>,
+    render: (_, { close }) => <div className='text-right text-sm text-grey-700 font-semibold font-jsb'>{close ? currencyFormat(close, '$') : '-'}</div>,
   },
   {
     title: 'Volume',
     dataIndex: 'volume',
     key: 'volume',
     sorter: true,
+    align: 'right',
     sortIcon: renderSortIcon,
     width: 100,
-    render: (_, { volume }) => <>{nFormatter(volume, 2, '$')}</>,
+    render: (_, { volume }) => <div className='text-right text-sm text-grey-700 font-semibold font-jsb'>{volume ? nFormatter(volume, 2, '$') : '-'}</div>,
   },
   {
     title: 'Market Cap',
     dataIndex: 'marketcap',
     key: 'marketcap',
     sorter: true,
+    align: 'right',
     sortIcon: renderSortIcon,
     width: 100,
-    render: (_, { marketcap }) => <>{nFormatter(marketcap, 2, '$')}</>,
+    render: (_, { marketcap }) => <div className='text-right text-sm text-grey-700 font-semibold font-jsb'>{marketcap ? nFormatter(marketcap, 2, '$') : '-'}</div>,
   },
 ];
 

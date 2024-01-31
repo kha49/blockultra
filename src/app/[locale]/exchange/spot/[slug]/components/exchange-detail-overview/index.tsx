@@ -207,7 +207,7 @@ const CoinInformation = () => {
           <div className='flex gap-4 items-center justify-center'>
             {
               coinsData?.icon ? (
-                <img src={coinsData?.icon} alt={coinsData?.name} />
+                <img src={`data:image/png;base64,${coinsData?.icon}`} alt={coinsData?.name} />
               ) : ''
             }
             <div className='flex-col gap-3 justify-start inline-flex'>

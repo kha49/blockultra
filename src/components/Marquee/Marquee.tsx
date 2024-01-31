@@ -37,28 +37,9 @@ const Marquee = () => {
         coinName: 'ETH Gas',
         icon: <IconGas />,
         coinPrice: marqueeData.totalMarketCap,
-        percent: marqueeData.gas.average.gasPriceGwei,
+        percent: (marqueeData.gas as any)[1].gwei,
         isGas: true,
-        child: [
-          {
-            id: 31,
-            coinName: 'Low',
-            coinPrice: marqueeData.gas.low.gasPriceGwei,
-            percent: marqueeData.gas.low.txExecutionTime,
-          },
-          {
-            id: 32,
-            coinName: 'Average',
-            coinPrice: marqueeData.gas.average.gasPriceGwei,
-            percent: marqueeData.gas.average.txExecutionTime,
-          },
-          {
-            id: 33,
-            coinName: 'High',
-            coinPrice: marqueeData.gas.high.gasPriceGwei,
-            percent: marqueeData.gas.high.txExecutionTime,
-          },
-        ],
+        child: marqueeData.gas as any,
       },
       {
         id: 4,
