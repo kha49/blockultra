@@ -1,8 +1,6 @@
 import { changeImageUrl } from '@/helpers/functions';
 import { TUnlockTime } from '../../types';
 import { currencyFormat, nFormatter } from '@/helpers';
-import { Tooltip } from 'antd';
-import { round } from 'lodash';
 import moment from 'moment';
 
 type UnlockTimeProps = TUnlockTime;
@@ -17,7 +15,7 @@ export const UnlockTime = (props: UnlockTimeProps) => {
         <div className='text-grey-700 text-xl font-bold font-jb'>{parseFloat(money) > 0 ? currencyFormat(parseFloat(money), '$') : `$ 0`}</div>
       </div>
 
-      <div className='p-6 grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-8'>
+      <div className='p-6 grid grid-cols-1 md:grid-cols-2 gap-y-4 lg:gap-y-8 gap-x-8 2xl:gap-x-[144px]'>
         {coins.map((item, index) => (
           <div className='flex items-center justify-between flex-wrap gap-6' key={index}>
             <div className="flex gap-2 items-center flex-wrap">
@@ -26,9 +24,7 @@ export const UnlockTime = (props: UnlockTimeProps) => {
                   <img src={changeImageUrl(item.image)} width={32} height={32} alt={'coin-icon'} />
                 ) : ''
               }
-              <Tooltip title={item.name}>
-                <div className='text-grey-500 truncate max-w-[100px] text-sm font-bold font-jb'>{item.name}</div>
-              </Tooltip>
+              <div className='text-grey-500 text-sm font-bold font-jb'>{item.symbol}</div>
             </div>
             <div className="flex gap-2 items-center flex-wrap">
               <div className='text-grey-700 text-sm font-bold font-jb'>

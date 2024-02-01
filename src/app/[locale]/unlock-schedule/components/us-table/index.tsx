@@ -72,7 +72,7 @@ export default function UsTable() {
       dataIndex: 'price',
       key: 'price',
       align: 'right',
-      width: 112,
+      width: 95,
       sortIcon: renderSortIcon,
       sorter: true,
       render: (_, { price, priceChangeIn24h }) => {
