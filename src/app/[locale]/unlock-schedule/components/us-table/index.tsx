@@ -25,6 +25,8 @@ import Link from 'next/link';
 import { isArray, round } from 'lodash';
 import CommonTable from '@/components/CommonTable/common-table';
 import { changeImageUrl } from '@/helpers/functions';
+import DataGroup from '@/components/DataGroup';
+import LaunchpadModal from '@/app/[locale]/fundraising/[category]/components/launchpad-modal';
 
 export default function UsTable() {
   const columns: ColumnsType<IUnlock> = [
@@ -35,7 +37,7 @@ export default function UsTable() {
       align: 'left',
       fixed: true,
       render: (_, value, index) => {
-        return index + 1;
+        return (currentPage - 1) * pageSize + index + 1;
       },
     },
     {
@@ -43,7 +45,7 @@ export default function UsTable() {
       dataIndex: 'name',
       key: 'name',
       fixed: true,
-      width: 180,
+      width: 160,
       sortIcon: renderSortIcon,
       sorter: true,
       render: (_, value) => {
@@ -101,34 +103,22 @@ export default function UsTable() {
       title: 'Launchpad',
       dataIndex: 'launchpadList',
       key: 'launchpadList',
-      align: 'right',
+      align: 'left',
       sortIcon: renderSortIcon,
-      width: 94,
+      width: 200,
       sorter: false,
       render: (_, { launchpads }) => {
-        if (!launchpads) return null;
+        if (!launchpads) return "-";
+        const launchpad = launchpads.map((e: any) => ({
+          ...e,
+          avatarUrl: e.image,
+        }));
         return (
-          <Avatar.Group
-            maxCount={3}
-            maxPopoverTrigger='click'
-            size={32}
-            maxStyle={{
-              color: '#333747',
-              backgroundColor: '#E5E6EB',
-              cursor: 'pointer',
-              fontSize: 10,
-            }}
-          >
-            {launchpads?.map((item) => (
-              <Avatar
-                onClick={(_e) => _openModal(launchpads)}
-                src={changeImageUrl(item.image)}
-                key={item.key}
-              />
-            ))}
-          </Avatar.Group>
+          <LaunchpadModal data={launchpad}>
+            {({ onOpen }) => <DataGroup data={launchpad} onClick={onOpen} />}
+          </LaunchpadModal>
         );
-      },
+      }
     },
     {
       title: 'IDO/IEO ROI',
@@ -147,7 +137,7 @@ export default function UsTable() {
       title: 'Unlock Progress',
       dataIndex: 'unlockedTokensPercent',
       key: 'unlockedTokensPercent',
-      width: 210,
+      width: 180,
       render: (_, { unlockedTokensPercent }) => {
         if (!unlockedTokensPercent) return '-';
         return (
@@ -197,7 +187,7 @@ export default function UsTable() {
   ];
 
   const [data, setData] = useState<IUnlock[]>([]);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(20);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [order, setOrder] = useState({
@@ -243,7 +233,7 @@ export default function UsTable() {
     const start = (currentPage - 1) * pageSize + 1;
     const end = start + data.length - 1;
     return (
-      <span className='table-total'>
+      <span className='table-total font-medium font-jm text-sm'>
         {start} - {end} from {total}
       </span>
     );
@@ -309,7 +299,7 @@ export default function UsTable() {
           />
         </div>
         <div>
-          <SelectItemTable onChange={_onChangeSize} />
+          <SelectItemTable onChange={_onChangeSize} pageSize={pageSize.toString()} />
         </div>
       </div>
 
