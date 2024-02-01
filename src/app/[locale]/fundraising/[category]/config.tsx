@@ -10,6 +10,7 @@ import {
   percentFormat,
   renderSortIcon,
 } from '@/helpers';
+import { changeImageUrl } from '@/helpers/functions';
 
 export const FundraisingCategory = {
   FundingRounds: 'funding-rounds',
@@ -84,7 +85,7 @@ const roundsColumns: ColumnsType<any> = [
       <Flex align={'center'} gap={8}>
         {
           icon ? (
-            <img src={icon} alt={'icon'} width={32} height={32} />
+            <img src={changeImageUrl(icon)} alt={'icon'} width={32} height={32} />
           ) : ''
         }
         <span>{name}</span>
@@ -179,7 +180,7 @@ const topBackersColumns: ColumnsType<any> = [
         <Flex align={'center'} gap={8}>
           {
             logo ? (
-              <Image src={`data:image/png;base64,${logo}`} alt={'logo'} width={32} height={32} />
+              <img src={changeImageUrl(logo)} alt={'logo'} width={32} height={32} />
             ) : ''
           }
           <span className='text-base text-grey-700 font-bold font-jb truncate max-w-[55px] md:max-w-[160px] lg:max-w-[200px]'>{name}</span>

@@ -20,6 +20,7 @@ import { COLOR_CHART, ORDER } from '@/helpers/constants';
 import { useDebounce } from 'usehooks-ts';
 import { ISearchFilter } from '../props';
 import { isArray } from 'lodash';
+import { changeImageUrl } from '@/helpers/functions';
 
 const columns: ColumnsType<IExchangeSpot> = [
   {
@@ -45,7 +46,7 @@ const columns: ColumnsType<IExchangeSpot> = [
             <div className='inline-flex items-center'>
               {
                 value?.icon ? (
-                  <img src={`data:image/png;base64,${value.icon}`} alt={value.name} className='w-8 h-8' />
+                  <img src={changeImageUrl(value.icon)} alt={value.name} className='w-8 h-8' />
                 ) : ''
               }
               <div className='mx-2 text-grey-700 text-sm font-bold font-jb hover:text-primary-500 truncate max-w-full'>

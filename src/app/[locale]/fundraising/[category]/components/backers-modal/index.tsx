@@ -2,6 +2,7 @@ import { Avatar, Flex, Modal } from 'antd';
 import React from 'react';
 import _, { orderBy } from 'lodash';
 import { IBacker } from '../../types';
+import { changeImageUrl } from '@/helpers/functions';
 
 type IChildrenCallback = {
   onOpen: () => void;
@@ -57,7 +58,7 @@ export default function BackersModal(props: BackersModalProps) {
                 <Flex vertical gap={16}>
                   {value.map((item) => (
                     <Flex align='center' gap={8} key={item.name}>
-                      <Avatar src={item.image} alt='avatar' size={32} />
+                      <Avatar src={changeImageUrl(item.image)} alt='avatar' size={32} />
                       <span className='text-sm font-normal text-[#333747]'>
                         {item?.name || ''}
                       </span>

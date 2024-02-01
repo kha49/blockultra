@@ -8,6 +8,7 @@ import { ColumnsType } from 'antd/es/table';
 import { get } from 'lodash';
 import { IPortfolios } from '../../../../types';
 import { roundsColumns } from '../../config';
+import { changeImageUrl } from '@/helpers/functions';
 
 const columnPorfolio: ColumnsType<IPortfolios> = [
   {
@@ -29,7 +30,7 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
       return (
         <span className='table-header'>
           <div className='flex items-center'>
-            <img src={imageSource} alt={value.name} className='w-7 h-7' />
+            <img src={changeImageUrl(imageSource)} alt={value.name} className='w-7 h-7' />
             <div
               // href={`/en/detail/${value.key}`}
               className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'

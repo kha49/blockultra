@@ -1,4 +1,5 @@
 import { Popover } from 'antd';
+import { changeImageUrl } from '@/helpers/functions';
 
 const Backers = (props: any) => {
   const backers = props.backers;
@@ -19,7 +20,7 @@ const Backers = (props: any) => {
                   {
                     backers[item]?.logo ? (
                       <img
-                        src={`data:image/png;base64,${backers[item]?.logo}`}
+                        src={changeImageUrl(backers[item]?.logo)}
                         width={28}
                         height={28}
                         alt='backers-1'
@@ -46,15 +47,6 @@ const Backers = (props: any) => {
   );
 };
 
-export function changeImageUrl(logo: string) {
-  if (!logo) return '';
-  if (logo.includes('img.api.cryptorank.io')) {
-    return logo.replace('img.api.cryptorank.io', 'img.cryptorank.io');
-  } else return logo;
-
-    
- }
-
 export function DialogBackers(props: any) {
   const backers = props.backers;
   return (
@@ -62,7 +54,7 @@ export function DialogBackers(props: any) {
       {...Array.from(Array(backers.length).keys()).map((item) => {
         return (
           <img
-            src={`data:image/png;base64,${backers[item]?.logo}`}
+            src={changeImageUrl(backers[item]?.logo)}
             width={28}
             height={28}
             alt='backers-1'

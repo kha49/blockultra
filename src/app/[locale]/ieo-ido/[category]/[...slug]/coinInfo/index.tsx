@@ -2,7 +2,6 @@
 
 import { nFormatter, percentFormat } from '@/helpers';
 import { Avatar, Flex, Modal, Popover } from 'antd';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -11,6 +10,7 @@ import { LaunchPadInfomationType } from '../../types';
 import Allocation from '../allocation';
 import MainCategories from '../main-categories';
 import './index.scss';
+import { changeImageUrl } from '@/helpers/functions';
 
 type PropsType = {
   info: LaunchPadInfomationType;
@@ -57,7 +57,7 @@ const CoinInformation = (props: PropsType) => {
           <Flex vertical gap={16}>
             {info.tokenPlatforms.map((token, index) => (
               <Flex key={index} gap={12}>
-                <Avatar key={token.key} src={token.iconUrl} alt={token.name} />
+                <Avatar key={token.key}   src={changeImageUrl(token.iconUrl)}  alt={token.name} />
 
                 <span>{token.name}</span>
               </Flex>
@@ -73,11 +73,11 @@ const CoinInformation = (props: PropsType) => {
       >
         <Flex wrap='wrap' gap={16} className='launchpad-information'>
           <div className='w-[76px] h-[76px]'>
-            <Image
+            <img
               width={76}
               height={76}
-              alt={info.name}
-              src={info.nativeToken.icon}
+              alt={""}
+              src={changeImageUrl(info.nativeToken.icon)}
               className='rounded-full'
             />
           </div>
@@ -113,7 +113,7 @@ const CoinInformation = (props: PropsType) => {
                   {info.tokenPlatforms.map((token, index) => (
                     <Avatar
                       key={token.key}
-                      src={token.iconUrl}
+                      src={changeImageUrl(token.iconUrl)} 
                       alt={token.name}
                     />
                   ))}
@@ -128,10 +128,10 @@ const CoinInformation = (props: PropsType) => {
               <Flex vertical gap={8}>
                 <Flex align='center' gap={6}>
                   <span className='text-gray-500'>Token:</span>
-                  <Image
+                  <img
                     width={20}
-                    height={20}
-                    src={info.nativeToken.icon}
+                    height={20} 
+                    src={changeImageUrl(info.nativeToken.icon)}
                     alt={info.name}
                   />
                   <span>{info.nativeToken.symbol}</span>

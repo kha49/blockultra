@@ -4,6 +4,8 @@ export interface ICountdownTimerProps {
 }
 
 export interface TimeLeft {
+  y: number;
+  M: number;
   d: number;
   h: number;
   m: number;

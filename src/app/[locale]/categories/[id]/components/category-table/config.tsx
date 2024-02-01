@@ -5,6 +5,7 @@ import { nFormatter, percentFormat } from '@/helpers';
 import { CategoryCoinsType } from '../../types';
 import { IconStar } from '@/assets/icons';
 import Link from 'next/link';
+import { changeImageUrl } from '@/helpers/functions';
 
 export const FundraisingCategory = {
   FundingRounds: 'funding-rounds',
@@ -44,7 +45,7 @@ export const categoryColumns: ColumnsType<CategoryCoinsType> = [
     width: 200,
     render: (_, { name, image, symbol, key }) => (
       <Flex align={'center'} gap={8}>
-        <img src={image.icon} alt={'icon'} width={24} height={24} />
+        <img src={changeImageUrl(image.icon)} alt={'icon'} width={24} height={24} />
         <Link
           href={`/en/detail/${key}`}
           className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'
@@ -117,7 +118,7 @@ export const categoryColumns: ColumnsType<CategoryCoinsType> = [
               alt='chart'
               width={200}
               height={52}
-              src={`data:image/svg+xml;base64,${value}`}
+              src={changeImageUrl(value)}
             />
           </div>
         );

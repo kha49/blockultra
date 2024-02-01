@@ -1,5 +1,6 @@
 import { Avatar, Flex, Tag } from 'antd';
 import React from 'react';
+import { changeImageUrl } from '@/helpers/functions';
 
 type DataGroupProps<T = any> = {
   onClick?: () => void;
@@ -17,7 +18,7 @@ export default function DataGroup(props: DataGroupProps) {
 
   return (
     <Flex align='center' gap={8}>
-      <Avatar size={32} src={first.image} />
+      <Avatar size={32} src={changeImageUrl(first.image)} />
       <span>{first.name}</span>
       {rest.length > 0 && (
         <Tag

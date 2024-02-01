@@ -9,17 +9,17 @@ import Link from 'next/link';
 import React from 'react';
 import { ICardMemberProps } from './CardMember.type';
 import './index.scss';
-import Image from 'next/image';
+import { changeImageUrl } from '@/helpers/functions';
 
 const CardMember: React.FC<ICardMemberProps> = ({ data }) => {
   return (
     <div className='card-member p-4 border border-solid border-grey-300 rounded-lg'>
       <div className='flex items-center gap-2 overflow-hidden'>
         {data?.avatarUrl && (
-          <Image
+          <img
             width={86}
             height={86}
-            src={data?.avatarUrl}
+            src={changeImageUrl(data?.avatarUrl)}
             alt={data?.name}
           />
         )}

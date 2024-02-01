@@ -16,11 +16,7 @@ type TopDataProps = {
 };
 
 const TopData = ({ title, data, onChangeOrder }: TopDataProps) => {
-  const [order, setOrder] = useState({
-    columnKey: '',
-    order: '',
-  });
-
+ 
   const handleOnChange = (tableConfig: any, _filter: any, sort: any) => {
     const itemSort = isArray(sort) ? sort[0] : sort;
     onChangeOrder({

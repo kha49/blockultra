@@ -8,6 +8,7 @@ import {
   renderColumnId,
 } from '@/helpers';
 import { CoreCellName } from '@/components/core-table/core-cell-name';
+import { changeImageUrl } from '@/helpers/functions';
 
 const columns: ColumnsType<any> = [
   renderColumnId(),
@@ -72,7 +73,7 @@ const columns: ColumnsType<any> = [
           alt='chart'
           width={136}
           height={40}
-          src={`data:image/svg+xml;base64,${value.chart}`}
+          src={changeImageUrl(value.chart)}
         />
       </div>
     ),

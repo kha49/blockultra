@@ -24,6 +24,7 @@ import NextUnlock from '../nextUnlock';
 import Link from 'next/link';
 import { isArray, round } from 'lodash';
 import CommonTable from '@/components/CommonTable/common-table';
+import { changeImageUrl } from '@/helpers/functions';
 
 export default function UsTable() {
   const columns: ColumnsType<IUnlock> = [
@@ -52,7 +53,7 @@ export default function UsTable() {
             className='flex gap-2 items-center'
           >
             {value.image ? (
-              <img src={`data:image/png;base64,${value?.image}`} alt={'icon'} width={32} height={32} />
+              <img src={changeImageUrl(value.image)} alt={'icon'} width={32} height={32} />
             ) : (
               ''
             )}
@@ -121,7 +122,7 @@ export default function UsTable() {
             {launchpads?.map((item) => (
               <Avatar
                 onClick={(_e) => _openModal(launchpads)}
-                src={item.image}
+                src={changeImageUrl(item.image)}
                 key={item.key}
               />
             ))}
@@ -326,7 +327,7 @@ export default function UsTable() {
                 className='flex items-center mt-2 mb-2'
                 key={`modal-index-${index}`}
               >
-                <img src={e.image} className='w-6 h-6 mr-3' />
+                <img src={changeImageUrl(e.image)} className='w-6 h-6 mr-3' />
                 <p className=''>{e.name}</p>
               </div>
             );

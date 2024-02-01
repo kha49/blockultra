@@ -1,7 +1,7 @@
 import Link from 'next/link';
-import Image from 'next/image';
 import { Avatar, Typography } from 'antd';
 import clsx from 'clsx';
+import { changeImageUrl } from '@/helpers/functions';
 
 interface ICoreCellNameProps {
   imagesUrl?: string[];
@@ -19,7 +19,7 @@ export const CoreCellName = (props: ICoreCellNameProps) => {
       {imagesUrl?.length && (
         <Avatar.Group maxCount={3}>
           {imagesUrl.map((url, index) => (
-            <Avatar key={index} size={32} src={url} />
+            <Avatar key={index} size={32} src={changeImageUrl(url)} />
           ))}
         </Avatar.Group>
       )}

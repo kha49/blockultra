@@ -28,7 +28,7 @@ export const currencyFormat = (
   currencySymbol: string,
   options?: IoptionCurrencyFormat
 ) => {
-  if (value === 0) return 0;
+  if (!value) return 0;
 
   let price = 0;
   let roundNumber = options?.numberRound ?? 2;

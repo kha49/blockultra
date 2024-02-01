@@ -9,6 +9,7 @@ import {
 import Link from 'next/link';
 import { get } from 'lodash';
 import { CoreCellName } from '@/components/core-table/core-cell-name';
+import { changeImageUrl } from '@/helpers/functions';
 
 const columns: ColumnsType<any> = [
   renderColumnId(),
@@ -87,7 +88,7 @@ const columns: ColumnsType<any> = [
           <img
             width={136}
             height={40}
-            src={`data:image/svg+xml;base64,${value.chart}`}
+            src={value.chart}
           />
         </div>
       );

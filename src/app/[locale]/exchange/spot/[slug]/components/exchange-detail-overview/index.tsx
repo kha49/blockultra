@@ -23,6 +23,7 @@ import { useParams } from 'next/navigation';
 import { ICoinInfo, CoinAllocation, ILink } from '../../props';
 import IconSource from '@/assets/icons/IconSource';
 import HexagonItem from '@/components/Hexa/Hexagon';
+import { changeImageUrl } from '@/helpers/functions';
 
 const linkRef = ['twitter', 'web', 'telegram', 'discord', 'facebook', 'medium', 'github', 'file'];
 
@@ -207,7 +208,7 @@ const CoinInformation = () => {
           <div className='flex gap-4 items-center justify-center'>
             {
               coinsData?.icon ? (
-                <img src={`data:image/png;base64,${coinsData?.icon}`} alt={coinsData?.name} />
+                <img src={changeImageUrl(coinsData?.icon)} alt={coinsData?.name} />
               ) : ''
             }
             <div className='flex-col gap-3 justify-start inline-flex'>
@@ -335,8 +336,8 @@ const CoinInformation = () => {
                     <div className='category__link flex'>
                       {
                         coinsData?.nativeCoin?.logo ? (
-                          <Image
-                            src={coinsData?.nativeCoin.logo}
+                          <img
+                            src={changeImageUrl(coinsData?.nativeCoin.logo)} 
                             alt={coinsData?.name}
                             className='w-5 h-5 max-w-5 max-h-5 min-w-5 min-h-5'
                             width={20}

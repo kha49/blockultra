@@ -24,6 +24,7 @@ import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
 import { IDetail } from '@/models/IDetail';
 import Links from './popup/links/Links';
 import { useEffect, useState } from 'react';
+import { changeImageUrl } from '@/helpers/functions';
 
 export default function CoinInformation({ data }: any) {
   let newData = data as IDetail;
@@ -57,7 +58,7 @@ export default function CoinInformation({ data }: any) {
               <div className='flex items-center gap-4 mb-4 md:mb-0'>
                 <Popover content={<IntroduceCoin data={newData} />}>
                   <img
-                    src={newData?.image?.x150}
+                    src={changeImageUrl(newData?.image?.x150)}
                     alt=''
                     width={76}
                     height={76}

@@ -1,4 +1,4 @@
-import { changeImageUrl } from '@/app/[locale]/detail/information/popup/backers/Backers';
+import { changeImageUrl } from '@/helpers/functions';
 import { Modal } from 'antd';
 import Image from 'next/image';
 import { useState } from 'react';
@@ -54,7 +54,7 @@ export const BackerItem = ({ item  }:any) => {
       {
         item?.logo ? (
           <div className='w-12 h-12'>
-            <Image src={changeImageUrl(item?.logo)} height={50} width={50} alt={item.name} />
+            <img src={changeImageUrl(item?.logo)} height={50} width={50} alt={item.name} />
           </div>
         ) : ''
       }

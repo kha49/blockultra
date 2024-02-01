@@ -72,47 +72,7 @@ const Overview = (props: any) => {
             backers={overView.backers}
             initNumber={4}
             type={'backer'}
-          />
-          {/* <div className='p-6'>
-            <div className='flex items-center gap-10 flex-wrap'>
-              <div className='flex gap-2'>
-                <img src='/Dao.svg' alt='dao' />
-                <div>
-                  <div className='text-sm text-grey-700 font-semibold mb-1'>
-                    DAO Maker
-                  </div>
-                  <div className='inline px-2 text-xs rounded text-grey-500 bg-grey-200 font-medium'>
-                    Tier 1
-                  </div>
-                </div>
-              </div>
-              <div className='flex gap-2'>
-                <img src='/Dao.svg' alt='dao' />
-                <div>
-                  <div className='text-sm text-grey-700 font-semibold mb-1'>
-                    DAO Maker
-                  </div>
-                  <div className='inline px-2 text-xs rounded text-grey-500 bg-grey-200 font-medium'>
-                    Tier 1
-                  </div>
-                </div>
-              </div>
-              <div className='flex gap-2'>
-                <img src='/Dao.svg' alt='dao' />
-                <div>
-                  <div className='text-sm text-grey-700 font-semibold mb-1'>
-                    DAO Maker
-                  </div>
-                  <div className='inline px-2 text-xs rounded text-grey-500 bg-grey-200 font-medium'>
-                    Tier 1
-                  </div>
-                </div>
-              </div>
-              <div className='text-primary-500 text-xs font-medium font-jm cursor-pointer'>
-                +3 Launchpad
-              </div>
-            </div>
-          </div> */}
+          /> 
         </div>
       </div>
     </div>

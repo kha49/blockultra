@@ -1,3 +1,4 @@
+import { changeImageUrl } from '@/helpers/functions';
 import { TUnlockTime } from '../../types';
 import { currencyFormat, nFormatter } from '@/helpers';
 import { Tooltip } from 'antd';
@@ -22,7 +23,7 @@ export const UnlockTime = (props: UnlockTimeProps) => {
             <div className="flex gap-2 items-center flex-wrap">
               {
                 item?.image ? (
-                  <img src={`data:image/png;base64,${item?.image}`} width={32} height={32} alt={'coin-icon'} />
+                  <img src={changeImageUrl(item.image)} width={32} height={32} alt={'coin-icon'} />
                 ) : ''
               }
               <Tooltip title={item.name}>

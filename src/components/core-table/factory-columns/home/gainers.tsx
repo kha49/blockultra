@@ -8,6 +8,7 @@ import {
 } from '@/helpers';
 import { CoreCellName } from '@/components/core-table/core-cell-name';
 import { get } from 'lodash';
+import { changeImageUrl } from '@/helpers/functions';
 
 const columns: ColumnsType<any> = [
   renderColumnId(),
@@ -19,7 +20,7 @@ const columns: ColumnsType<any> = [
     sorter: true,
     render: (value) => (
       <CoreCellName
-        imagesUrl={[get(value, 'image.x60', '')]}
+        imagesUrl={[changeImageUrl(get(value, 'image.x60', ''))]}
         name={value.name}
         symbol={value.symbol}
         link={`/en/detail/${value.key}`}

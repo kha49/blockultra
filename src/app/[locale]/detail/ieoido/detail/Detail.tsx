@@ -2,6 +2,7 @@
 import { IconArrowDown } from '@/assets/icons/IconArrowDown';
 import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
 import { useEffect, useState } from 'react';
+import { changeImageUrl } from '@/helpers/functions';
 
 const Detail = ({ ieoidos , tokenInfo}: any) => {
   const isTrue = true;
@@ -30,8 +31,8 @@ const Detail = ({ ieoidos , tokenInfo}: any) => {
     <div>
       <div className='text-grey-700 text-xl font-bold font-jb mb-2'>Detail</div>
       <div>
-        {ieoidos?.map((item: any) => {
-          return <ItemDetail key ={item} item={item} symbol={tokenInfo.symbol} />;
+        {ieoidos?.map((item: any, i: number) => {
+          return <ItemDetail key ={i} item={item} symbol={tokenInfo.symbol} />;
         })}
       </div>
     </div>
@@ -42,24 +43,17 @@ export function ItemDetail({ item, symbol }: any) {
   const [isVisible, setVisible] = useState(false);
   const handleToggle = (itemId: any) => {
     setVisible(!isVisible)
-   };
-
-  
-  
+   }; 
   return (
-    <div key={item} className='box-shadow-common p-4 flex items-center justify-between flex-wrap gap-6 mb-6'>
+    <div key={item.id} className='box-shadow-common p-4 flex items-center justify-between flex-wrap gap-6 mb-6'>
       <div className='flex flex-col gap-6 item-center'>
         <div className='flex items-center gap-2'>
-          <img
-            src={item.logo}
-            onError={() => {
-              console.log('====================================');
-              console.log('Load image error', item);
-              console.log('====================================');
-            }}
-            alt='dao'
-          />
-
+          {
+            item.logo ? (<img
+              src={changeImageUrl(item.logo)}
+              alt='dao'
+            />): ""   
+          } 
           <div className='text-sm text-grey-700 font-bold'>{item.name}</div>
         </div>
         {isVisible ? (
@@ -74,7 +68,7 @@ export function ItemDetail({ item, symbol }: any) {
         <div className='text-center'>
           <div className='text-grey-500 text-sm mb-2'>Price</div>
           <div className='text-grey-700 text-sm font-semibold'>
-            {currencyFormat(item?.price, '$')}
+            {currencyFormat(item?.price.USD, '$')}
           </div>
         </div>
         {isVisible ? (

@@ -4,6 +4,7 @@ import { IconAddCircle, IconArrowCircleRight } from '@/assets/icons';
 import Slider from 'react-slick';
 import { ICoinDataProps, Props } from './Compare.type';
 import './index.scss';
+import { changeImageUrl } from '@/helpers/functions';
 
 export function CoinCompare(props: any) {
   const data = props.data?.compare || [];
@@ -29,7 +30,7 @@ export function CoinCompare(props: any) {
               <div className='flex justify-between items-center'>
                 <div>
                   <img
-                    src={item?.image?.native}
+                    src={changeImageUrl(item?.image?.native)}
                     alt=''
                     width={40}
                     height={40}

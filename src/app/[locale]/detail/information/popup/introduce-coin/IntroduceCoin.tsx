@@ -1,11 +1,12 @@
 import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
+import { changeImageUrl } from '@/helpers/functions';
 
 const IntroduceCoin = (props: any) => {
   return (
     <div className='introduce-coin w-full md:w-[380px] font-jm'>
       <div className='flex items-center gap-3 pb-4 mb-4 border-b border-grey-300'>
         <img
-          src={props.data?.image?.native}
+          src={changeImageUrl(props.data?.image?.native)}
           alt=''
           width={76}
           height={76}

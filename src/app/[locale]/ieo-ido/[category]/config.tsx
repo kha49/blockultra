@@ -19,6 +19,7 @@ import {
 import { IconFacebook } from '@/assets/icons/IconFacebook';
 import { ReactNode } from 'react';
 import { COLOR_CHART } from '@/helpers/constants';
+import { changeImageUrl } from '@/helpers/functions';
 
 export const IeoIdoCategory = {
   upcoming: 'upcoming',
@@ -95,7 +96,7 @@ const columnsUpcoming: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     render: (project, { symbol, image, isHot }) => (
       <Flex wrap='wrap' gap={8}>
-        <Image src={image} alt={'icon'} width={24} height={24} />
+         <img src={changeImageUrl(image)} alt={'icon'} width={24} height={24} />
         <span>{project}</span>
         <Tag className={'bg-[#F1F4F7]'} bordered={false}>
           {symbol}
@@ -188,7 +189,7 @@ const columnsUpcomingDetail: ColumnsType<any> = [
     sorter: true,
     render: (project, { symbol, image, isHot }) => (
       <Flex wrap='wrap' gap={8}>
-        <Image src={image} alt={'icon'} width={24} height={24} />
+        <img src={changeImageUrl(image)} alt={'icon'} width={24} height={24} />
         <span>{project}</span>
         <Tag className={'bg-[#F1F4F7]'} bordered={false}>
           {symbol}
@@ -274,7 +275,7 @@ const columnsEnded: ColumnsType<any> = [
     fixed: true,
     render: (_, { project, image, tag }) => (
       <Flex align={'center'} gap={8}>
-        <Image src={image} alt={'icon'} width={24} height={24} />
+        <img src={changeImageUrl(image)} alt={'icon'} width={24} height={24} />
         <span>{project}</span>
         <Tag className={'bg-[#F1F4F7]'} bordered={false}>
           {tag}
@@ -364,7 +365,7 @@ const columnsEndedDetail: ColumnsType<any> = [
     fixed: true,
     render: (_, { project, icon, symbol }) => (
       <Flex align={'center'} gap={8}>
-        <Image src={icon} alt={'icon'} width={24} height={24} />
+        <img src={changeImageUrl(icon)} alt={'icon'} width={24} height={24} />
         <span>{project}</span>
         <Tag className={'bg-[#F1F4F7]'} bordered={false}>
           {symbol}
@@ -445,7 +446,7 @@ const columnsTopIdoLaunchpads: ColumnsType<any> = [
     width: 144,
     render: (_, { name, image, tag }) => (
       <Flex align={'center'} gap={8}>
-        <Image src={image} alt={'icon'} width={24} height={24} />
+         <img src={changeImageUrl(image)} alt={'icon'} width={24} height={24} />
         <span>{name}</span>
         <Tag className={'bg-[#F1F4F7]'} bordered={false}>
           {tag}

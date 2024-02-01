@@ -17,6 +17,7 @@ import { IBankerDetail } from '../../../../types';
 import { getFlagCountry } from '@/helpers';
 import { IconTikTok } from '@/assets/icons/IconTikTok';
 import { IconFacebook } from '@/assets/icons/IconFacebook';
+import { changeImageUrl } from '@/helpers/functions';
 
 const linksIcon = {
   web: <IconWeb />,
@@ -90,7 +91,7 @@ const FundraisingDetailOverview = (props: IBankerDetail) => {
           <div className='flex gap-4 flex-col md:flex-row justify-center items-center'>
             {
               data?.logo ? (
-                <img width={76} height={76} src={data.logo} alt={data.name} />
+                <img width={76} height={76} src={changeImageUrl(data.logo)} alt={data.name} />
               ) : ''
             }
             <div className='flex flex-col gap-3'>

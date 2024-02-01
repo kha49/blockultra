@@ -5,6 +5,7 @@ import { IGlobalSearch, IRecent } from '../SearchInput/props';
 import { nFormatter, percentFormat } from '@/helpers';
 import { IconRecent } from '@/assets/icons/home/IconRecent';
 import { get } from 'lodash';
+import { changeImageUrl } from '@/helpers/functions';
 
 const SearchResult = ({
   data,
@@ -31,7 +32,7 @@ const SearchResult = ({
           <div className='coin p-2 flex justify-between items-center'>
             <div className='coin-info flex items-center gap-4'>
               <div className='coin-info__image'>
-                <img src={e.image.x60} width={32} height={32} alt={e.name} />
+              <img src={changeImageUrl(e.image.x60)} width={32} height={32} alt={e.name} />
               </div>
               <div className='coin-info__content'>
                 <div className='coin-info__content__name flex gap-2'>
@@ -83,7 +84,7 @@ const SearchResult = ({
           <div className='coin p-2 flex justify-between items-center'>
             <div className='coin-info flex items-center gap-4'>
               <div className='coin-info__image'>
-                <img src={e.image.x60} width={32} height={32} alt={e.name} />
+              <img src={changeImageUrl(e.image.x60)} width={32} height={32} alt={e.name} />
               </div>
               <div className='coin-info__content'>
                 <div className='coin-info__content__name flex gap-2'>
@@ -140,7 +141,7 @@ const SearchResult = ({
           <div className='coin p-1 flex'>
             <div className='coin-info flex flex-col items-center'>
               <div className='coin-info__image mb-2'>
-                <img src={r.icon} width={32} height={32} alt='btc' />
+                 <img src={changeImageUrl(r.icon)} width={32} height={32} alt='btc' />
               </div>
               <div className='coin-info__name textover-ellipsis w-20 text-center'>
                 {r.name}
@@ -209,7 +210,7 @@ const SearchResult = ({
           <div className='coin p-2 flex justify-between items-center'>
             <div className='coin-info flex items-center gap-4'>
               <div className='coin-info__image'>
-                <img src={e.image} width={32} height={32} alt={e.name} />
+              <img src={changeImageUrl(e.image)} width={32} height={32} alt={e.name} />
               </div>
               <div className='coin-info__content'>
                 <div className='coin-info__content__name flex gap-2'>
@@ -248,7 +249,7 @@ const SearchResult = ({
           <div className='coin p-2 flex justify-between items-center'>
             <div className='coin-info flex items-center gap-4'>
               <div className='coin-info__image'>
-                <img src={e.image} width={32} height={32} alt={e.name} />
+              <img src={changeImageUrl(e.image)} height={32} alt={e.name} />
               </div>
               <div className='coin-info__content'>
                 <div className='coin-info__content__name flex gap-2'>

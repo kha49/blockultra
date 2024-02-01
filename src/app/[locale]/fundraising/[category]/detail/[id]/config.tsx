@@ -6,6 +6,7 @@ import { formatDate } from '@/helpers/datetime';
 import { nFormatter } from '@/helpers';
 import BackersModal from '../../components/backers-modal';
 import DataGroup from '@/components/DataGroup';
+import { changeImageUrl } from '@/helpers/functions';
 
 export const roundsColumns: ColumnsType<any> = [
   {
@@ -17,7 +18,7 @@ export const roundsColumns: ColumnsType<any> = [
       <Flex align={'center'} gap={8}>
         {
           icon ? (
-            <Image src={`data:image/png;base64,${icon}`} alt={'icon'} width={24} height={24} />
+            <img src={changeImageUrl(icon)} alt={'icon'} width={24} height={24} />
           ) : ''
         }
         <span>{name}</span>
@@ -81,7 +82,7 @@ const topBackersColumns: ColumnsType<any> = [
       <Flex align={'center'} gap={8}>
         {
           logo ? (
-            <Image src={`data:image/png;base64,${logo}`} alt={'logo'} width={24} height={24} />
+            <img src={changeImageUrl(logo)} alt={'logo'} width={24} height={24} />
           ) : ''
         }
         <span>{name}</span>

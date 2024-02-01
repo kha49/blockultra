@@ -1,3 +1,13 @@
+
+export function changeImageUrl(logo: string) { 
+  if (!logo) return '';
+  if (logo.includes('img.api.cryptorank.io') || logo.includes('img.cryptorank.io')) {
+    return logo;
+  } else {
+    return `data:image/png;base64,${logo}`;
+  }
+ }
+
 export function getValue(obj: any, path: string) {
   const keysArray = path.split('.');
   let newObject = JSON.parse(simpleStringify(obj));

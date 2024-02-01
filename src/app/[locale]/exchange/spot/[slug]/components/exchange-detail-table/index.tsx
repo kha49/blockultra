@@ -29,6 +29,7 @@ import { IconStar } from '@/assets/icons';
 import { useParams, useRouter } from 'next/navigation';
 import BaseTable from '@/components/BaseTable';
 import { useLocale } from 'next-intl';
+import { changeImageUrl } from '@/helpers/functions';
 
 const columns: ColumnsType<ICoinTable> = [
   {
@@ -59,7 +60,7 @@ const columns: ColumnsType<ICoinTable> = [
             <div className='flex items-center'>
               {
                 value?.logo ? (
-                  <img className='mr-2 h-8 w-8' src={value.logo} alt={value.name}/>
+                  <img className='mr-2 h-8 w-8' src={changeImageUrl(value.logo)}  alt={value.name}/>
                 ) : ''
               }
               <div className='text-grey-700 text-sm font-jb truncate max-w-[160px] hover:text-primary-500'>

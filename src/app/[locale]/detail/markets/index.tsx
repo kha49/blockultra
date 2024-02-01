@@ -4,7 +4,6 @@ import { Segmented, Pagination, Table } from 'antd';
 import { useState, useEffect } from 'react';
 import SelectMarket from './select-market/SelectMarket';
 import { ColumnsType } from 'antd/es/table';
-import Image from 'next/image';
 import SelectItemTable from '@/components/SelectItemTable';
 import {
   currencyFormat,
@@ -20,13 +19,7 @@ import { isArray } from 'lodash';
 import { ORDER } from '@/helpers/constants';
 import CommonTable from '@/components/CommonTable/common-table';
 import moment from 'moment';
-
-const changeImageUrl = (logo: string) => {
-  if (!logo) return '';
-  if (logo.includes('img.api.cryptorank.io')) {
-    return logo.replace('img.api.cryptorank.io', 'img.cryptorank.io');
-  } else return logo;
- }
+import { changeImageUrl } from '@/helpers/functions';
 
 const columns: ColumnsType<ISpot> = [
   {
@@ -51,7 +44,7 @@ const columns: ColumnsType<ISpot> = [
     render: (_, { name, icon }) => (
       <div className='flex items-center gap-2'>
         { icon ?  (
-          <Image src={changeImageUrl(icon)} alt={'icon'} width={32} height={32} />
+          <img src={changeImageUrl(icon)} alt={'icon'} width={32} height={32} />
         ) : '' }
         <span className='text-sm text-grey-700 font-bold font-jb'>{name}</span>
       </div>

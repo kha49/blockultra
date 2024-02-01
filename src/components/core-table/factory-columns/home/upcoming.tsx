@@ -5,6 +5,7 @@ import DataGroup from '@/components/DataGroup';
 import LaunchpadModal from '@/app/[locale]/fundraising/[category]/components/launchpad-modal';
 import moment from 'moment/moment';
 import { CoreCellName } from '@/components/core-table/core-cell-name';
+import { changeImageUrl } from '@/helpers/functions';
 
 const columns: ColumnsType<any> = [
   renderColumnId(),
@@ -18,7 +19,7 @@ const columns: ColumnsType<any> = [
     fixed: true,
     render: (value) => (
       <CoreCellName
-        imagesUrl={[value.image]}
+        imagesUrl={[changeImageUrl(value.image)]} 
         name={value.project}
         symbol={value.symbol}
         link={`/en/detail/${value.key}`}

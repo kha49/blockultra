@@ -1,12 +1,11 @@
 import type { ColumnsType } from 'antd/es/table';
-import Link from 'next/link';
 import { nFormatter, renderColumnId, renderSortIcon } from '@/helpers';
 import { IFundraising } from '@/app/home/fundraising/props';
 import moment from 'moment/moment';
 import BackersModal from '@/app/[locale]/fundraising/[category]/components/backers-modal';
 import DataGroup from '@/components/DataGroup';
-import { CoreCellName } from '@/components/core-table/core-cell-name';
-import { get } from 'lodash';
+import { CoreCellName } from '@/components/core-table/core-cell-name'; 
+import { changeImageUrl } from '@/helpers/functions';
 
 const columns: ColumnsType<IFundraising> = [
   renderColumnId(),
@@ -20,7 +19,7 @@ const columns: ColumnsType<IFundraising> = [
     sorter: true,
     render: (value) => (
       <CoreCellName
-        imagesUrl={[value.icon]}
+        imagesUrl={[changeImageUrl(value.icon)]}
         name={value.name}
         symbol={value.symbol}
         link={`/en/detail/${value.symbol}`}

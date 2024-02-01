@@ -57,7 +57,7 @@ const Marquee = () => {
       const renderBr = index !== data.length - 1 || !!length;
       return (
         <div
-          key={item.id}
+          key={index}
           className='flex items-center gap-2 xl:gap-6 md:gap-6'
         >
           <MarqueeItem data={item} />

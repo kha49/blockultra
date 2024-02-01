@@ -8,6 +8,7 @@ import { IOptionAny, IOptionCustom } from '@/components/FilterCustom/props';
 import { ISearchFilter } from '@/app/home/coin/props';
 import { SearchCoinsFilter } from '@/usecases/home';
 import { FetchSearchTokenUnlock } from '@/usecases/token-unlock';
+import { changeImageUrl } from '@/helpers/functions';
 
 type TData = {
   id: string;
@@ -39,7 +40,7 @@ export const UsHeader = (props: UsHeaderProps) => {
             onClose={() => handleRemoveTag(index)}
             key={item.key}
           >
-            <img src={item.image} alt={'icon-select'} width={24} height={24} />
+            <img src={changeImageUrl(item.image)} alt={'icon-select'} width={24} height={24} />
             {item.name}
           </Tag>
         ))}
