@@ -2,7 +2,7 @@ import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
 
-const prefix = 'api/';
+const prefix = "api-service/api/";
 
 export const FetchList = (params) => {
   return apiClient.get(prefix + 'exchanges', params);

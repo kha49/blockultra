@@ -116,9 +116,9 @@ const TableData = (props: IPropsTableData) => {
     if (!res) return [];
 
     return res.map((e: ISearchFilter) => ({
-      id: e.key,
+      id: e.id,
       name: e.name,
-      code: e.key,
+      code: e.slug,
       thumb: '',
       isSelected: false,
     }));
@@ -162,7 +162,10 @@ const TableData = (props: IPropsTableData) => {
               isSortSelected='alphabet'
             />
             <div className='hidden xl:block md:block'>
-              <Button className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm !bg-white !text-grey-500' disabled>
+              <Button
+                className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm !bg-white !text-grey-500'
+                disabled
+              >
                 <div className='flex'>
                   <IconFilterCoinTab />
                   <span className='ml-1'>Filters</span>

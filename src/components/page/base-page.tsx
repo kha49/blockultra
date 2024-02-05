@@ -9,10 +9,11 @@ export default function BasePage(props: PageProps) {
     children,
     classnames,
     contentClassnames = 'py-6',
+    breadcrumbWrapperClassnames = 'px-4 md:px-0',
   } = props;
   return (
     <div className={clsx('mx-auto max-w-2xl px-4 py-3', classnames)}>
-      <div className='px-4 md:px-0'>
+      <div className={breadcrumbWrapperClassnames}>
         <Breadcrumb items={breadcrumbs} />
       </div>
       <div className={contentClassnames}>{children}</div>

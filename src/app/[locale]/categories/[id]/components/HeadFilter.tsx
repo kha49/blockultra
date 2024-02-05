@@ -17,6 +17,7 @@ export default function HeadFilter({
     <div className='filter flex justify-between mb-4'>
       <div className='flex'>
         <SearchSelect
+          placeholder='Filter coins'
           onFilterChange={(keys) => {
             if (keys.length) {
               setSearchKeys(keys);

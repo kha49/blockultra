@@ -1,10 +1,11 @@
 .header-filter {
   &__options {
+    font-family: "Plus Jakarta Sans Medium";
     .ant-btn {
       border-radius: 8px;
       height: 44px;
       padding: 0 20px;
-
+      font-family: "Plus Jakarta Sans Medium";
       &.active {
         background: linear-gradient(
           180deg,

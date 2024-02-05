@@ -24,6 +24,36 @@ export default function Doughnut(props: DoughnutProps) {
 
   startAngle = 0;
 
+  const render = () => {
+    return data.map((item, itemIndex) => {
+      let angle, nextAngle, percent;
+
+      nextAngle = startAngle;
+      angle = (item / sum) * 360;
+      percent = (item / sum) * 100;
+      startAngle += angle;
+
+      return (
+        <Path
+          stroke={stroke}
+          strokeWidth={strokeWidth}
+          showLabel={false}
+          key={itemIndex}
+          value={item?.toString()}
+          percent={!!percent}
+          percentValue={parseFloat(percent.toFixed(1))}
+          startAngle={nextAngle}
+          angle={angle}
+          trueHole={hole}
+          fill={colors[itemIndex % colorsLength]}
+          radius={radius}
+          hole={radius - hole}
+          {...rest}
+        />
+      );
+    });
+  };
+
   return (
     <svg
       width={diameter}
@@ -32,33 +62,7 @@ export default function Doughnut(props: DoughnutProps) {
       xmlns='http://www.w3.org/2000/svg'
       version='1.1'
     >
-      {data.map((item, itemIndex) => {
-        let angle, nextAngle, percent;
-
-        nextAngle = startAngle;
-        angle = (item / sum) * 360;
-        percent = (item / sum) * 100;
-        startAngle += angle;
-
-        return (
-          <Path
-            stroke={stroke}
-            strokeWidth={strokeWidth}
-            showLabel={false}
-            key={itemIndex}
-            value={item?.toString()}
-            percent={!!percent}
-            percentValue={parseFloat(percent.toFixed(1))}
-            startAngle={nextAngle}
-            angle={angle}
-            trueHole={hole}
-            fill={colors[itemIndex % colorsLength]}
-            radius={radius}
-            hole={radius - hole}
-            {...rest}
-          />
-        );
-      })}
+      {render()}
     </svg>
   );
 }

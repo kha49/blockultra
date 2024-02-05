@@ -53,7 +53,7 @@ const SearchResult = ({
                 </div> */}
               </div>
             </div>
-            <div className='number-of-coin text-xs font-medium font-jm'>#1</div>
+            {/* <div className='number-of-coin text-xs font-medium font-jm'>#1</div> */}
           </div>
         </div>
       );

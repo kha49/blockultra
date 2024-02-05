@@ -32,18 +32,18 @@ export default function CategoryOverview(props: PropsType) {
   const [info, setInfo] = useState(props.info);
   const { losers, gainers } = info;
 
-  const getLaunchPadDetail = useCallback(
-    async (filter:any) => {
-      filter.key = params.slug[0];
-      filter.time = TIME_FILTER;
-      const response: any = await TopIdoLaunchPadDetail(filter);
+  const getLaunchPadDetail = useCallback(async (filter: any) => {
+    const payload = {
+      key: params.slug[0],
+      time: filter.time,
+    };
 
-      if (response) {
-        setInfo(response);
-      }
-    },
-    []
-  );
+    const response: any = await TopIdoLaunchPadDetail(payload);
+
+    if (response) {
+      setInfo(response);
+    }
+  }, []);
 
   return (
     <Flex

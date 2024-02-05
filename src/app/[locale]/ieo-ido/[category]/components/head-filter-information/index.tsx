@@ -55,6 +55,7 @@ export default function HeadFilterInformation(props: PropsType) {
 
       <Flex gap={8} wrap='wrap' align='center' className='relative'>
         <SelectProject
+          placeholder='Filter Launchpads'
           category={category}
           onFilterChange={(values) => props.onFilter({ search_key: values })}
         />

@@ -85,11 +85,7 @@ const columns: ColumnsType<any> = [
     render: (_, value) => {
       return (
         <div className='flex items-center justify-end'>
-          <img
-            width={136}
-            height={40}
-            src={value.chart}
-          />
+          <img width={136} height={40} src={changeImageUrl(value.chart)} />
         </div>
       );
     },

@@ -8,12 +8,16 @@ import { Checkbox, Select, Tag } from 'antd';
 import React from 'react';
 import { SearchProject } from '../../types';
 import { CategoryCoinsSearch } from '@/usecases/category';
+import { useParams } from 'next/navigation';
 
 type PropsType = {
   onFilterChange: (values: string[]) => void;
+  placeholder?: string;
 };
 
 export default function SelectProject(props: PropsType) {
+  const params = useParams<{ id: string }>();
+  const categoryId = params.id;
   const _renderOption = ({ name, key, checked, code }: IOptionCustom) => {
     return (
       <Select.Option isSelectOption={true} value={code} key={code}>
@@ -63,12 +67,14 @@ export default function SelectProject(props: PropsType) {
     //@ts-ignore
     const data: SearchProject[] = await CategoryCoinsSearch({
       search_key: searchKey || '',
+      category_id: categoryId,
     });
 
-    return data.map((searchItem: SearchProject) => ({
-      id: searchItem.id,
+    console.log('data', data);
+    return data.map((searchItem: any) => ({
+      id: searchItem.key,
       name: searchItem.name,
-      code: searchItem.slug,
+      code: searchItem.key,
       thumb: '',
       isSelected: false,
     }));
@@ -76,7 +82,7 @@ export default function SelectProject(props: PropsType) {
 
   return (
     <FilterCustom
-      placeholder='Search'
+      placeholder={props.placeholder || 'Search'}
       renderOption={_renderOption}
       renderTag={_renderTag}
       onChange={(keys) => {

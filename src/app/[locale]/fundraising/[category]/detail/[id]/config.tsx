@@ -46,17 +46,18 @@ export const roundsColumns: ColumnsType<any> = [
     dataIndex: 'stage',
     key: 'stage',
   },
-  // {
-  //   title: 'Valuation',
-  //   dataIndex: 'raise',
-  //   key: 'fundsRaised',
-  //   render: (_, { raise }) => nFormatter(raise, 2, '$'),
-  //   sorter: true,
-  // },
+  {
+    title: 'Valuation',
+    dataIndex: 'raise',
+    key: 'fundsRaised',
+    render: () => "-",
+    sorter: true,
+  },
   {
     title: 'Backers',
     dataIndex: 'funds',
-    key: 'funds',
+    key: 'backers',
+    sorter: true,
     render: (_, { funds }) => (
       <BackersModal data={funds}>
         {({ onOpen }) => <DataGroup data={funds} onClick={onOpen} />}

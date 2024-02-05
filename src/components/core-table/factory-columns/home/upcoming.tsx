@@ -19,7 +19,7 @@ const columns: ColumnsType<any> = [
     fixed: true,
     render: (value) => (
       <CoreCellName
-        imagesUrl={[changeImageUrl(value.image)]} 
+        imagesUrl={[changeImageUrl(value.image)]}
         name={value.project}
         symbol={value.symbol}
         link={`/en/detail/${value.key}`}
@@ -54,30 +54,13 @@ const columns: ColumnsType<any> = [
     width: 200,
     align: 'left',
     sortIcon: renderSortIcon,
-    sorter: false,
+    sorter: true,
     render: (_, value) => {
       return (
         <BackersModal data={value.backers as any}>
           {({ onOpen }) => <DataGroup data={value.backers} onClick={onOpen} />}
         </BackersModal>
       );
-      // if (!value.backers || isEmpty(value.backers)) return <span>-</span>;
-      // const image = get(value, 'backers[0].image', '');
-      // const name = get(value, 'backers[0].name', '');
-
-      // return (
-      //   <span className='inline-flex items-center'>
-      //     <img src={image} className='w-8 h-8' alt={name} width={32} />
-      //     <span className='ml-2 truncate'>{name}</span>
-      //     {value.backers.length > 1 ? (
-      //       <div className='text-xs ml-2 bg-gray-200 flex pt-0.5 pb-0.5 text-center pl-2.5 pr-2.5 rounded-sm text-gray-400'>
-      //         +{value.backers.length - 1}
-      //       </div>
-      //     ) : (
-      //       ''
-      //     )}
-      //   </span>
-      // );
     },
   },
   {
@@ -92,12 +75,12 @@ const columns: ColumnsType<any> = [
     },
   },
   {
-    key: 'launchpad',
+    key: 'launchpads',
     title: 'Launchpad',
     width: 165,
     align: 'left',
     sortIcon: renderSortIcon,
-    sorter: false,
+    sorter: true,
     render: (_, value) => {
       const launchpad = value.launchpads.map((e: any) => ({
         ...e,
@@ -108,28 +91,12 @@ const columns: ColumnsType<any> = [
           {({ onOpen }) => <DataGroup data={launchpad} onClick={onOpen} />}
         </LaunchpadModal>
       );
-      // if (!value.launchpads || isEmpty(value.launchpads)) return <span>-</span>;
-      // const image = get(value, 'launchpads[0].image', '');
-      // const name = get(value, 'launchpads[0].name', '');
-      // return (
-      //   <span className='inline-flex items-center'>
-      //     <img src={image} className='w-8 h-8' alt={name} width={32} />
-      //     <span className='ml-2'>{name}</span>
-      //     {value.launchpads?.length > 1 ? (
-      //       <div className='text-xs ml-2 bg-gray-200 flex pt-0.5 pb-0.5 text-center pl-2.5 pr-2.5 rounded-sm text-gray-400'>
-      //         +{value.launchpads.length - 1}
-      //       </div>
-      //     ) : (
-      //       ''
-      //     )}
-      //   </span>
-      // );
     },
   },
   {
     key: 'start_date',
     title: 'Start Date',
-    width: 84,
+    width: 100,
     align: 'center',
     sortIcon: renderSortIcon,
     sorter: true,

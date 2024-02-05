@@ -223,7 +223,7 @@ const Markets = (props: any) => {
 };
 
 export function Historical(props: any) {
-  const total = 1000;
+ 
   const _onChangePage = (page: number) => {
     setPage(page);
   };
@@ -233,7 +233,8 @@ export function Historical(props: any) {
   };
 
   const [historicals, setHistoricals] = useState([]);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize]       = useState(10);
+  const [total, setTotal]             = useState(0);
   const [page, setPage] = useState(1);
   const [dateFrom, setDateFrom] = useState('');
   const [dateTo, setDateTo] = useState('');
@@ -254,6 +255,7 @@ export function Historical(props: any) {
         sort_by: order.columnKey,
         sort_order: ORDER[order.order],
       });
+      setTotal(res.total);
       setHistoricals(res.data);
     } catch (error) {
       return null;

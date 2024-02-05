@@ -1,9 +1,8 @@
+'use client';
+import FunDTable from './components/fundraising-table';
 import { FundraisingType, getBreadcrumbConfig } from './config';
 import './index.scss';
 import { Page } from '@/components/page';
-import dynamic from 'next/dynamic';
-
-const FunDTable = dynamic(() => import('./components/fundraising-table'), { ssr: false })
 
 type PageProps = {
   params: {

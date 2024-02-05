@@ -276,7 +276,7 @@ const columns: ColumnsType<IExchangeSpot> = [
 
 const ExchangeTable = () => {
   const [data, setData] = useState<IExchangeSpot[]>([]);
-  const [pageSize, setPageSize] = useState(50);
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(999);
   const [order, setOrder] = useState({

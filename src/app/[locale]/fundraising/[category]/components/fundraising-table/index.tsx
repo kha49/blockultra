@@ -9,12 +9,13 @@ import { FetchFundraising } from '@/usecases/fundraising';
 import { ORDER } from '@/helpers/constants';
 import { useDebounce } from 'usehooks-ts';
 import { isArray } from 'lodash';
-import dynamic from 'next/dynamic';
+import HeadFilter from '../head-filter';
+import BaseTable from '@/components/BaseTable';
 
-const HeadFilter = dynamic(() => import('../head-filter'), { ssr: false });
-const BaseTable = dynamic(() => import('@/components/BaseTable'), {
-  ssr: false,
-});
+// const HeadFilter = dynamic(() => import('../head-filter'), { ssr: false });
+// const BaseTable = dynamic(() => import('@/components/BaseTable'), {
+//   ssr: false,
+// });
 
 export default function FunDTable() {
   const params = useParams<{ locale: string; category: string }>();
@@ -65,6 +66,7 @@ export default function FunDTable() {
 
   const _onChangeFilter = (keys: string[]) => {
     setKeyFilter(keys);
+    setCurrentPage(1);
   };
 
   return (

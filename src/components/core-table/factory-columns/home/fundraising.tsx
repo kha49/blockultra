@@ -4,7 +4,7 @@ import { IFundraising } from '@/app/home/fundraising/props';
 import moment from 'moment/moment';
 import BackersModal from '@/app/[locale]/fundraising/[category]/components/backers-modal';
 import DataGroup from '@/components/DataGroup';
-import { CoreCellName } from '@/components/core-table/core-cell-name'; 
+import { CoreCellName } from '@/components/core-table/core-cell-name';
 import { changeImageUrl } from '@/helpers/functions';
 
 const columns: ColumnsType<IFundraising> = [
@@ -21,8 +21,8 @@ const columns: ColumnsType<IFundraising> = [
       <CoreCellName
         imagesUrl={[changeImageUrl(value.icon)]}
         name={value.name}
-        symbol={value.symbol}
-        link={`/en/detail/${value.symbol}`}
+        symbol={value.key}
+        link={`/en/detail/${value.slug}`}
       />
     ),
   },
@@ -64,12 +64,12 @@ const columns: ColumnsType<IFundraising> = [
       value.valuation ? nFormatter(+value.valuation, 2, '$') : 'N/A',
   },
   {
-    key: 'funds',
+    key: 'backers',
     title: 'Backers',
     width: 225,
     align: 'left',
     sortIcon: renderSortIcon,
-    sorter: false,
+    sorter: true,
     render: (value) => (
       <BackersModal data={value.funds}>
         {({ onOpen }) => <DataGroup data={value.funds} onClick={onOpen} />}

@@ -1,8 +1,8 @@
 import { Select } from 'antd';
-import './styles.scss'
+import './styles.scss';
 interface IProps {
   onChange: (value: number) => void;
-  pageSize?: string
+  pageSize?: string;
 }
 
 const SelectItemTable = ({ onChange, pageSize }: IProps) => {

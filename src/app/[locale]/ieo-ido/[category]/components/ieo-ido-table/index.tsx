@@ -36,7 +36,7 @@ export const IeoIdoTable = () => {
   const router = useRouter();
 
   const [data, setData] = useState<IIeoIdoData[]>([]);
-  const [pageSize, setPageSize] = useState(slug ? 10 : 20);
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
 
@@ -69,8 +69,8 @@ export const IeoIdoTable = () => {
       const _params: { [key: string]: string | number | string[] } = {
         limit: pageSize,
         page: currentPage,
-        sort_by: order.columnKey,
-        sort_order: ORDER[order.order],
+        sort_by: order.columnKey || 'start_date',
+        sort_order: ORDER[order.order] || 'DESC',
         status: IeoIdoStatus[category] || '',
         ...filter,
       };
@@ -84,7 +84,11 @@ export const IeoIdoTable = () => {
         : await FetchIeoIdo(getIeoIdoApiPath(category), _params);
 
       if (!response) return;
-      const { data, total } = response;
+      const { data, total, page } = response;
+      data.forEach((e: any) => {
+        Object.keys(e).forEach(o=> {if (typeof(e[o]) == null) {e[o] = '-'}});
+        e['page'] = page;
+      })
       setData(data);
       setTotal(total!!);
     },
@@ -103,19 +107,19 @@ export const IeoIdoTable = () => {
         <HeadFilter onFilter={getIeoIdoUpComing} />
       )}
       <CommonTable
-        onRow={
-          category === IeoIdoCategory.topIdoLaunchpads
-            ? (record) => {
-                return {
-                  onClick: () => {
-                    router.push(
-                      `/${locale}/ieo-ido/${IeoIdoCategory.topIdoLaunchpads}/${record.key}`
-                    );
-                  },
-                };
-              }
-            : undefined
-        }
+        // onRow={
+        //   category === IeoIdoCategory.topIdoLaunchpads
+        //     ? (record) => {
+        //         return {
+        //           onClick: () => {
+        //             router.push(
+        //               `/${locale}/ieo-ido/${IeoIdoCategory.topIdoLaunchpads}/${record.key}`
+        //             );
+        //           },
+        //         };
+        //       }
+        //     : undefined
+        // }
         columns={
           slug ? getIeoIdoColumnsDetail(category) : getIeoIdoColumns(category)
         }

@@ -2,10 +2,10 @@ import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
 
-const baseUrl = 'api/';
+const prefix = "api-service/api/";
 
 export const GlobalSearchCoins = (params) =>
-  apiClient.get(baseUrl + 'global-search-coin', params);
+  apiClient.get(prefix + 'global-search-coin', params);
 
 export const FetchHeaderBar = (params) =>
-  apiClient.get(baseUrl + 'header-bar-runing', params);
+  apiClient.get(prefix + 'header-bar-runing', params);

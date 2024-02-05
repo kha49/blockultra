@@ -5,4 +5,5 @@ export type PageProps = PropsWithChildren<{
   breadcrumbs: ItemType[];
   classnames?: string;
   contentClassnames?: string;
+  breadcrumbWrapperClassnames?: string;
 }>;

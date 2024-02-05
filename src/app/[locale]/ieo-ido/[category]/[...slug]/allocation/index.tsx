@@ -18,8 +18,10 @@ export default function Allocation(props: Props) {
       .reduce((sum, curr) => sum + curr.percentage, 0);
 
     return [
-      ...props.data.slice(0, 3).map((item) => ({ value: item.percentage })),
-      { value: _othersTotal },
+      ...props.data
+        .slice(0, 3)
+        .map((item) => ({ value: item.percentage, name: item.name })),
+      { value: _othersTotal, name: 'Others' },
     ];
   };
 
@@ -48,21 +50,18 @@ export default function Allocation(props: Props) {
         },
         label: {
           show: false,
-          position: 'center',
         },
-        emphasis: {
-          label: {
-            show: true,
-            fontSize: 40,
-            fontWeight: 'bold',
-          },
-        },
+        showInLegend: false,
         labelLine: {
           show: false,
         },
         data: _dataECharts(),
       },
     ],
+    tooltip: {
+      trigger: 'item',
+      formatter: '{b}',
+    },
   };
   return (
     <div className='allocations'>

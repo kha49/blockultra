@@ -37,7 +37,7 @@ const columns: ColumnsType<any> = [
     sortDirections: ['ascend', 'descend'],
     render: (_, value) => {
       return currencyFormat(value.price, '$', {
-        numberRound: 4,
+        numberRound: 2,
         isAutoZero: true,
         addToolTip: true,
       });

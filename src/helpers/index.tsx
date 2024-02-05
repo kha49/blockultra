@@ -29,16 +29,19 @@ export const currencyFormat = (
   options?: IoptionCurrencyFormat
 ) => {
   if (!value) return 0;
+  if (value > 1000) {
+    return nFormatter(value, 2, currencySymbol);
+  }
 
   let price = 0;
   let roundNumber = options?.numberRound ?? 2;
   do {
     price = round(value, roundNumber);
 
-    if (price === 0 && options?.isAutoZero) {
+    if (price === 0) {
       roundNumber += 1;
     }
-  } while (price === 0 && options?.isAutoZero);
+  } while (price === 0);
 
   const priceFomat = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -48,13 +51,13 @@ export const currencyFormat = (
     .format(round(price, roundNumber))
     .replace('$', '');
 
-  if (options?.addToolTip && priceFomat.length > 7) {
+  if (priceFomat.length >= 7 && value < 1) {
     return tooltipMaxLength(priceFomat, currencySymbol);
   }
 
   return (
     <span className='whitespace-nowrap'>
-      {currencySymbol} {priceFomat}
+      {`${currencySymbol}${priceFomat}`}
     </span>
   );
 };
@@ -248,9 +251,7 @@ export const tooltipMaxLength = (value: string | number, symbol: string) => {
   const tooltipData = start.concat('...').concat(end);
   return (
     <Tooltip title={value.toString()}>
-      <span className='whitespace-nowrap'>
-        {symbol} {tooltipData}
-      </span>
+      <span className='whitespace-nowrap'>{`${symbol}${tooltipData}`}</span>
     </Tooltip>
   );
 };

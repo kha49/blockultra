@@ -13,6 +13,7 @@ import { SearchProject } from '../../types';
 type PropsType = {
   category: string;
   onFilterChange: (values: string[]) => void;
+  placeholder?: string;
 };
 
 export default function SelectProject(props: PropsType) {
@@ -81,12 +82,10 @@ export default function SelectProject(props: PropsType) {
 
   return (
     <FilterCustom
-      placeholder='Search'
+      placeholder={props.placeholder || 'Filter projects'}
       renderOption={_renderOption}
       renderTag={_renderTag}
-      onChange={(keys) => {
-        props.onFilterChange(keys);
-      }}
+      onChange={props.onFilterChange}
       getData={_getData}
     />
   );

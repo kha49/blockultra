@@ -106,6 +106,7 @@ export interface IPortfolios {
   price24hPercent: number;
   volume24h: string;
   marketCap: string;
+  key: string;
 }
 interface Logo {
   native: string;

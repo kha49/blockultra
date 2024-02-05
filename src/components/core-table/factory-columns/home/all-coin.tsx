@@ -43,7 +43,7 @@ const columns: ColumnsType<any> = [
     title: '24h %',
     width: 135,
     align: 'right',
-    render: (value) => percentFormat(value.average24h),
+    render: (value) => percentFormat(value.priceChangeIn24h),
     sorter: true,
   },
   {

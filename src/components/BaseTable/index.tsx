@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 import './index.scss';
-import { Pagination, Table } from 'antd';
+import { Pagination } from 'antd';
 import SelectItemTable from '../SelectItemTable';
 import CommonTable from '../CommonTable/common-table';
 

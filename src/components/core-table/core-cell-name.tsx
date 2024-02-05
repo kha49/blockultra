@@ -8,10 +8,11 @@ interface ICoreCellNameProps {
   name?: string;
   symbol?: string;
   link?: string;
+  rightNode?: React.ReactNode;
 }
 
 export const CoreCellName = (props: ICoreCellNameProps) => {
-  const { imagesUrl, name = 'image', symbol, link } = props;
+  const { imagesUrl, name = 'image', symbol, link, rightNode } = props;
   const Name = link ? Link : Typography;
   const nameClass = link ? 'hover:text-primary-500' : '';
   return (
@@ -38,6 +39,7 @@ export const CoreCellName = (props: ICoreCellNameProps) => {
             {symbol}
           </span>
         )}
+        {rightNode}
       </div>
     </div>
   );

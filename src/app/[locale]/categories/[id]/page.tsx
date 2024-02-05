@@ -14,7 +14,7 @@ const CategoryDetail = dynamic(() => import('./CategoryDetail'), {
 
 const breadcrumbs = [
   {
-    title: 'BlockUltra',
+    title: 'Home',
   },
   {
     title: 'Categories',
@@ -29,6 +29,7 @@ export default function CategoryPage(props: PageProps) {
     <Page
       classnames='category-page'
       contentClassnames='py-8'
+      breadcrumbWrapperClassnames='px-8 xl:px-4'
       breadcrumbs={breadcrumbs}
     >
       <CategoryDetail {...props} />

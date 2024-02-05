@@ -8,7 +8,7 @@ import { useDebounce } from 'usehooks-ts';
 import { CoreTable } from '@/components/core-table';
 
 const UpComing = () => {
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [order, setOrder] = useState({

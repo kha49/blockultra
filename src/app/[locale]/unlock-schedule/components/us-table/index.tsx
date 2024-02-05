@@ -102,7 +102,7 @@ export default function UsTable() {
     {
       title: 'Launchpad',
       dataIndex: 'launchpadList',
-      key: 'launchpadList',
+      key: 'launchpads',
       align: 'left',
       sortIcon: renderSortIcon,
       width: 200,
@@ -187,7 +187,7 @@ export default function UsTable() {
   ];
 
   const [data, setData] = useState<IUnlock[]>([]);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [order, setOrder] = useState({

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import BankersModal from './components/bankers-modal';
 import DataGroup from '@/components/DataGroup';
 import LaunchpadModal from './components/launchpad-modal';
-import { nFormatter, renderSortIcon } from '@/helpers';
+import { nFormatter, nFormatter2, renderSortIcon } from '@/helpers';
 import { formatDate } from '@/helpers/datetime';
 import Doughnut from '@/components/DoughnutChart';
 import IconWeb from '@/assets/icons/IconWeb';
@@ -20,6 +20,8 @@ import { IconFacebook } from '@/assets/icons/IconFacebook';
 import { ReactNode } from 'react';
 import { COLOR_CHART } from '@/helpers/constants';
 import { changeImageUrl } from '@/helpers/functions';
+import { CoreCellName } from '@/components/core-table/core-cell-name';
+import Link from 'next/link';
 
 export const IeoIdoCategory = {
   upcoming: 'upcoming',
@@ -81,7 +83,7 @@ const columnsUpcoming: ColumnsType<any> = [
   {
     title: '#',
     fixed: true,
-    render: (_text, _record, index) => `${index + 1}`,
+    render: (_text, _record, index) => (`${((_record.page - 1) * 10) + index + 1}` ),
     width: 24,
     align: 'center',
   },
@@ -94,15 +96,15 @@ const columnsUpcoming: ColumnsType<any> = [
     width: 196,
     align: 'left',
     sortIcon: renderSortIcon,
-    render: (project, { symbol, image, isHot }) => (
-      <Flex wrap='wrap' gap={8}>
-         <img src={changeImageUrl(image)} alt={'icon'} width={24} height={24} />
-        <span>{project}</span>
-        <Tag className={'bg-[#F1F4F7]'} bordered={false}>
-          {symbol}
-        </Tag>
-        {isHot && <Image alt='hot' src={'/hot.svg'} width={12} height={12} />}
-      </Flex>
+    render: (project, { symbol, image, isHot, key }) => (
+      <CoreCellName
+        imagesUrl={[image]}
+        name={project}
+        symbol={symbol}
+        rightNode={
+          isHot && <Image alt='hot' src={'/hot.svg'} width={12} height={12} />
+        }
+      />
     ),
   },
   {
@@ -130,14 +132,14 @@ const columnsUpcoming: ColumnsType<any> = [
     dataIndex: 'backers',
     key: 'backers',
     sortIcon: renderSortIcon,
-    sorter: false,
+    sorter: true,
     width: 149,
     align: 'left',
-    render: (backers, { ido_platform_id }) => (
+    render: (backers, { ido_platform_id }) => (backers != null && backers.length > 0) ? (
       <BankersModal data={backers} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={backers} onClick={onOpen} />}
       </BankersModal>
-    ),
+    ) : '-',
   },
   {
     title: 'Category',
@@ -156,12 +158,12 @@ const columnsUpcoming: ColumnsType<any> = [
     width: 165,
     align: 'left',
     sortIcon: renderSortIcon,
-    sorter: false,
-    render: (_, { launchpads, ido_platform_id }) => (
+    sorter: true,
+    render: (_, { launchpads, ido_platform_id }) => (launchpads != null && launchpads.length > 0) ? (
       <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
       </LaunchpadModal>
-    ),
+    ) : '-',
   },
   {
     title: 'Start Date',
@@ -171,7 +173,7 @@ const columnsUpcoming: ColumnsType<any> = [
     sorter: true,
     width: 84,
     align: 'center',
-    render: (_, { start_date }) => formatDate(start_date),
+    render: (_, { start_date }) => (start_date != null && start_date != '-') ? formatDate(start_date) : '-',
   },
 ];
 
@@ -219,7 +221,7 @@ const columnsUpcomingDetail: ColumnsType<any> = [
     dataIndex: 'backers',
     key: 'backers',
     sortIcon: renderSortIcon,
-    sorter: false,
+    sorter: true,
     render: (backers, { ido_platform_id }) => (
       <BankersModal data={backers} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={backers} onClick={onOpen} />}
@@ -232,14 +234,14 @@ const columnsUpcomingDetail: ColumnsType<any> = [
     key: 'category',
     sortIcon: renderSortIcon,
     sorter: true,
-    render: (category) => `${category}`,
+    render: ({ name }) => name,
   },
   {
     title: 'Launchpad',
     dataIndex: 'launchpads',
     key: 'launchpads',
     sortIcon: renderSortIcon,
-    sorter: false,
+    sorter: true,
     render: (_, { launchpads, ido_platform_id }) => (
       <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
@@ -259,7 +261,7 @@ const columnsUpcomingDetail: ColumnsType<any> = [
 const columnsEnded: ColumnsType<any> = [
   {
     title: '#',
-    render: (_text, _record, index) => `${index + 1}`,
+    render: (_text, _record, index) => `${((_record.page - 1) * 10) + index + 1}`,
     fixed: true,
     width: 24,
     align: 'center',
@@ -273,14 +275,13 @@ const columnsEnded: ColumnsType<any> = [
     width: 194,
     sorter: true,
     fixed: true,
-    render: (_, { project, image, tag }) => (
-      <Flex align={'center'} gap={8}>
-        <img src={changeImageUrl(image)} alt={'icon'} width={24} height={24} />
-        <span>{project}</span>
-        <Tag className={'bg-[#F1F4F7]'} bordered={false}>
-          {tag}
-        </Tag>
-      </Flex>
+
+    render: (project, { image, key, symbol }) => (
+      <CoreCellName
+        imagesUrl={[image]}
+        name={project}
+        symbol={symbol}
+      />
     ),
   },
   {
@@ -291,7 +292,9 @@ const columnsEnded: ColumnsType<any> = [
     align: 'right',
     width: 122,
     sorter: true,
-    render: (_, { price }) => nFormatter(price, 2, '$'),
+    render: (priceValue) => {
+      return nFormatter2(priceValue, 2, '$');
+    },
   },
   {
     title: 'Total Raise',
@@ -326,16 +329,16 @@ const columnsEnded: ColumnsType<any> = [
   {
     title: 'Launchpad',
     dataIndex: 'launchpadList',
-    key: 'launchpadList',
+    key: 'launchpads',
     sortIcon: renderSortIcon,
     width: 211,
     align: 'left',
-    sorter: false,
-    render: (_, { launchpads, ido_platform_id }) => (
+    sorter: true,
+    render: (_, { launchpads, ido_platform_id }) => (launchpads != null && launchpads.length > 0 )?(
       <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
       </LaunchpadModal>
-    ),
+    ) : '-',
   },
   {
     title: 'End Date',
@@ -410,7 +413,7 @@ const columnsEndedDetail: ColumnsType<any> = [
     dataIndex: 'launchpads',
     key: 'launchpads',
     sortIcon: renderSortIcon,
-    sorter: false,
+    sorter: true,
     render: (_, { launchpads, ido_platform_id }) => (
       <LaunchpadModal data={launchpads} platformId={ido_platform_id}>
         {({ onOpen }) => <DataGroup data={launchpads} onClick={onOpen} />}
@@ -444,14 +447,21 @@ const columnsTopIdoLaunchpads: ColumnsType<any> = [
     fixed: true,
     align: 'left',
     width: 144,
-    render: (_, { name, image, tag }) => (
-      <Flex align={'center'} gap={8}>
-         <img src={changeImageUrl(image)} alt={'icon'} width={24} height={24} />
-        <span>{name}</span>
-        <Tag className={'bg-[#F1F4F7]'} bordered={false}>
-          {tag}
-        </Tag>
-      </Flex>
+    render: (_, { name, image, tag, key }) => (
+      <Link href={`/en/ieo-ido/top-ido-launchpads/${key}`}>
+        <Flex align={'center'} gap={8}>
+          <img
+            src={changeImageUrl(image)}
+            alt={'icon'}
+            width={24}
+            height={24}
+          />
+          <span>{name}</span>
+          <Tag className={'bg-[#F1F4F7]'} bordered={false}>
+            {tag}
+          </Tag>
+        </Flex>
+      </Link>
     ),
   },
   {

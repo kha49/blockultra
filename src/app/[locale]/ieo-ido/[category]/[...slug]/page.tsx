@@ -12,10 +12,10 @@ type PropsType = {
 const DetailPage = async ({ params }: PropsType) => {
   try {
     //@ts-ignore
-    const data: LaunchPadInfomationType = await TopIdoLaunchPadDetail(
-      
-      { key: params.slug[0],time: '24h' }
-    );
+    const data: LaunchPadInfomationType = await TopIdoLaunchPadDetail({
+      key: params.slug[0],
+      time: '24h',
+    });
 
     return <LaunchPadInfomation category={params.category} data={data} />;
   } catch (error) {

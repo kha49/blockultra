@@ -1,12 +1,56 @@
+function getImageType(base64String: string) {
+  const decodedData = atob(base64String);
+  const uintArray = new Uint8Array(decodedData.length);
 
-export function changeImageUrl(logo: string) { 
+  for (let i = 0; i < decodedData.length; i++) {
+    uintArray[i] = decodedData.charCodeAt(i);
+  }
+
+  // Check for PNG signature
+  if (
+    uintArray.length > 8 &&
+    uintArray[0] === 137 &&
+    uintArray[1] === 80 &&
+    uintArray[2] === 78 &&
+    uintArray[3] === 71 &&
+    uintArray[4] === 13 &&
+    uintArray[5] === 10 &&
+    uintArray[6] === 26 &&
+    uintArray[7] === 10
+  ) {
+    return 'png';
+  }
+
+  // Check for SVG declaration
+  const svgRegex = /<svg.*?>/i;
+  if (svgRegex.test(decodedData)) {
+    return 'svg';
+  }
+
+  // If neither PNG nor SVG, return null or handle accordingly
+  return null;
+}
+
+export function changeImageUrl(logo: string) {
   if (!logo) return '';
-  if (logo.includes('img.api.cryptorank.io') || logo.includes('img.cryptorank.io')) {
+  if (
+    logo.includes('img.api.cryptorank.io') ||
+    logo.includes('img.cryptorank.io')
+  ) {
     return logo;
   } else {
+    if (logo.includes('data:image/')) {
+      return logo;
+    }
+
+    const type = getImageType(logo);
+    if (type === 'svg') {
+      return `data:image/svg+xml;base64,${logo}`;
+    }
+
     return `data:image/png;base64,${logo}`;
   }
- }
+}
 
 export function getValue(obj: any, path: string) {
   const keysArray = path.split('.');

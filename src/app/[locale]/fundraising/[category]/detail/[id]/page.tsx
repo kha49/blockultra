@@ -1,10 +1,8 @@
+'use client';
 import { Page } from '@/components/page';
-import { FundraisingCategory, FundraisingCategoryLabel } from '../../config';
-import Link from 'next/link';
+import { getBreadcrumbDetailConfig } from '../../config';
 import './index.scss';
-import dynamic from 'next/dynamic';
-
-const Main = dynamic(() => import('./main'), { ssr: false });
+import Main from './main';
 
 type PageProps = {
   params: {
@@ -19,32 +17,13 @@ export default async function FundraisingDetail({
   params,
   searchParams,
 }: PageProps) {
-  const { category, locale } = params;
-  const breadcrumbs = [
-    {
-      title: 'BlockUltra',
-    },
-    {
-      title: 'Fundraising',
-    },
-    {
-      title: (
-        <Link href={`/${locale}/fundraising/${category}`}>
-          {
-            FundraisingCategoryLabel[
-              category ?? FundraisingCategory.FundingRounds
-            ]
-          }
-        </Link>
-      ),
-    },
-    {
-      title: searchParams?.name,
-    },
-  ];
+  const { category } = params;
 
   return (
-    <Page breadcrumbs={breadcrumbs} contentClassnames='pt-4 pb-3'>
+    <Page
+      breadcrumbs={getBreadcrumbDetailConfig(category, searchParams?.name)}
+      contentClassnames='pt-4 pb-3'
+    >
       <Main params={params} />
     </Page>
   );

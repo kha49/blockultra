@@ -29,12 +29,14 @@ export const getBreadcrumbConfig = () => {
 
 export const categoryColumns: ColumnsType<CategoryCoinsType> = [
   {
-    title: '#',
-    dataIndex: 'id',
     key: 'id',
+    title: '#',
+    width: 50,
+    align: 'left',
     fixed: true,
-    width: 24,
-    sorter: true,
+    render: (_, value, index) => {
+      return index + 1;
+    },
   },
   {
     title: 'Name',
@@ -45,7 +47,12 @@ export const categoryColumns: ColumnsType<CategoryCoinsType> = [
     width: 200,
     render: (_, { name, image, symbol, key }) => (
       <Flex align={'center'} gap={8}>
-        <img src={changeImageUrl(image.icon)} alt={'icon'} width={24} height={24} />
+        <img
+          src={changeImageUrl(image.icon)}
+          alt={'icon'}
+          width={24}
+          height={24}
+        />
         <Link
           href={`/en/detail/${key}`}
           className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'
@@ -60,7 +67,7 @@ export const categoryColumns: ColumnsType<CategoryCoinsType> = [
     title: 'Rate',
     dataIndex: 'rate',
     key: 'rate',
-    sorter: true,
+    sorter: false,
     width: 60,
     render: (value) =>
       value ? (
@@ -86,7 +93,7 @@ export const categoryColumns: ColumnsType<CategoryCoinsType> = [
     width: 120,
     sorter: true,
     key: 'priceChangeIn24h',
-    render: (value) => <>{percentFormat(value)}</>,
+    render: (value) => percentFormat(value),
   },
   {
     title: 'Volume (24h)',

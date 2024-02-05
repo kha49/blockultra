@@ -26,7 +26,7 @@ export default function DataGroup(props: DataGroupProps) {
           bordered={false}
           onClick={onClick}
         >
-          +{rest.length + 1}
+          + {rest.length}
         </Tag>
       )}
     </Flex>

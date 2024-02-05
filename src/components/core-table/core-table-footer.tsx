@@ -51,7 +51,10 @@ export const CoreTableFooter = (props: CoreTableFooterProps) => {
           onChange={onChangePage}
           showSizeChanger={false}
         />
-        <SelectItemTable onChange={onChangeSize} />
+        <SelectItemTable
+          onChange={onChangeSize}
+          pageSize={pageSize.toString()}
+        />
       </div>
     </div>
   );

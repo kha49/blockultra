@@ -9,6 +9,7 @@ import { get } from 'lodash';
 import { IPortfolios } from '../../../../types';
 import { roundsColumns } from '../../config';
 import { changeImageUrl } from '@/helpers/functions';
+import { CoreCellName } from '@/components/core-table/core-cell-name';
 
 const columnPorfolio: ColumnsType<IPortfolios> = [
   {
@@ -25,31 +26,20 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     width: 248,
     align: 'left',
     fixed: true,
-    render: (_, value) => {
-      const imageSource = get(value, 'logo.x60', '');
-      return (
-        <span className='table-header'>
-          <div className='flex items-center'>
-            <img src={changeImageUrl(imageSource)} alt={value.name} className='w-7 h-7' />
-            <div
-              // href={`/en/detail/${value.key}`}
-              className='mx-2 text-grey-700 hover:text-primary-500 truncate max-w-[160px]'
-            >
-              {value.name}
-            </div>
-            <span className='px-2 rounded py-0 bg-grey-200 text-grey-500 leading-5 coin-code'>
-              {value.ticker}
-            </span>
-          </div>
-        </span>
-      );
-    },
+    render: (_, value) => (
+      <CoreCellName
+        imagesUrl={[get(value, 'logo.x60', '')]}
+        name={value.name}
+        symbol={value.ticker}
+        link={`/en/detail/${value.key}`}
+      />
+    ),
     sortIcon: renderSortIcon,
     sorter: true,
   },
   {
     key: 'rating',
-    title: 'Rating',
+    title: 'Rate',
     align: 'center',
     render: () => {
       return '-';

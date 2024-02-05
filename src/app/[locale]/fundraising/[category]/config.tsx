@@ -1,6 +1,5 @@
 import { ColumnsType } from 'antd/es/table';
-import { Flex } from 'antd';
-import Image from 'next/image';
+import { Avatar, Flex, Tooltip } from 'antd';
 import BackersModal from './components/backers-modal';
 import DataGroup from '@/components/DataGroup';
 import { formatDate } from '@/helpers/datetime';
@@ -11,6 +10,8 @@ import {
   renderSortIcon,
 } from '@/helpers';
 import { changeImageUrl } from '@/helpers/functions';
+import { CoreCellName } from '@/components/core-table/core-cell-name';
+import ReactECharts from 'echarts-for-react';
 
 export const FundraisingCategory = {
   FundingRounds: 'funding-rounds',
@@ -57,6 +58,31 @@ export const getBreadcrumbConfig = (category?: FundraisingType) => {
   ];
 };
 
+export const getBreadcrumbDetailConfig = (category?: string, name?: string) => {
+  return [
+    {
+      title: 'BlockUltra',
+    },
+    {
+      title: 'Fundraising',
+    },
+    {
+      title: (
+        <a href={`/en/fundraising/${category}`}>
+          {
+            FundraisingCategoryLabel[
+              category ?? FundraisingCategory.FundingRounds
+            ]
+          }
+        </a>
+      ),
+    },
+    {
+      title: name,
+    },
+  ];
+};
+
 const roundsColumns: ColumnsType<any> = [
   {
     title: '#',
@@ -81,15 +107,13 @@ const roundsColumns: ColumnsType<any> = [
     sorter: true,
     fixed: true,
     width: 163,
-    render: (_, { name, icon, _id }) => (
-      <Flex align={'center'} gap={8}>
-        {
-          icon ? (
-            <img src={changeImageUrl(icon)} alt={'icon'} width={32} height={32} />
-          ) : ''
-        }
-        <span>{name}</span>
-      </Flex>
+    render: (_, { name, icon, symbol, slug }) => (
+      <CoreCellName
+        imagesUrl={[icon]}
+        name={name}
+        symbol={symbol}
+        link={`/en/detail/${slug}`}
+      />
     ),
   },
   {
@@ -119,21 +143,21 @@ const roundsColumns: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     sorter: true,
   },
-  // {
-  //   title: 'Valuation',
-  //   dataIndex: 'raise',
-  //   key: 'raise',
-  //   sortIcon: renderSortIcon,
-  //   sorter: true,
-  //   render: (_, { raise }) => nFormatter(raise, 2, '$'),
-  // },
+  {
+    title: 'Valuation',
+    dataIndex: 'raise',
+    key: 'raise',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    render: () => '-',
+  },
   {
     title: 'Backers',
     dataIndex: 'funds',
-    key: 'funds',
+    key: 'backers',
     width: 225,
     sortIcon: renderSortIcon,
-    sorter: false,
+    sorter: true,
     render: (_, { funds }) => (
       <BackersModal data={funds}>
         {({ onOpen }) => <DataGroup data={funds} onClick={onOpen} />}
@@ -178,12 +202,19 @@ const topBackersColumns: ColumnsType<any> = [
     render: (_, { name, logo, id }) => (
       <a href={`funding-rounds/detail/${id}?name=${name}`}>
         <Flex align={'center'} gap={8}>
-          {
-            logo ? (
-              <img src={changeImageUrl(logo)} alt={'logo'} width={32} height={32} />
-            ) : ''
-          }
-          <span className='text-base text-grey-700 font-bold font-jb truncate max-w-[55px] md:max-w-[160px] lg:max-w-[200px]'>{name}</span>
+          {logo ? (
+            <img
+              src={changeImageUrl(logo)}
+              alt={'logo'}
+              width={32}
+              height={32}
+            />
+          ) : (
+            ''
+          )}
+          <span className='text-base text-grey-700 font-bold font-jb truncate max-w-[55px] md:max-w-[160px] lg:max-w-[200px]'>
+            {name}
+          </span>
         </Flex>
       </a>
     ),
@@ -217,7 +248,11 @@ const topBackersColumns: ColumnsType<any> = [
     render: (_, { country }) => {
       const flag = getFlagCountry(country);
       if (!flag) return <div className='text-center'>-</div>;
-      return <img alt={country} src={flag} width={32} height={18} />;
+      return (
+        <Tooltip title={country}>
+          <img alt={country} src={flag} width={32} height={18} />
+        </Tooltip>
+      );
     },
   },
   {
@@ -243,6 +278,62 @@ const topBackersColumns: ColumnsType<any> = [
         <span>{nFormatter(marketCap, 2, '$')}</span>
         {percentFormat(mCapChangeIn24h)}
       </Flex>
+    ),
+  },
+  {
+    title: 'Resources',
+    dataIndex: 'resources',
+    key: 'resources',
+    width: 134,
+    align: 'right',
+    render: (_, { resources = [] }) => (
+      <Avatar.Group maxCount={3}>
+        {(resources as any[])?.map((url, index) => (
+          <Avatar key={index} size={32} src={changeImageUrl(url)} />
+        ))}
+      </Avatar.Group>
+    ),
+  },
+  {
+    title: 'Gainers',
+    dataIndex: 'gainers',
+    key: 'gainers',
+    sortIcon: renderSortIcon,
+    sorter: true,
+    align: 'right',
+    width: 143,
+    render: (value, {}) => (
+      <div className='flex gap-3 items-center'>
+        <ReactECharts
+          style={{ width: 65, height: 65 }}
+          option={{
+            color: ['green', 'red'],
+            series: [
+              {
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                silent: true,
+                label: {
+                  show: false,
+                },
+                labelLine: {
+                  show: false,
+                },
+                emphasis: {
+                  focus: false,
+                  scale: false,
+                },
+                data: [{ value: value }, { value: 100 - value }],
+              },
+            ],
+          }}
+        />
+
+        <div className='text-sm font-semibold text-[#333747]'>
+          {value || 0}%
+        </div>
+      </div>
     ),
   },
 ];

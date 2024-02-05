@@ -1,6 +1,6 @@
 import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
-
+const prefix = "api-service/api/";
 export const FetchDetailCategoriesOverview = (url, params) =>
-  apiClient.get(`api/${url}`, params);
+  apiClient.get(`${prefix}${url}`, params);

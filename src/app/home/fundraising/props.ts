@@ -13,6 +13,7 @@ export interface IFundraising {
   category?: ICategory2;
   hasFundingRounds: boolean;
   valuation?: string | number;
+  slug?: string;
 }
 
 export interface IFund {

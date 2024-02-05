@@ -182,7 +182,7 @@ const CoinTableInfo = (props: any) => {
   const router = useRouter();
   const params = useParams<{ locale: string; slug: string }>();
   const [dataCoins, setDataCoins] = useState<ICoinTable[]>([]);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(999);
   const [key] = useState(params.slug);
