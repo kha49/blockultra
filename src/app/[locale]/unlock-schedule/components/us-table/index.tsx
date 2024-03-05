@@ -1,32 +1,28 @@
 'use client';
 
-import {
-  Avatar,
-  Modal,
-  Pagination,
-  Tag,
-} from 'antd';
-import { ColumnsType } from 'antd/es/table';
-import { UsHeader } from './us-header';
-import { IUnlock, Launchpad } from '../../types';
-import React, { useCallback, useEffect, useState } from 'react';
+import LaunchpadModal from '@/app/[locale]/fundraising/[category]/components/launchpad-modal';
+import CommonTable from '@/components/CommonTable/common-table';
+import DataGroup from '@/components/DataGroup';
 import SelectItemTable from '@/components/SelectItemTable';
-import { IResponseAxios } from '@/models/IResponse';
-import { FetchTokenUnlock } from '@/usecases/token-unlock';
-import { ORDER } from '@/helpers/constants';
+import Text from '@/components/Text';
 import {
   currencyFormat,
   nFormatter,
   percentFormat,
   renderSortIcon,
 } from '@/helpers';
-import NextUnlock from '../nextUnlock';
-import Link from 'next/link';
-import { isArray, round } from 'lodash';
-import CommonTable from '@/components/CommonTable/common-table';
+import { ORDER } from '@/helpers/constants';
 import { changeImageUrl } from '@/helpers/functions';
-import DataGroup from '@/components/DataGroup';
-import LaunchpadModal from '@/app/[locale]/fundraising/[category]/components/launchpad-modal';
+import { IResponseAxios } from '@/models/IResponse';
+import { FetchTokenUnlock } from '@/usecases/token-unlock';
+import { Modal, Pagination } from 'antd';
+import { ColumnsType } from 'antd/es/table';
+import { isArray, round } from 'lodash';
+import Link from 'next/link';
+import { useCallback, useEffect, useState } from 'react';
+import { IUnlock, Launchpad } from '../../types';
+import NextUnlock from '../nextUnlock';
+import { UsHeader } from './us-header';
 
 export default function UsTable() {
   const columns: ColumnsType<IUnlock> = [
@@ -45,23 +41,32 @@ export default function UsTable() {
       dataIndex: 'name',
       key: 'name',
       fixed: true,
-      width: 160,
+      width: 168,
       sortIcon: renderSortIcon,
       sorter: true,
       render: (_, value) => {
         return (
           <Link
-            href={`/en/detail/${value.key}`}
-            className='flex gap-2 items-center'
+            href={`/en/detail/${value.key}?tab=unlock`}
+            className='flex gap-2 items-center max-w-[168px]'
           >
             {value.image ? (
-              <img src={changeImageUrl(value.image)} alt={'icon'} width={32} height={32} />
+              <img
+                src={changeImageUrl(value.image)}
+                alt={'icon'}
+                width={32}
+                height={32}
+              />
             ) : (
               ''
             )}
-            <span className='font-bold font-jb text-grey-700 hover:text-primary-500 truncate max-w-[160px]'>{value.name}</span>
+            <Text weight='bold' ellipsis>
+              {value.name}
+            </Text>
             <div className={'bg-grey-200 rounded px-2'}>
-              <span className='text-grey-500 text-xs font-medium font-jm'>{value.symbol}</span>
+              <span className='text-grey-500 text-xs font-medium font-jm'>
+                {value.symbol}
+              </span>
             </div>
           </Link>
         );
@@ -72,14 +77,18 @@ export default function UsTable() {
       dataIndex: 'price',
       key: 'price',
       align: 'right',
-      width: 95,
+      width: 88,
       sortIcon: renderSortIcon,
       sorter: true,
       render: (_, { price, priceChangeIn24h }) => {
         return (
           <div className='text-right'>
-            <div className='text-sm text-grey-700 font-semibold font-jsb'>{currencyFormat(Number(price), '$', { isAutoZero: true, numberRound: 4 })}</div>
-            <div className='font-bold font-jb text-sm'>{percentFormat(priceChangeIn24h)}</div>
+            <div className='text-sm text-grey-700 font-semibold font-jsb'>
+              {currencyFormat(Number(price), '$')}
+            </div>
+            <div className='font-bold font-jb text-sm'>
+              {percentFormat(priceChangeIn24h)}
+            </div>
           </div>
         );
       },
@@ -94,7 +103,9 @@ export default function UsTable() {
       align: 'right',
       render: (_, { marketCap }) => {
         return (
-          <div className='text-grey-700 text-sm font-semibold font-jsb text-right'>{nFormatter(marketCap, 2, '$')}</div>
+          <div className='text-grey-700 text-sm font-semibold font-jsb text-right'>
+            {nFormatter(marketCap, 2, '$')}
+          </div>
         );
       },
     },
@@ -105,10 +116,10 @@ export default function UsTable() {
       key: 'launchpads',
       align: 'left',
       sortIcon: renderSortIcon,
-      width: 200,
-      sorter: false,
+      width: 156,
+      sorter: true,
       render: (_, { launchpads }) => {
-        if (!launchpads) return "-";
+        if (!launchpads || launchpads.length == 0) return '-';
         const launchpad = launchpads.map((e: any) => ({
           ...e,
           avatarUrl: e.image,
@@ -118,7 +129,7 @@ export default function UsTable() {
             {({ onOpen }) => <DataGroup data={launchpad} onClick={onOpen} />}
           </LaunchpadModal>
         );
-      }
+      },
     },
     {
       title: 'IDO/IEO ROI',
@@ -130,33 +141,38 @@ export default function UsTable() {
       align: 'right',
       render: (_, { roi }) => {
         if (!roi) return '-';
-        return <div className='text-grey-700 text-sm font-semibold font-jsb text-right'>{currencyFormat(Number(roi), '', { isAutoZero: true })}x</div>;
+        return (
+          <div className='text-grey-700 text-sm font-semibold font-jsb text-right'>
+            {currencyFormat(Number(roi), '')}x
+          </div>
+        );
       },
     },
     {
       title: 'Unlock Progress',
       dataIndex: 'unlockedTokensPercent',
       key: 'unlockedTokensPercent',
-      width: 180,
+      width: 168,
+      sorter: true,
       render: (_, { unlockedTokensPercent }) => {
         if (!unlockedTokensPercent) return '-';
         return (
           <div>
-            <div className='mb-1 text-sm text-grey-700 font-jsb font-semibold'>{round(unlockedTokensPercent, 2) || 0}%</div>
+            <div className='mb-1 text-sm text-grey-700 font-jsb font-semibold'>
+              {round(unlockedTokensPercent, 2) || 0}%
+            </div>
             <div className='relative w-full max-w-[150px]'>
-              {
-                unlockedTokensPercent ? (
-                  <div
-                    className='unlock absolute top-1/2 left-0 -translate-y-1/2 bg-primary-500 h-1.5 rounded-xl z-1'
-                    style={{ width: unlockedTokensPercent + '%' }}
-                  ></div>
-                ) : (
-                  <div
-                    className='unlock absolute top-1/2 left-0 -translate-y-1/2 bg-primary-500 h-1.5 rounded-xl z-1'
-                    style={{ width: 0 + '%' }}
-                  ></div>
-                )
-              }
+              {unlockedTokensPercent ? (
+                <div
+                  className='unlock absolute top-1/2 left-0 -translate-y-1/2 bg-primary-500 h-1.5 rounded-xl z-1'
+                  style={{ width: unlockedTokensPercent + '%' }}
+                ></div>
+              ) : (
+                <div
+                  className='unlock absolute top-1/2 left-0 -translate-y-1/2 bg-primary-500 h-1.5 rounded-xl z-1'
+                  style={{ width: 0 + '%' }}
+                ></div>
+              )}
               <div className='locked bg-grey-300 w-full h-1.5 rounded-xl'></div>
             </div>
           </div>
@@ -166,11 +182,11 @@ export default function UsTable() {
     {
       title: 'Next Unlock',
       dataIndex: 'nextTokenPrice',
-      key: 'nextTokenPrice',
-      width: 302,
+      key: 'date',
+      width: 288,
       align: 'center',
       sortIcon: renderSortIcon,
-      sorter: false,
+      sorter: true,
       render: (
         _,
         { nextTokenPrice, nextTokenPricePercent, nextUnlockDate }
@@ -187,7 +203,7 @@ export default function UsTable() {
   ];
 
   const [data, setData] = useState<IUnlock[]>([]);
-  const [pageSize, setPageSize] = useState(10);
+  const [pageSize, setPageSize] = useState(50);
   const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [order, setOrder] = useState({
@@ -299,7 +315,10 @@ export default function UsTable() {
           />
         </div>
         <div>
-          <SelectItemTable onChange={_onChangeSize} pageSize={pageSize.toString()} />
+          <SelectItemTable
+            onChange={_onChangeSize}
+            pageSize={pageSize.toString()}
+          />
         </div>
       </div>
 

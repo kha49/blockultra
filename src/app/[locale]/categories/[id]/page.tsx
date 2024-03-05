@@ -1,7 +1,12 @@
+'use client';
+
 import { Page } from '@/components/page';
 
-import './styles.scss';
+import BreadcrumbContext from '@/context/Breadcrumb/BreadcrumbContext';
+import { useLocale } from 'next-intl';
 import dynamic from 'next/dynamic';
+import { useContext, useEffect } from 'react';
+import './styles.scss';
 type PageProps = {
   params: {
     id: string;
@@ -12,26 +17,24 @@ const CategoryDetail = dynamic(() => import('./CategoryDetail'), {
   ssr: false,
 });
 
-const breadcrumbs = [
-  {
-    title: 'Home',
-  },
-  {
-    title: 'Categories',
-  },
-  {
-    title: 'Currency',
-  },
-];
-
 export default function CategoryPage(props: PageProps) {
+  const locale = useLocale();
+
+  const { handleBreadcrumb } = useContext(BreadcrumbContext);
+
+  const initBreadcrumbs = [
+    {
+      title: 'Categories',
+      url: `/${locale}?tab=categories`,
+    },
+  ];
+
+  useEffect(() => {
+    handleBreadcrumb(initBreadcrumbs, { resetData: true });
+  }, []);
+
   return (
-    <Page
-      classnames='category-page'
-      contentClassnames='py-8'
-      breadcrumbWrapperClassnames='px-8 xl:px-4'
-      breadcrumbs={breadcrumbs}
-    >
+    <Page>
       <CategoryDetail {...props} />
     </Page>
   );

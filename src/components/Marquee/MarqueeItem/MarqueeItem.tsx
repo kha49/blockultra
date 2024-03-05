@@ -1,91 +1,166 @@
 'use client';
-import React, { useState } from 'react';
-import { IMarqueeItem } from '../props';
-import { nFormatter, percentFormat, secondsToHms } from '@/helpers';
-import { Tooltip } from 'antd';
+import Text from '@/components/Text';
+import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
+import { cn } from '@/helpers/functions';
 import { CaretDownOutlined, CaretUpOutlined } from '@ant-design/icons';
+import { Divider, Flex, Tooltip } from 'antd';
 import { round } from 'lodash';
+import { Fragment, useMemo } from 'react';
+import { IGasItem, IMarqueeItem } from '../props';
 
-const MarqueeItem = ({ data }: { data: IMarqueeItem }) => {
-  const [isOpen, setIsOpen] = useState(false);
-
+const MarqueeItem = ({
+  data,
+  visibleTooltip,
+  handleVisibleTooltip,
+}: {
+  data: IMarqueeItem;
+  visibleTooltip?: boolean;
+  handleVisibleTooltip?: (visible: boolean) => void;
+}) => {
   const _renderTextDetail = () => {
-    if (!data.isGas) {
-      return _renderTextNotGas();
-    }
+    if (data.isFear) return renderFear();
+
+    if (!data.percent && data.coinPrice) return renderOnlyPrice;
+
+    if (data.percent && !data.coinPrice) return renderOnlyPercent;
+
+    if (data.ratio) return renderOnlyRatio;
+
+    if (!data.isGas && !data.isFear) return _renderTextNotGas();
+
     return _renderTextGas();
+  };
+
+  const renderOnlyRatio = <Text size={12}>{round(Number(data.ratio), 2)}</Text>;
+
+  const renderOnlyPrice = (
+    <Text size={12}>{currencyFormat(Number(data.coinPrice), '$')}</Text>
+  );
+
+  const renderOnlyPercent = useMemo(() => {
+    let color = '';
+
+    if (Number(data.percent) === 50) color = '!text-[#333747]';
+    else if (Number(data.percent) > 50) color = '!text-[#1AB369]';
+    else color = '!text-[#FA3363]';
+
+    return (
+      <Text size={12} className={cn(color)}>
+        {round(Number(data.percent), 2)}%
+      </Text>
+    );
+  }, [data]);
+
+  const renderFear = () => {
+    const getClassFear = (value: number) => {
+      switch (true) {
+        case value > 79:
+          return '!text-[#4CB43C]';
+        case value > 59:
+          return '!text-[#AEB335]';
+        case value > 39:
+          return '!text-[#FF8D18]';
+        case value > 19:
+          return '!text-[#FF4D17]';
+        default:
+          return '!text-grey-700';
+      }
+    };
+
+    return (
+      <Flex align='center' gap={4}>
+        <Text size={12}>{data.percent || 0}</Text>
+        <Text
+          size={12}
+          className={cn(getClassFear(parseInt(data.percent as any)))}
+        >
+          {data.valueClassification ?? ''}
+        </Text>
+      </Flex>
+    );
   };
 
   const _renderTextNotGas = () => {
     return (
-      <div className={'flex items-center gap-2'}>
-        <span className='text-xs leading-5 font-semibold text text-grey-700'>
-          {nFormatter(Number(data.coinPrice), 2, '$')}
-        </span>
-        {percentFormat(
-          Number(data.percent),
-          'text-xs leading-5 font-semibold text'
-        )}
-      </div>
+      <Flex align='center' gap={4}>
+        <Text size={12}>{nFormatter(Number(data.coinPrice), 2, '$')}</Text>
+        <Text size={12} className={'[&>p]:!m-0'}>
+          {percentFormat(Number(data.percent))}
+        </Text>
+      </Flex>
     );
   };
 
   const _renderTextGas = () => {
     return (
-      <div className='flex items-center gap-2 text-xs leading-5 font-semibold text text-grey-700'>
-        <span>{data.percent}</span>
-        Gwei
-        {isOpen ? (
+      <Flex align='center' gap={4}>
+        <Text size={12}>{data.percent}</Text>
+        <Text size={12} className='capitalize'>
+          {data.unit ?? ''}
+        </Text>
+        {visibleTooltip ? (
           <CaretUpOutlined style={{ color: '#9FA4B7' }} />
         ) : (
           <CaretDownOutlined style={{ color: '#9FA4B7' }} />
         )}
-      </div>
+      </Flex>
     );
   };
 
   const _renderGwei = () => {
-    if (!data.child || !(data.child.length > 0)) return null;
-    const elements: JSX.Element[] = data.child.map((item, index) => {
-      return (
-        <div key={index} className={`w-36 ${index === 1} pr-2 pl-2 text-center`}>
-          <div className='text text-gray-400 font-semibold'>
-            {item.type}
-          </div>
-          <div className='text text-black font-semibold'>
-            {item.gwei} gwei
-          </div>
-          <div className='text text-gray-400 text-xs'>
-            {item.costUsd ? '$' + round(item.costUsd, 2): ''}
-            {
-              item.costUsd && item.timeToArrive ? (
-                <span>|</span>
-              ) : ''
-            }
-            {item.timeToArrive}
-          </div>
-        </div>
-      );
-    });
-    return <div className='flex'>{elements}</div>;
+    if (!data.child) return null;
+    const elements: JSX.Element[] = Object.keys(data.child).map(
+      (key, index) => {
+        const item: IGasItem = data.child[key];
+        return (
+          <Fragment key={index}>
+            {index === 1 && (
+              <Divider
+                type='vertical'
+                className='!h-[inherit] !border-[#E5E6EB]'
+              />
+            )}
+            <Flex vertical align='center' gap={4}>
+              <Text className='capitalize'>{key}</Text>
+              <Text size={12} className='!text-primary-500 capitalize'>
+                {item.price ? `${item.price} ${item.unit}` : '-'}
+              </Text>
+              <Text size={12} type='secondary' className='whitespace-nowrap'>
+                {item.mins ? item.mins.replace(': 0 secs', '') : ''}
+                {/* {item.costUsd ? '$' + round(item.costUsd, 2) : ''}
+              {item.costUsd && item.timeToArrive ? <span>|</span> : ''}
+              {item.timeToArrive} */}
+              </Text>
+            </Flex>
+            {index === 1 && (
+              <Divider
+                type='vertical'
+                className='!h-[inherit] !border-[#E5E6EB]'
+              />
+            )}
+          </Fragment>
+        );
+      }
+    );
+    return <Flex gap={24}>{elements}</Flex>;
   };
 
   return (
     <Tooltip
-      open={isOpen}
-      onOpenChange={setIsOpen}
+      id='gas'
+      open={data.isGas ? visibleTooltip : false}
+      onOpenChange={handleVisibleTooltip}
       overlayClassName='gas-tooltip'
-      className={`flex items-center gap-2 xl:gap-6 md:gap-6 ${
-        data.isGas ? 'gas' : ''
-      }`}
+      className={cn(`flex items-center relative`, data.isGas && 'gas')}
       title={data.isGas ? _renderGwei() : null}
       color='white'
+      mouseLeaveDelay={3}
     >
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center gap-1'>
         {data.icon ? data.icon : ''}
-        <div className='text-xs leading-5 font-semibold text text-grey-500'>
-          {data.coinName}
-        </div>
+        <Text size={12} type='secondary'>
+          {data.coinName}:
+        </Text>
         {_renderTextDetail()}
       </div>
     </Tooltip>

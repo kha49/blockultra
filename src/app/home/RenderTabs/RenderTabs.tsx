@@ -1,14 +1,14 @@
 'use client';
 
-import React from 'react';
-import HomeTabs from '../tabs';
-import Coins from '../coin';
-import Categories from '../categories';
-import Gainers from '../gainers';
-import Trending from '../trending';
-import Fundraising from '../fundraising';
-import UpComing from '../up-coming';
+import { Flex } from 'antd';
 import { useSearchParams } from 'next/navigation';
+import Categories from '../categories';
+import Coins from '../coin';
+import Fundraising from '../fundraising';
+import Gainers from '../gainers';
+import HomeTabs from '../tabs';
+import Trending from '../trending';
+import UpComing from '../up-coming';
 
 const RenderTabs = () => {
   const searchParams = useSearchParams();
@@ -33,10 +33,10 @@ const RenderTabs = () => {
   };
 
   return (
-    <div className='mx-auto max-w-2xl px-4'>
+    <Flex vertical gap={24}>
       <HomeTabs currentTab={tab} />
-      <div className='md:border md:rounded-lg my-4'>{renderTableContent()}</div>
-    </div>
+      <div className='md:border md:rounded-lg'>{renderTableContent()}</div>
+    </Flex>
   );
 };
 

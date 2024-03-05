@@ -1,10 +1,11 @@
 'use client';
 
-import React from 'react';
-import './index.scss';
+import Text from '@/components/Text';
+import { cn } from '@/helpers/functions';
+import { Button, Flex } from 'antd';
 import { useParams, useRouter } from 'next/navigation';
 import Spot from '../table';
-import { Flex, Button } from 'antd';
+import './index.scss';
 
 const ExchangeTabs = () => {
   const router = useRouter();
@@ -48,12 +49,14 @@ const ExchangeTabs = () => {
         <Button
           key={tag.value}
           disabled={tag.disabled}
-          className={'font-jm font-medium text-sm ' + ('spot' === tag.value ? ' active' : '') + (tag.disabled ? 'opacity-50 !text-grey-700' : '')}
+          className={cn(tag.value === 'spot' && 'active')}
           // onClick={() =>
           //   router.push(`/${params.locale}/exchanges/`)
           // }
         >
-          {tag.label}
+          <Text type={tag.disabled ? 'secondary' : undefined} color='parent'>
+            {tag.label}
+          </Text>
         </Button>
       ))}
     </Flex>

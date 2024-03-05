@@ -1,23 +1,58 @@
-import Image from 'next/image';
-import React, { memo } from 'react';
-import './index.scss';
-import { IGlobalSearch, IRecent } from '../SearchInput/props';
-import { nFormatter, percentFormat } from '@/helpers';
+'use client';
+
 import { IconRecent } from '@/assets/icons/home/IconRecent';
+import Text from '@/components/Text';
+import { nFormatter, percentFormat } from '@/helpers';
+import { changeImageUrl, cn } from '@/helpers/functions';
+import { Flex } from 'antd';
 import { get } from 'lodash';
-import { changeImageUrl } from '@/helpers/functions';
+import Image from 'next/image';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { memo } from 'react';
+import { IGlobalSearch, IRecent } from '../SearchInput/props';
+import './index.scss';
+import { TYPE_GLOBAL_SEARCH } from '@/helpers/constants';
 
 const SearchResult = ({
   data,
   recents,
   isSearch,
   onClearRecent,
+  component,
 }: {
   data: IGlobalSearch;
   recents: IRecent[];
   isSearch: boolean;
   onClearRecent: () => void;
+  component: string;
 }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const handleNavigate = (path: string, type?: TYPE_GLOBAL_SEARCH) => {
+    switch (type) {
+      case TYPE_GLOBAL_SEARCH.Exchange:
+        router.push(`/en/exchange/spot/${path}`);
+        break;
+      case TYPE_GLOBAL_SEARCH.Category:
+        router.push(`/en/categories/${path}`);
+        break;
+      case TYPE_GLOBAL_SEARCH.Backer:
+        router.push(`/en/fundraising/top-backers/detail/${path}`);
+        break;
+      case TYPE_GLOBAL_SEARCH.Funcraising:
+        router.push(`/en/detail/${path}?tab=fundraising`);
+        break;
+      case TYPE_GLOBAL_SEARCH.Launpatch:
+        router.push(`/en/ieo-ido/top-ido-launchpads/${path}`);
+        break;
+      default:
+        router.push(`/en/detail/${path}`);
+        break;
+    }
+  };
+
   const _renderTrending = () => {
     const { trendings } = data;
     if (!trendings) return null;
@@ -29,10 +64,20 @@ const SearchResult = ({
           className='modal-search-item__list__item hover:rounded cursor-pointer'
           key={`tre-${e.key}`}
         >
-          <div className='coin p-2 flex justify-between items-center'>
+          <div
+            onClick={() =>
+              handleNavigate(e.key, TYPE_GLOBAL_SEARCH.Trending) as any
+            }
+            className='coin p-2 flex justify-between items-center'
+          >
             <div className='coin-info flex items-center gap-4'>
               <div className='coin-info__image'>
-              <img src={changeImageUrl(e.image.x60)} width={32} height={32} alt={e.name} />
+                <img
+                  src={changeImageUrl(e.image?.x60)}
+                  width={32}
+                  height={32}
+                  alt={e.name}
+                />
               </div>
               <div className='coin-info__content'>
                 <div className='coin-info__content__name flex gap-2'>
@@ -40,20 +85,28 @@ const SearchResult = ({
                     {e.name}
                   </div>
                   <div className='coin-tag text-xs font-medium font-jm'>
-                    {e.key}
+                    {e.symbol}
                   </div>
                 </div>
-                {/* <div className='coin-info__content__price'>
+                <div className='coin-info__content__price flex gap-1'>
                   <span className='price text-xs font-medium font-jm'>
-                    {nFormatter(e.price['USD'])}
+                    {nFormatter(e.price, 2, '$')}
                   </span>
-                  <span className='percent text-xs font-medium font-jm'>
-                    +21.45%
+                  <span className='price text-xs font-medium font-jm'>
+                    {e.priceChangeIn24h
+                      ? percentFormat(e.priceChangeIn24h)
+                      : ''}
                   </span>
-                </div> */}
+                </div>
               </div>
             </div>
-            {/* <div className='number-of-coin text-xs font-medium font-jm'>#1</div> */}
+            {e.rank ? (
+              <div className='number-of-coin text-xs font-medium font-jm'>
+                #{e.rank}
+              </div>
+            ) : (
+              ''
+            )}
           </div>
         </div>
       );
@@ -75,16 +128,26 @@ const SearchResult = ({
     if (!coins || !coins.length) return;
     const elements: JSX.Element[] = [];
 
-    coins.forEach((e, index) => {
+    coins.splice(0, 10).forEach((e, index) => {
       elements.push(
         <div
           className='modal-search-item__list__item hover:rounded cursor-pointer'
           key={`tre-${index}`}
         >
-          <div className='coin p-2 flex justify-between items-center'>
+          <div
+            onClick={() =>
+              handleNavigate(e.key, TYPE_GLOBAL_SEARCH.Crypto) as any
+            }
+            className='coin p-2 flex justify-between items-center'
+          >
             <div className='coin-info flex items-center gap-4'>
               <div className='coin-info__image'>
-              <img src={changeImageUrl(e.image.x60)} width={32} height={32} alt={e.name} />
+                <img
+                  src={changeImageUrl(e.image?.x60)}
+                  width={32}
+                  height={32}
+                  alt={e.name}
+                />
               </div>
               <div className='coin-info__content'>
                 <div className='coin-info__content__name flex gap-2'>
@@ -92,10 +155,10 @@ const SearchResult = ({
                     {e.name}
                   </div>
                   <div className='coin-tag text-xs font-medium font-jm'>
-                    {e.key}
+                    {e.symbol}
                   </div>
                 </div>
-                <div className='coin-info__content__price flex items-center'>
+                <div className='coin-info__content__price flex items-center gap-1'>
                   <span className='price text-xs font-medium font-jm'>
                     {nFormatter(e.price, 2, '$')}
                   </span>
@@ -138,10 +201,20 @@ const SearchResult = ({
           className='modal-search-item__list__item hover:rounded'
           key={`m-${i}`}
         >
-          <div className='coin p-1 flex'>
+          <div
+            onClick={() =>
+              handleNavigate(r.key) as any
+            }
+            className='coin p-1 flex'
+          >
             <div className='coin-info flex flex-col items-center'>
               <div className='coin-info__image mb-2'>
-                 <img src={changeImageUrl(r.icon)} width={32} height={32} alt='btc' />
+                <img
+                  src={changeImageUrl(r.icon)}
+                  width={32}
+                  height={32}
+                  alt='btc'
+                />
               </div>
               <div className='coin-info__name textover-ellipsis w-20 text-center'>
                 {r.name}
@@ -152,37 +225,55 @@ const SearchResult = ({
       );
     });
 
+    if (!recents.length) {
+      return <></>;
+    }
+
     return (
-      <div className='modal-search-item recents'>
-        <div className='flex justify-between'>
-          <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
-            Recent
-            <IconRecent />
-          </div>
-          <div
-            className='text-primary-400 text-md cursor-pointer'
+      <Flex vertical gap={12} className='modal-search-item'>
+        <Flex align='center' justify='space-between'>
+          <Flex gap={8} align='center' className='px-4'>
+            <Text type='secondary'>Recent</Text>
+            <div>
+              <IconRecent />
+            </div>
+          </Flex>
+          <Text
+            color='primary'
+            weight='semiBold'
+            className='cursor-pointer pr-4'
             onClick={onClearRecent}
           >
             Clear
-          </div>
-        </div>
-        <div className='modal-search-item__list flex flex-wrap'>{elements}</div>
-      </div>
+          </Text>
+        </Flex>
+        <Flex gap={32} className='modal-search-item__list px-3 overflow-x-auto'>
+          {elements}
+        </Flex>
+      </Flex>
     );
   };
 
   const _returnNotFound = () => {
-    return <>No results found </>;
+    return <div className='mt-[16px]'>No results found </div>;
   };
 
   const _renderCategory = () => {
     const elements: JSX.Element[] = [];
     const { categories } = data;
     if (!categories.length) return;
-    categories.forEach((c, i) => {
+    categories.splice(0, 5).forEach((c, i) => {
       elements.push(
-        <div key={c.id} className='pl-4 pr-4 pt-1 pb-1'>
-          <p className='text-sm'>{c.name}</p>
+        <div className='modal-search-item__list__item hover:rounded cursor-pointer'>
+          <div
+            key={c.id}
+            onClick={() =>
+              handleNavigate(c.id.toString(), TYPE_GLOBAL_SEARCH.Backer) as any
+            }
+            className='pl-4 pr-4 pt-1 pb-1'
+          >
+            <p className='text-sm'>{c.name}</p>
+          </div>
         </div>
       );
     });
@@ -201,21 +292,34 @@ const SearchResult = ({
     if (!upcomings || !upcomings.length) return;
     const elements: JSX.Element[] = [];
 
-    upcomings.forEach((e, index) => {
+    upcomings.splice(0, 5).forEach((e, index) => {
       elements.push(
         <div
           className='modal-search-item__list__item hover:rounded cursor-pointer'
           key={`tre-${index}`}
         >
-          <div className='coin p-2 flex justify-between items-center'>
+          <div
+            onClick={() =>
+              handleNavigate(e.key, TYPE_GLOBAL_SEARCH.Upcoming) as any
+            }
+            className='coin p-2 flex justify-between items-center'
+          >
             <div className='coin-info flex items-center gap-4'>
               <div className='coin-info__image'>
-              <img src={changeImageUrl(e.image)} width={32} height={32} alt={e.name} />
+                <img
+                  src={changeImageUrl(e.image)}
+                  width={32}
+                  height={32}
+                  alt={e.name}
+                />
               </div>
               <div className='coin-info__content'>
                 <div className='coin-info__content__name flex gap-2'>
                   <div className='coin-name font-medium text-sm font-jm'>
                     {e.name}
+                  </div>
+                  <div className='coin-tag text-xs font-medium font-jm'>
+                    {e.symbol}
                   </div>
                 </div>
               </div>
@@ -228,7 +332,215 @@ const SearchResult = ({
     return (
       <div className='modal-search-item cryptoassets'>
         <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
-          Upcomings
+          IDO/IEOs
+        </div>
+        <div className='modal-search-item__list'>{elements}</div>
+      </div>
+    );
+  };
+
+  const _renderExchanges = () => {
+    const { exchanges } = data;
+    if (!exchanges || !exchanges.length) return;
+    const elements: JSX.Element[] = [];
+
+    exchanges.splice(0, 5).forEach((e, index) => {
+      elements.push(
+        <div
+          className='modal-search-item__list__item hover:rounded cursor-pointer'
+          key={`tre-${index}`}
+        >
+          <div
+            onClick={() =>
+              handleNavigate(e.key, TYPE_GLOBAL_SEARCH.Exchange) as any
+            }
+            className='coin p-2 flex justify-between items-center'
+          >
+            <div className='coin-info flex items-center gap-4'>
+              <div className='coin-info__image'>
+                <img
+                  src={changeImageUrl(e.icon)}
+                  width={32}
+                  height={32}
+                  alt={e.name}
+                />
+              </div>
+              <div className='coin-info__content'>
+                <div className='coin-info__content__name flex gap-2'>
+                  <div className='coin-name font-medium text-sm font-jm'>
+                    {e.name}
+                  </div>
+                  {/* <div className='coin-tag text-xs font-medium font-jm'>
+                    {e.symbol}
+                  </div> */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div className='modal-search-item cryptoassets'>
+        <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
+          Exchanges
+        </div>
+        <div className='modal-search-item__list'>{elements}</div>
+      </div>
+    );
+  };
+
+  const _renderLaunpatch = () => {
+    const { launchpads } = data;
+    if (!launchpads || !launchpads.length) return;
+    const elements: JSX.Element[] = [];
+
+    launchpads.splice(0, 5).forEach((e, index) => {
+      elements.push(
+        <div
+          className='modal-search-item__list__item hover:rounded cursor-pointer'
+          key={`tre-${index}`}
+        >
+          <div
+            onClick={() =>
+              handleNavigate(e.key, TYPE_GLOBAL_SEARCH.Launpatch) as any
+            }
+            className='coin p-2 flex justify-between items-center'
+          >
+            <div className='coin-info flex items-center gap-4'>
+              <div className='coin-info__image'>
+                <img
+                  src={changeImageUrl(e.icon)}
+                  width={32}
+                  height={32}
+                  alt={e.name}
+                />
+              </div>
+              <div className='coin-info__content'>
+                <div className='coin-info__content__name flex gap-2'>
+                  <div className='coin-name font-medium text-sm font-jm'>
+                    {e.name}
+                  </div>
+                  {/* <div className='coin-tag text-xs font-medium font-jm'>
+                    {e.symbol}
+                  </div> */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div className='modal-search-item cryptoassets'>
+        <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
+          Launchpads
+        </div>
+        <div className='modal-search-item__list'>{elements}</div>
+      </div>
+    );
+  };
+
+  const _renderBacker = () => {
+    const { backers } = data;
+    if (!backers || !backers.length) return;
+    const elements: JSX.Element[] = [];
+
+    backers.splice(0, 5).forEach((e, index) => {
+      elements.push(
+        <div
+          className='modal-search-item__list__item hover:rounded cursor-pointer'
+          key={`tre-${index}`}
+        >
+          <div
+            onClick={() =>
+              handleNavigate(e.slug, TYPE_GLOBAL_SEARCH.Backer) as any
+            }
+            className='coin p-2 flex justify-between items-center'
+          >
+            <div className='coin-info flex items-center gap-4'>
+              <div className='coin-info__image'>
+                <img
+                  src={changeImageUrl(e.logo)}
+                  width={32}
+                  height={32}
+                  alt={e.name}
+                />
+              </div>
+              <div className='coin-info__content'>
+                <div className='coin-info__content__name flex gap-2'>
+                  <div className='coin-name font-medium text-sm font-jm'>
+                    {e.name}
+                  </div>
+                  {/* <div className='coin-tag text-xs font-medium font-jm'>
+                    {e.symbol}
+                  </div> */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div className='modal-search-item cryptoassets'>
+        <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
+          Backers
+        </div>
+        <div className='modal-search-item__list'>{elements}</div>
+      </div>
+    );
+  };
+
+  const _renderUnlock = () => {
+    const { unlocks } = data;
+    if (!unlocks || !unlocks.length) return;
+    const elements: JSX.Element[] = [];
+
+    unlocks.splice(0, 5).forEach((e, index) => {
+      elements.push(
+        <div
+          className='modal-search-item__list__item hover:rounded cursor-pointer'
+          key={`tre-${index}`}
+        >
+          <div
+            onClick={() =>
+              handleNavigate(e.key, TYPE_GLOBAL_SEARCH.Unlock) as any
+            }
+            className='coin p-2 flex justify-between items-center'
+          >
+            <div className='coin-info flex items-center gap-4'>
+              {/* <div className='coin-info__image'>
+                <img
+                  src={changeImageUrl(e.logo)}
+                  width={32}
+                  height={32}
+                  alt={e.name}
+                />
+              </div> */}
+              <div className='coin-info__content'>
+                <div className='coin-info__content__name flex gap-2'>
+                  <div className='coin-name font-medium text-sm font-jm'>
+                    {e.name}
+                  </div>
+                  {/* <div className='coin-tag text-xs font-medium font-jm'>
+                    {e.symbol}
+                  </div> */}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    });
+
+    return (
+      <div className='modal-search-item cryptoassets'>
+        <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
+          Unlock
         </div>
         <div className='modal-search-item__list'>{elements}</div>
       </div>
@@ -240,22 +552,37 @@ const SearchResult = ({
     if (!fundraisings || !fundraisings.length) return;
     const elements: JSX.Element[] = [];
 
-    fundraisings.forEach((e, index) => {
+    fundraisings.splice(0, 5).forEach((e, index) => {
       elements.push(
         <div
           className='modal-search-item__list__item hover:rounded cursor-pointer'
           key={`tre-${index}`}
         >
-          <div className='coin p-2 flex justify-between items-center'>
+          <div
+            onClick={() =>
+              handleNavigate(e.key, TYPE_GLOBAL_SEARCH.Funcraising) as any
+            }
+            className='coin p-2 flex justify-between items-center'
+          >
             <div className='coin-info flex items-center gap-4'>
               <div className='coin-info__image'>
-              <img src={changeImageUrl(e.image)} height={32} alt={e.name} />
+                <img
+                  src={changeImageUrl(e.icon)}
+                  height={32}
+                  width={32}
+                  alt={e.name}
+                />
               </div>
               <div className='coin-info__content'>
                 <div className='coin-info__content__name flex gap-2'>
                   <div className='coin-name font-medium text-sm font-jm'>
                     {e.name}
                   </div>
+                  {e.symbol && (
+                    <div className='coin-tag text-xs font-medium font-jm'>
+                      {e.symbol}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -267,7 +594,7 @@ const SearchResult = ({
     return (
       <div className='modal-search-item cryptoassets'>
         <div className='modal-search-item__title flex gap-2 text-sm font-jm mb-2'>
-          Fundraisings
+          Funding Rounds
         </div>
         <div className='modal-search-item__list'>{elements}</div>
       </div>
@@ -299,7 +626,11 @@ const SearchResult = ({
       <>
         {_renderCrypto()}
         {_renderUpcoming()}
+        {_renderExchanges()}
+        {_renderLaunpatch()}
         {_renderFuncraising()}
+        {_renderBacker()}
+        {_renderUnlock()}
         {_renderCategory()}
         {_renderRecent()}
       </>
@@ -307,7 +638,13 @@ const SearchResult = ({
   };
 
   return (
-    <div className='modal-search p-4 w-full min-w-[580px] rounded-lg z-10'>
+    <div
+      className={cn(
+        'modal-search py-4 px-3 w-full rounded-lg z-10 max-h-[84vh]',
+        'h-auto overflow-auto',
+        component === 'header' ? 'min-w-[431px]' : 'min-w-[583px] '
+      )}
+    >
       {_renderContent()}
     </div>
   );

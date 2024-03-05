@@ -38,6 +38,8 @@ import IconExport from './IconExport';
 
 import IconInfo from './IconInfo';
 import IconHexagon from './IconHexagon';
+import IconLangEn from './IconLangEn';
+import IconLangVn from './IconLangVn';
 export {
   IconBell,
   IconCaretDown,
@@ -78,4 +80,6 @@ export {
   IconExport,
   IconInfo,
   IconHexagon,
+  IconLangEn,
+  IconLangVn,
 };

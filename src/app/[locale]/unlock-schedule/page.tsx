@@ -1,7 +1,9 @@
 'use client';
-import './index.scss';
 import { Page } from '@/components/page';
+import BreadcrumbContext from '@/context/Breadcrumb/BreadcrumbContext';
 import dynamic from 'next/dynamic';
+import { useContext, useEffect } from 'react';
+import './index.scss';
 
 const UnlockTimeTop = dynamic(() => import('./components/unlock-time-top'), {
   ssr: false,
@@ -10,16 +12,19 @@ const UsTable = dynamic(() => import('./components/us-table'), { ssr: false });
 
 const breadcrumbConfig = [
   {
-    title: <a href='/'>BlockUltra</a>,
-  },
-  {
     title: 'Unlock',
   },
 ];
 
 export default function UnlockSchedule() {
+  const { handleBreadcrumb } = useContext(BreadcrumbContext);
+
+  useEffect(() => {
+    handleBreadcrumb(breadcrumbConfig, { resetData: true });
+  }, []);
+
   return (
-    <Page breadcrumbs={breadcrumbConfig} classnames='unlock-schedule'>
+    <Page classnames='unlock-schedule'>
       <UnlockTimeTop />
       <UsTable />
     </Page>

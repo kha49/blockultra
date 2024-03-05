@@ -1,7 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import Text from '@/components/Text';
+import { cn } from '@/helpers/functions';
 import { Button, Flex } from 'antd';
+import { useState } from 'react';
 import './styles.scss';
 import TableData from './tableData';
 
@@ -36,25 +38,27 @@ const FundraisingDetailTable = ({ slug }: { slug: string }) => {
       <Button
         key={tab.key}
         disabled={tab.disable}
-        className={tab.key === tabActive ? 'active' : ''}
+        className={cn(tab.key === tabActive && 'active')}
         onClick={() => {
           setTabActive(tab.key);
         }}
       >
-        {tab.label}
+        <Text color='parent'>{tab.label}</Text>
       </Button>
     ));
   };
 
   return (
-    <Flex vertical gap={16} className='p-6 mt-6'>
-      <Flex vertical gap={16} className='header-filter'>
-        <Flex wrap='wrap' gap={16} className='header-filter__options'>
-          {_renderTabs()}
+    <div className={cn('bg-white container-shadow')}>
+      <Flex vertical gap={16} className='p-6 mt-6'>
+        <Flex vertical gap={16} className='header-filter'>
+          <Flex wrap='wrap' gap={16} className='header-filter__options'>
+            {_renderTabs()}
+          </Flex>
         </Flex>
+        <TableData key={tabActive} tabKey={tabActive} slug={slug} />
       </Flex>
-      <TableData key={tabActive} tabKey={tabActive} slug={slug} />
-    </Flex>
+    </div>
   );
 };
 

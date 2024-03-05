@@ -9,9 +9,9 @@ import { Checkbox, Select, Tag } from 'antd';
 import { random } from 'lodash';
 import React from 'react';
 
-export default function SelectMarket({ onChangeSearhKey }:any) {
+export default function SelectMarket({ onChangeSearhKey, slug }:any) {
   async function fetchSearchExchange(searchKey: string) {
-    const res = await FetchSearchExchange({ search_key: searchKey });
+    const res = await FetchSearchExchange({ key: slug, search_key: searchKey });
 
     return res;
   }
@@ -43,9 +43,9 @@ export default function SelectMarket({ onChangeSearhKey }:any) {
       event.stopPropagation();
     };
 
-    if (index > 3) return <></>;
+    if (index > 2) return <></>;
 
-    if (index === 3)
+    if (index === 2)
       return (
         <Tag color='#5766ff' style={{ marginRight: 3 }}>
           ...
@@ -75,15 +75,14 @@ export default function SelectMarket({ onChangeSearhKey }:any) {
   };
 
   const _getData = async ({ searchKey }: any) => {
-    const res: any = await fetchSearchExchange(searchKey); 
-    // return res;
+    const res: any = await fetchSearchExchange(searchKey);
     let list = [];
     for (let i in res) {
       let item = {
         id: i,
-        name: res[i].name,
-        key: res[i].key,
-        code: res[i].key,
+        name: res[i].exchangeName,
+        key: res[i].exchangeKey,
+        code: res[i].exchangeKey,
         isSelected: true,
       };
       list.push(item);

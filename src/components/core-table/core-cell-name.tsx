@@ -1,7 +1,8 @@
-import Link from 'next/link';
-import { Avatar, Typography } from 'antd';
-import clsx from 'clsx';
+import Tag from '@/components/Tag';
+import Text from '@/components/Text';
 import { changeImageUrl } from '@/helpers/functions';
+import { Avatar, Flex } from 'antd';
+import Link from 'next/link';
 
 interface ICoreCellNameProps {
   imagesUrl?: string[];
@@ -9,38 +10,47 @@ interface ICoreCellNameProps {
   symbol?: string;
   link?: string;
   rightNode?: React.ReactNode;
+  labelClassName?: string;
+  actionTarget?: string;
+  maxWidth?: number;
 }
 
 export const CoreCellName = (props: ICoreCellNameProps) => {
-  const { imagesUrl, name = 'image', symbol, link, rightNode } = props;
-  const Name = link ? Link : Typography;
-  const nameClass = link ? 'hover:text-primary-500' : '';
+  const {
+    imagesUrl,
+    name = 'image',
+    symbol,
+    link,
+    rightNode,
+    labelClassName,
+    actionTarget = '_blank',
+  } = props;
+  const ImagesUrl = imagesUrl?.filter((url) => !!url);
+
   return (
-    <div className='flex items-center gap-2 font-jm'>
-      {imagesUrl?.length && (
+    <Flex align='center' gap={8}>
+      {!!ImagesUrl?.length && (
         <Avatar.Group maxCount={3}>
-          {imagesUrl.map((url, index) => (
+          {ImagesUrl.map((url, index) => (
             <Avatar key={index} size={32} src={changeImageUrl(url)} />
           ))}
         </Avatar.Group>
       )}
-      <div className='flex items-start gap-1 justify-start flex-col md:flex-row'>
-        <Name
-          href={link!}
-          className={clsx(
-            'text-grey-700 font-medium text-sm truncate max-w-[55px] md:max-w-[160px] lg:max-w-[200px]',
-            nameClass
-          )}
-        >
-          {name}
-        </Name>
+      <div className='flex items-center gap-1 justify-start flex-col md:flex-row'>
+        <Link href={link || '#'} target={actionTarget}>
+          <Text weight='bold' ellipsis className={labelClassName}>
+            {name}
+          </Text>
+        </Link>
         {symbol && (
-          <span className='rounded py-0 bg-grey-200 text-[#9FA4B7] leading-5 px-2 text-xs font-medium'>
-            {symbol}
-          </span>
+          <Tag>
+            <Text size={12} type='secondary'>
+              {symbol}
+            </Text>
+          </Tag>
         )}
         {rightNode}
       </div>
-    </div>
+    </Flex>
   );
 };

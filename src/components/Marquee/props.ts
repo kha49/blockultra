@@ -12,12 +12,17 @@ export interface IMarquee {
   btcDominance: string;
   totalMarketCap: string;
   gas: IGas;
+  fear_greed?: any;
+  btc_mvrv: string;
+  btc_realized_price: string;
+  btc_long: string;
+  btc_short: number;
 }
 
 export interface IGas {
-  low: ILow;
-  average: IAverage;
-  high: IHigh;
+  low: IGasItem;
+  average: IGasItem;
+  high: IGasItem;
 }
 
 export interface ILow {
@@ -30,17 +35,23 @@ export interface IAverage {
   txExecutionTime: number;
 }
 
-export interface IHigh {
-  gasPriceGwei: number;
-  txExecutionTime: number;
+export interface IGasItem {
+  mins: string;
+  price: string;
+  priority: string;
+  unit: string;
 }
 
 export interface IMarqueeItem {
   id: number;
   coinName: string;
-  coinPrice: string | number;
-  percent: string | number;
+  coinPrice?: string | number;
+  percent?: string | number;
+  ratio?: string | number;
+  unit?: string;
   icon?: string | ReactNode;
-  child?: any[];
+  child?: any;
   isGas?: boolean;
+  isFear?: boolean;
+  valueClassification?: string;
 }

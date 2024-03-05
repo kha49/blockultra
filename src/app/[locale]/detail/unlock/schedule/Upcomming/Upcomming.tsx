@@ -1,16 +1,23 @@
-import { IconArrowDown } from '@/assets/icons/IconArrowDown';
-import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
+'use client';
+import IconAngleDown from '@/assets/icons/IconAngleDown';
 import IconCircle from '@/assets/icons/IconCircle';
 import Calendar from '@/components/Calendar/Calendar';
 import CommonTable from '@/components/CommonTable/common-table';
-import CountdownTimer from '@/components/CountdownTimer/CountDownTimer';
+import Text from '@/components/Text';
 import { nFormatter } from '@/helpers';
-import { FetchUnlockToken } from '@/usecases/coin-info';
-import { Table } from 'antd';
+import { cn } from '@/helpers/functions';
+import { Flex } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import moment from 'moment';
+import { useState } from 'react';
 
-const Upcomming = async ({ tokenInfo }: any) => {
+const Upcomming = ({ data, tokenInfo }: any) => {
+  const [roundExpand, setRoundExpand] = useState<null | number>(null);
+
+  const handleRoundExpand = (index: number) => {
+    setRoundExpand((prev) => (prev === index ? null : index));
+  };
+
   const columns: ColumnsType<IUpcomming> = [
     {
       key: 'date',
@@ -23,9 +30,9 @@ const Upcomming = async ({ tokenInfo }: any) => {
             <Calendar date={value.remainingTime} />
             <IconCircle color='#F89152' />
             <span className='text-orange-400 text-sm font-medium font-jm'>
-              {moment(
-                new Date(value.unlockDate || Date.now()).toISOString()
-              ).fromNow()}
+              {moment(new Date(value.unlockDate || Date.now()).toISOString())
+                .fromNow()
+                .replace('in ', '') + ' left'}
             </span>
           </div>
         );
@@ -38,14 +45,14 @@ const Upcomming = async ({ tokenInfo }: any) => {
       align: 'center',
       render: (_, value) => {
         return (
-          <div className='text-center'>
-            <div className='text-grey-700 text-sm mb-2 font-bold font-jb'>
-              {nFormatter(value.token, 2, tokenInfo.symbol)}
-            </div>
-            <div className='text-xs font-medium text-grey-500'>
-              {nFormatter(value.tokensPercent, 2, '%', true)}
-            </div>
-          </div>
+          <Flex vertical gap={8}>
+            <Text weight='semiBold'>
+              {nFormatter(value.token, 2, tokenInfo.symbol, false, true)}
+            </Text>
+            <Text size={12} type='secondary'>
+              {nFormatter(value.tokensPercent, 2, '%', true)} of Total Supply
+            </Text>
+          </Flex>
         );
       },
     },
@@ -56,68 +63,80 @@ const Upcomming = async ({ tokenInfo }: any) => {
       align: 'center',
       render: (_, value) => {
         return (
-          <div className='text-center'>
-            <div className='text-grey-700 text-sm mb-2 font-bold font-jb'>
-              {nFormatter(value.value, 2, '$')}
-            </div>
-            <div className='text-xs font-medium text-grey-500'>
+          <Flex vertical gap={8}>
+            <Text weight='semiBold'>{nFormatter(value.value, 2, '$')}</Text>
+            <Text size={12} type='secondary'>
               {nFormatter(value.percentOfMarketCap, 2, '%', true)} of M. Cap
-            </div>
-          </div>
+            </Text>
+          </Flex>
         );
       },
     },
     {
       key: 'rounds',
       title: 'Rounds',
+      dataIndex: 'rounds',
       align: 'center',
-      render: (_, value) => {
+      render: (value: any[], _, i) => {
+        if (!value?.length) return '-';
         return (
-          <div className='flex items-center gap-10'>
-            <div className={false ? 'max-h-[40px] overflow-hidden' : ''}>
-              <RoundInfo item={value} symbol={tokenInfo.symbol} />
-              {...Array.from(Array(value.numberOfRounds - 1).keys()).map(
-                (item) => {
-                  return <RoundInfo item={value} symbol={tokenInfo.symbol} />;
-                }
+          <Flex align='center' justify='flex-end' gap={40}>
+            <Flex vertical gap={8}>
+              {value
+                .slice(0, roundExpand === i ? value.length : 2)
+                .map((item) => {
+                  return <RoundInfo item={item} />;
+                })}
+            </Flex>
+            <Flex
+              gap={8}
+              align='center'
+              onClick={() => handleRoundExpand(i)}
+              className={cn(
+                value.length > 2 ? 'cursor-pointer' : 'pointer-events-none'
               )}
-            </div>
-            <div className='flex gap-2'>
-              {value.numberOfRounds} Rounds
-              <IconArrowDown />
-            </div>
-          </div>
+            >
+              <Text
+                weight='semiBold'
+                color={value.length > 2 ? 'primary' : undefined}
+              >
+                {value.length} {value.length > 1 ? 'Rounds' : 'Round'}
+              </Text>
+              <div
+                className={cn(
+                  'rotate-0 transition-all duration-300 ease-in-out',
+                  roundExpand === i && 'rotate-180'
+                )}
+              >
+                <IconAngleDown />
+              </div>
+            </Flex>
+          </Flex>
         );
       },
     },
   ];
 
-  function RoundInfo({ item, symbol }: any) {
+  function RoundInfo({ item }: any) {
     return (
-      <div className='flex gap-2 items-center text-grey-500 text-xs font-medium font-jm mb-2'>
-        <span>{item?.roundName}</span>
-        <span className='text-grey-500'>
-          {nFormatter(item?.allocation, 2, symbol)}
-        </span>
-      </div>
+      <Flex gap={4}>
+        <Text size={12} type='secondary'>
+          {item?.name}
+        </Text>
+        <Text size={12} type='secondary'>
+          {nFormatter(item?.unlockPerRound, 2, tokenInfo.symbol, false, true)}
+        </Text>
+      </Flex>
     );
   }
 
-  async function fetchUpcoming() {
-    const res = await FetchUnlockToken({
-      coin_key: 'avalanche',
-      status: 'upcoming',
-    });
-    return res;
-  }
-  const data: any = await fetchUpcoming();
   return (
     <div>
       <div className='overflow-x-auto hide-scroll'>
         <CommonTable
           columns={columns}
           dataSource={data}
-          pagination={{ position: ['none'] }}
+          pagination={false}
         />
       </div>
     </div>

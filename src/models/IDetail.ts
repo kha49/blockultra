@@ -30,6 +30,15 @@ export interface IDetail {
   header: Header;
   tags: any[];
   histData: any;
+  categoryId: number;
+  subCategories: any[];
+  description: string;
+  fundraisings: number;
+  publicSale: any;
+  initialMarketCap: number;
+  initialSupply: number;
+  totalFundRaised: number;
+  avgPrice: number;
 }
 
 export interface Image {

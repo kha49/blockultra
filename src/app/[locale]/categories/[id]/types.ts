@@ -52,6 +52,7 @@ export type CategoryCoinsType = {
   volume24h: string;
   marketCap: string;
   chart: string;
+  _index: number;
 };
 
 export type SearchProject = {

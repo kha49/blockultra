@@ -1,5 +1,7 @@
 import { IconExport } from '@/assets/icons';
-import { Button } from 'antd';
+import Text from '@/components/Text';
+import { cn } from '@/helpers/functions';
+import { Button, Divider, Flex } from 'antd';
 
 const TierSystem = () => {
   const data = [
@@ -21,32 +23,49 @@ const TierSystem = () => {
   ];
 
   return (
-    <section className='grid shadow-primary bg-white p-4 rounded-lg gap-4 md:p-6 lg:px-[8.4%] lg:flex lg:gap-[113px] lg:justify-around'>
-      <div className='flex flex-col gap-3 items-center justify-center'>
-        <h3>The System</h3>
+    <section
+      className={cn(
+        'grid p-4 gap-4 md:p-6 lg:px-[8.4%] container-shadow',
+        'lg:flex lg:gap-[113px] lg:justify-around'
+      )}
+    >
+      <Flex vertical gap={12} align='center' justify='center'>
+        <Text weight='bold' size={20} lineHeight={28}>
+          The System
+        </Text>
 
-        <Button disabled size='large' className='!flex items-center gap-2'>
-          Resource{' '}
-          <span>
+        <Button
+          className={cn(
+            '!h-11 !rounded-lg !text-[#6B79FF] !cursor-not-allowed',
+            '!border-[1.5px] !border-solid !border-[#6B79FF] !opacity-50'
+          )}
+        >
+          <Flex gap={8} align='center'>
+            <Text className={'!text-[#5766FF]'}>Resource</Text>
             <IconExport />
-          </span>
+          </Flex>
         </Button>
-      </div>
+      </Flex>
 
-      <div className='w-full h-[1px] lg:w-[1px] lg:h-auto bg-gray-300'></div>
+      <Divider
+        type='vertical'
+        className='!w-full !h-[1px] lg:!w-[1px] lg:!h-auto !border-[#E5E6EB] !m-0'
+      />
 
-      <div className='flex flex-col gap-8 flex-1'>
+      <Flex vertical gap={32} flex={1}>
         {data.map((item, index) => (
-          <div key={index}>
-            <p>{item.heading}</p>
-            <ul className='grid grid-cols-3'>
+          <Flex vertical gap={16} key={index}>
+            <Text weight='bold'>{item.heading}</Text>
+            <ul className='grid grid-cols-3 gap-3'>
               {item.items.map((tier, tierIndex) => (
-                <li key={tierIndex}>• {tier}</li>
+                <li key={tierIndex} className='flex'>
+                  <Text weight='bold'>• {tier}</Text>
+                </li>
               ))}
             </ul>
-          </div>
+          </Flex>
         ))}
-      </div>
+      </Flex>
     </section>
   );
 };

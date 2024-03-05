@@ -39,6 +39,7 @@ export interface ICoinTable {
   ticker: string;
   volume: number;
   volumeChangeIn24h: number;
+  _index: number;
 }
 
 interface DataChart {

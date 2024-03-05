@@ -1,12 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { cn } from '@/helpers/functions';
+import React, { useEffect, useState } from 'react';
 import { ICountdownTimerProps, TimeLeft } from './CountDownTimer.type';
 import TimeItem from './TimeItem/TimeItem';
 
 const CountdownTimer: React.FC<ICountdownTimerProps> = ({
   targetDate,
   countDownName,
+  className,
 }) => {
   const calculateTimeLeft = (): TimeLeft => {
     const difference = targetDate.getTime() - new Date().getTime();
@@ -33,7 +35,9 @@ const CountdownTimer: React.FC<ICountdownTimerProps> = ({
       timeLeft.M -= timeLeft.y * 12;
 
       // Calculate hours, minutes, and seconds
-      timeLeft.h = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      timeLeft.h = Math.floor(
+        (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+      );
       timeLeft.m = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
       timeLeft.s = Math.floor((difference % (1000 * 60)) / 1000);
     }
@@ -54,7 +58,7 @@ const CountdownTimer: React.FC<ICountdownTimerProps> = ({
   const { y, M, d, h, m, s } = remainingTime;
 
   return (
-    <div className='mx-auto max-w-[210px]'>
+    <div className={cn('mx-auto max-w-[210px]', className)}>
       {countDownName ? (
         <h4 className='font-jsb text-grey-700 text-center mb-1'>
           {countDownName}
@@ -82,11 +86,11 @@ const CountdownTimer: React.FC<ICountdownTimerProps> = ({
         {d && d > 0 ? (
           <>
             <TimeItem time={d} name={'D'} />
-            {
-              !(y && y > 0) ? (
-                <div className='flex justify-center items-center h-8'>:</div>
-              ) : ''
-            }
+            {!(y && y > 0) ? (
+              <div className='flex justify-center items-center h-8'>:</div>
+            ) : (
+              ''
+            )}
           </>
         ) : (
           ''
@@ -94,11 +98,11 @@ const CountdownTimer: React.FC<ICountdownTimerProps> = ({
         {!(y && y > 0) ? (
           <>
             <TimeItem time={h} name={'H'} />
-            {
-              !(M && M > 0) ? (
-                <div className='flex justify-center items-center h-8'>:</div>
-              ) : ''
-            }
+            {!(M && M > 0) ? (
+              <div className='flex justify-center items-center h-8'>:</div>
+            ) : (
+              ''
+            )}
           </>
         ) : (
           ''
@@ -106,11 +110,11 @@ const CountdownTimer: React.FC<ICountdownTimerProps> = ({
         {!(M && M > 0) ? (
           <>
             <TimeItem time={m} name={'M'} />
-            {
-              !(d && d > 0) ? (
-                <div className='flex justify-center items-center h-8'>:</div>
-              ) : ''
-            }
+            {!(d && d > 0) ? (
+              <div className='flex justify-center items-center h-8'>:</div>
+            ) : (
+              ''
+            )}
           </>
         ) : (
           ''

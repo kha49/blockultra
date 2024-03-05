@@ -1,10 +1,15 @@
 'use client';
 
 import { IconAddCircle, IconArrowCircleRight } from '@/assets/icons';
+import Tag from '@/components/Tag';
+import Text from '@/components/Text';
+import { currencyFormat, percentFormat } from '@/helpers';
+import { changeImageUrl, cn } from '@/helpers/functions';
+import { Flex } from 'antd';
+import Image from 'next/image';
 import Slider from 'react-slick';
 import { ICoinDataProps, Props } from './Compare.type';
 import './index.scss';
-import { changeImageUrl } from '@/helpers/functions';
 
 export function CoinCompare(props: any) {
   const data = props.data?.compare || [];
@@ -24,50 +29,51 @@ export function CoinCompare(props: any) {
         </div>
       </div>
       <RenderItemCoin data={data}>
-        {data?.map((item: any) => (
-          <div key={item.key}>
-            <div className='w-[97%] p-6 bg-grey-200 rounded-lg cursor-pointer'>
-              <div className='flex justify-between items-center'>
-                <div>
-                  <img
-                    src={changeImageUrl(item?.image?.native)}
-                    alt=''
-                    width={40}
-                    height={40}
-                    className='mr-2'
-                  />
-                </div>
-                <div className='flex flex-column gap-1'>
-                  <img
+        {data?.map((item: any, i: number) => (
+          <div>
+            <Flex
+              vertical
+              key={item.key}
+              className={cn(
+                'px-6 py-4 bg-grey-200 rounded-lg',
+                'cursor-pointer mx-2'
+              )}
+            >
+              <Flex align='center' justify='space-between'>
+                <Image
+                  src={changeImageUrl(item?.image?.native)}
+                  alt=''
+                  width={44}
+                  height={44}
+                />
+                <Flex gap={4} vertical align='flex-end'>
+                  <Image
                     src={`data:image/svg+xml;base64,${item.chart}`}
                     alt=''
-                    width={200}
-                    height={52}
-                    className='mr-2'
+                    width={154}
+                    height={40}
                   />
-                  {/* <div className='text-green-500 text-xs font-semibold'>
-                    {item.percent}
-                  </div> */}
-                </div>
-              </div>
-              <div>
-                <div>
-                  <div className='text-grey-500 text-sm font-semibold'>
-                    {item.name}
-                  </div>
-                </div>
-                {/* <div className='flex items-center justify-between gap-1'>
-                  <div className='text-grey-700 text-2xl truncate'>
-                    $ {item.price}
-                  </div>
-                  <div className='rounded px-1/2 bg-grey-200 border-solid border border-grey-300'>
-                    <div className='text-grey-500 text-xs font-semibold'>
-                      {item.acronym}
-                    </div>
-                  </div>
-                </div> */}
-              </div>
-            </div>
+                  <Text weight='semiBold' size={12}>
+                    {percentFormat(item.price_change_in_24h) || '-'}
+                  </Text>
+                </Flex>
+              </Flex>
+              <Flex vertical>
+                <Text type='secondary'>{item.name}</Text>
+                <Flex gap={16} align='center' justify='space-between'>
+                  <Text weight='bold' size={24} lineHeight={32}>
+                    {item.price ? currencyFormat(item.price, '$') : '-'}
+                  </Text>
+                  {item.symbol && (
+                    <Tag bordered>
+                      <Text type='secondary' size={12}>
+                        {item.symbol}
+                      </Text>
+                    </Tag>
+                  )}
+                </Flex>
+              </Flex>
+            </Flex>
           </div>
         ))}
       </RenderItemCoin>
@@ -127,7 +133,12 @@ const RenderItemCoin = ({ data, children }: ICoinDataProps) => {
     return <Slider {...settings}>{children}</Slider>;
   } else {
     return (
-      <div className='grid grid-cols-[repeat(auto-fill, minmax(312px, 1fr))] gap-y-2'>
+      <div
+        className={cn(
+          'grid grid-cols-[repeat(auto-fill, minmax(312px, 1fr))]',
+          'gap-y-2'
+        )}
+      >
         {children}
       </div>
     );

@@ -127,6 +127,7 @@ export type LaunchPadInfomationType = {
   volumeChange: number;
   dataChart: LaunchPadInfomationDataChart;
   projects: { total: number; data: any[]; page: number; perPage: number };
+  icon: string
 };
 
 export type IIeoIdoFilterType = { search_key?: string[]; is_hot?: string };

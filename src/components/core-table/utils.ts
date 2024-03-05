@@ -9,6 +9,7 @@ import { renderSortIcon } from '@/helpers';
 import { ICoreTableHeaderProps } from './core-table-header';
 import { CoreTableProps } from '@/components/core-table/index';
 import { CoreTableFooterProps } from '@/components/core-table/core-table-footer';
+
 export const getColumns = <T = AnyObject>(
   type: FactoryColumns,
   isMobile?: boolean,
@@ -42,7 +43,7 @@ export const getColumns = <T = AnyObject>(
 export const getHeaderCoreProps = (
   props: CoreTableProps
 ): ICoreTableHeaderProps => {
-  const { onChangeFilterSelect, isFilter, isCustomize, onCustomize, onFilter } =
+  const { onChangeFilterSelect, isFilter, isCustomize, onCustomize, onFilter, type } =
     props;
 
   return {
@@ -51,6 +52,7 @@ export const getHeaderCoreProps = (
     isCustomize,
     onCustomize,
     onFilter,
+    type
   };
 };
 
@@ -62,8 +64,8 @@ export const getFooterCoreProps = (
     pageSize = 10,
     currentPage = 1,
     data,
-    onChangePage = () => {},
-    onChangeSize = () => {},
+    onChangePagingParams = () => {},
+    // onChangeSize = () => {},
   } = props;
 
   return {
@@ -71,7 +73,8 @@ export const getFooterCoreProps = (
     pageSize,
     currentPage,
     length: data.length,
-    onChangePage,
-    onChangeSize,
+    onChangePagingParams,
+    // onChangePage,
+    // onChangeSize,
   };
 };

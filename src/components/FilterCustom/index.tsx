@@ -1,11 +1,12 @@
 import IconSearchCoinTab from '@/assets/icons/home/IconSearchCoinTab';
 import CustomSelect from '@/components/CustomSelect';
 import { Checkbox } from 'antd';
-import { memo, useEffect, useState } from 'react';
-import { IFilterCustom, ISearchData } from './props';
-import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
-import { useDebounce } from 'usehooks-ts';
 import { orderBy, uniqBy } from 'lodash';
+import type { CustomTagProps } from 'rc-select/lib/BaseSelect';
+import { memo, useEffect, useState } from 'react';
+import { useDebounce } from 'usehooks-ts';
+import { IFilterCustom, ISearchData } from './props';
+import './styles.scss'
 
 const FilterCustom = (props: IFilterCustom) => {
   const {
@@ -16,6 +17,8 @@ const FilterCustom = (props: IFilterCustom) => {
     placeholder,
     isSortSelected,
     value,
+    className,
+    overlayClassName,
   } = props;
   const [searchData, setSearchData] = useState<ISearchData[]>([]);
   const [arSelected, setArSelected] = useState<ISearchData[]>([]);
@@ -30,23 +33,24 @@ const FilterCustom = (props: IFilterCustom) => {
     setIsSelected(value.map((e) => e.code));
   }, [value]);
 
-  const _getData = async (searchKey?: string) => {
+  const _getData = async (searchKey?: string, arraySelected?: any[]) => {
     setIsLoading(true);
     const data = await getData({
       searchKey: searchKey ?? '',
     });
     setIsLoading(false);
-    setSearchData([..._mergeAr(arSelected, data)]);
+    setSearchData([..._mergeAr(arraySelected || arSelected, data)]);
     setSearchKey(searchKey || '');
   };
 
   const _mergeAr = (oldAr: any[], newAr: any[]) => {
     const allDt = [...oldAr, ...newAr];
-    return uniqBy(allDt, (e) => e.code);
+    return uniqBy(allDt, (e) => e.code ?? e.name);
   };
 
   const _renderOptions = () => {
     const elements: JSX.Element[] = [];
+
     _convertSelected().forEach((s) => {
       const checked = isSelected.includes(s.code);
       elements.push(renderOption({ ...s, checked }));
@@ -94,10 +98,11 @@ const FilterCustom = (props: IFilterCustom) => {
       e.isSelected = index > -1;
       e.selectedTime = index > -1 ? new Date().getTime() + index : null;
     });
-    setArSelected([..._convertSelected().filter((s) => s.isSelected)]);
+    const arrSelected = [..._convertSelected().filter((s) => s.isSelected)];
+    setArSelected(arrSelected);
     setIsSelected(value);
-    onChange(value, [..._convertSelected().filter((s) => s.isSelected)]);
-    _getData(searchKey);
+    onChange(value, arrSelected);
+    _getData(searchKey, arrSelected);
   };
 
   const _tagRender = (props: CustomTagProps) => {
@@ -116,17 +121,18 @@ const FilterCustom = (props: IFilterCustom) => {
   return (
     <div className='select-coin-custom'>
       <CustomSelect
+        className={className}
         placeholder={placeholder ?? ''}
         mode='multiple'
         size='large'
         prefixIcon={<IconSearchCoinTab />}
         loading={isLoading}
-        menuItemSelectedIcon={<Checkbox checked />}
+        menuItemSelectedIcon={<Checkbox checked className='custom-checkbox'/>}
         onChange={_onChangeSelect}
         tagRender={_tagRender}
         onSearch={_onSearch}
         value={arSelected.map((e) => e.code)}
-        notFoundContent={<>No results found</>}
+        notFoundContent={<div className='m-[12px] text-[14px] font-medium text-[#333747] f font-jm'>No results found</div>}
         onFocus={() => _getData('')}
         filterOption={(input, option) => {
           if (!option) return false;
@@ -138,6 +144,9 @@ const FilterCustom = (props: IFilterCustom) => {
               .toLowerCase()
               .indexOf(input.toLowerCase()) >= 0
           );
+        }}
+        dropdownRender={(menu) => {
+          return <div className={overlayClassName}>{menu}</div>;
         }}
       >
         {_renderOptions()}

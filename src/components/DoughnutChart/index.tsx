@@ -32,13 +32,12 @@ export default function Doughnut(props: DoughnutProps) {
       angle = (item / sum) * 360;
       percent = (item / sum) * 100;
       startAngle += angle;
-
       return (
         <Path
           stroke={stroke}
           strokeWidth={strokeWidth}
           showLabel={false}
-          key={itemIndex}
+          key={percent}
           value={item?.toString()}
           percent={!!percent}
           percentValue={parseFloat(percent.toFixed(1))}

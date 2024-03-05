@@ -3,7 +3,7 @@ import './index.scss';
 
 export default function Introduce() {
   return (
-    <div className='introduce mx-auto max-w-2xl px-4 py-3'>
+    <div className='introduce px-10'>
       <h2 className='introduce__title font-extrabold text-2xl text-center mb-10 font-jeb'>
         Activity, Contribute And Earn
       </h2>

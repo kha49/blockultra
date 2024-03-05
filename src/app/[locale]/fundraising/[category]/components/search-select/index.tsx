@@ -14,19 +14,19 @@ import {
 } from '@/usecases/fundraising';
 
 export default function SearchSelect({ onChange, layout }: IHeaderFilter) {
-  const _renderOption = ({ name, code, checked }: IOptionCustom) => {
+  const _renderOption = ({ name, code, checked, symbol }: IOptionCustom) => {
     return (
       <Select.Option isSelectOption={true} value={code} key={name}>
-        <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
+        <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between font-jm'>
           <div className=''>
             <span className='name mx-2'>{name}</span>
-            <span className='code px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5'>
-              {code}
-            </span>
+            {symbol && <span className='code px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5'>
+              {symbol}
+            </span>}
           </div>
           <div className='ant-checkbox'>
             {!checked ? (
-              <Checkbox disabled className='hover:cursor-pointer' />
+              <Checkbox className='custom-checkbox' />
             ) : null}
           </div>
         </div>
@@ -35,15 +35,15 @@ export default function SearchSelect({ onChange, layout }: IHeaderFilter) {
   };
 
   const _renderTag = (options: ICustomTagProp) => {
-    const { value, closable, onClose, index } = options;
+    const {closable, onClose, index, rawData } = options;
     const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
       event.preventDefault();
       event.stopPropagation();
     };
 
-    if (index > 3) return <></>;
+    if (index > 2) return <></>;
 
-    if (index === 3)
+    if (index === 2)
       return (
         <Tag color='#5766ff' style={{ marginRight: 3 }}>
           ...
@@ -57,7 +57,7 @@ export default function SearchSelect({ onChange, layout }: IHeaderFilter) {
         onClose={onClose}
         style={{ marginRight: 3 }}
       >
-        {value}
+        {rawData.name}
       </Tag>
     );
   };
@@ -72,19 +72,22 @@ export default function SearchSelect({ onChange, layout }: IHeaderFilter) {
     });
 
     if (!res) return [];
+    console.log(res)
 
     return res.map((e: ISearchFilter) => ({
-      id:  e.slug,
+      id: e?.slug ?? e.key,
       name: e.name,
-      code: e.slug,
+      code: e?.slug ?? e.key,
       thumb: '',
       isSelected: false,
+      symbol: e.symbol
     }));
   };
 
   return (
     <FilterCustom
-      placeholder='Search'
+      className='font-jm'
+      placeholder='Filter projects'
       renderOption={_renderOption}
       renderTag={_renderTag}
       onChange={onChange}

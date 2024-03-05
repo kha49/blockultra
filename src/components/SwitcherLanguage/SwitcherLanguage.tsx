@@ -1,11 +1,16 @@
 'use client';
 
+import IconCaretDownHeader from '@/assets/icons/home/header/IconCaretDownHeader';
+import IconCheckCircle from '@/assets/icons/home/header/IconCheckCircle';
+import IconUK from '@/assets/icons/home/header/IconUK';
+import IconVN from '@/assets/icons/home/header/IconVN';
+import Text from '@/components/Text';
+import type { MenuProps } from 'antd';
+import { Dropdown, Flex, Typography } from 'antd';
+import { useLocale } from 'next-intl';
 import { useState } from 'react';
 import { usePathname, useRouter } from '../../helpers/navigation';
-import type { MenuProps } from 'antd';
-import { Dropdown } from 'antd';
-import { useLocale } from 'next-intl';
-import { IconCaretDown } from '@/assets/icons';
+import './index.scss';
 
 const SwitcherLanguage = () => {
   const router = useRouter();
@@ -13,14 +18,29 @@ const SwitcherLanguage = () => {
   const locale = useLocale();
   const [lang] = useState(locale);
 
+  const [selectedKeys, setSelectedKeys] = useState([lang]);
+
+  const LabelItem = (key: string, label: string) => {
+    return (
+      <Flex gap={8} align='center' justify='space-between'>
+        {key === 'en' && <IconUK />}
+        {key === 'vn' && <IconVN />}
+        <Typography.Text className='!font-semibold !font-jm grow min-w-20'>
+          {label}
+        </Typography.Text>
+        {key === lang && <IconCheckCircle />}
+      </Flex>
+    );
+  };
+
   const items: MenuProps['items'] = [
     {
       key: 'en',
-      label: 'English',
+      label: LabelItem('en', 'English'),
     },
     {
       key: 'vn',
-      label: 'Viet Nam',
+      label: LabelItem('vn', 'Vietnamese'),
     },
   ];
 
@@ -31,30 +51,34 @@ const SwitcherLanguage = () => {
     },
     {
       key: 'vn',
-      label: 'Viet Nam',
+      label: 'Vietnamese',
     },
   ];
 
   const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
     router.replace(pathname, { locale: key });
+    setSelectedKeys([key]);
   };
 
   const getLabelLanguage = (key: string) => {
-    return langList.find(item => item?.key === key)?.label
-  }
+    return langList.find((item) => item?.key === key)?.label;
+  };
 
   return (
     <Dropdown
-      menu={{ items, onClick: handleMenuClick }}
-      placement='bottomLeft'
-      arrow
+      menu={{
+        items,
+        selectable: true,
+        selectedKeys,
+        className: '[&>li]:!p-3 !p-3',
+        // onClick: handleMenuClick,
+      }}
+      placement='bottomRight'
     >
-      <div
-        className='flex gap-1 items-center cursor-pointer'
-        onClick={(e) => e.preventDefault()}
-      >
-        {getLabelLanguage(lang)} <IconCaretDown />
-      </div>
+      <Flex gap={4} align='center' className='cursor-pointer'>
+        <Text>{getLabelLanguage(lang)}</Text>
+        <IconCaretDownHeader />
+      </Flex>
     </Dropdown>
   );
 };

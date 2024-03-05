@@ -1,13 +1,15 @@
-import { useEffect, useState } from 'react';
-import './style.scss';
-import { Dropdown, Tabs } from 'antd';
-import { FetchTrendings } from '../../../usecases/home';
-import { caculatorAverage24h } from '@/helpers/functions';
 import { ORDER, TIME_FILTER_ALL } from '@/helpers/constants';
+import { caculatorAverage24h, cn } from '@/helpers/functions';
+import { Dropdown, Flex, Tabs } from 'antd';
+import { useEffect, useState } from 'react';
+import { FetchTrendings } from '../../../usecases/home';
+import './style.scss';
 
-import { isArray } from 'lodash';
 import IconSelectArrow from '@/assets/icons/IconSelectArrow';
+import Text from '@/components/Text';
 import { CoreTable } from '@/components/core-table';
+import { IPagingParams } from '@/models/IPaging';
+import { isArray } from 'lodash';
 import { useMediaQuery } from 'usehooks-ts';
 
 const IconFire = () => {
@@ -41,20 +43,27 @@ const IconFire = () => {
 };
 
 const Trending = () => {
-  const [pageSize, setPageSize] = useState(50);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [activeKey, setActiveKey] = useState('1');
   const [total, setTotal] = useState(0);
   const [order, setOrder] = useState({
     columnKey: '',
     order: '',
   });
+
+  const [pagingParams, setPagingParams] = useState<IPagingParams>({
+    page: 1,
+    pageSize: 20,
+  });
+
   const [trendings, setTrendings] = useState([]);
   const isMobile = useMediaQuery('(max-width: 640px)');
 
-  const [timeSelected, setTimeSelected] = useState({
-    key: '1d',
-    label: '24h',
-  });
+  const TimeOptions = TIME_FILTER_ALL.map((item) => ({
+    ...item,
+    label: <Text weight='semiBold'>{item.label}</Text>,
+  }));
+
+  const [timeSelected, setTimeSelected] = useState(TimeOptions[0]);
 
   function getTrendings(params: any) {
     FetchTrendings(params).then((res: any) => {
@@ -70,22 +79,22 @@ const Trending = () => {
 
   useEffect(() => {
     getTrendings({
-      limit: pageSize,
-      page: currentPage,
+      limit: pagingParams.pageSize,
+      page: pagingParams.page,
       sort_order: ORDER[order.order as keyof typeof ORDER],
       sort_by: order.columnKey,
       duration: timeSelected.key,
     });
-  }, [pageSize, currentPage, order, timeSelected]);
+  }, [pagingParams, order, timeSelected]);
 
-  const _onChangePage = (page: number) => {
-    setCurrentPage(page);
-  };
+  // const _onChangePage = (page: number) => {
+  //   setCurrentPage(page);
+  // };
 
-  const _onChangeSize = (value: number) => {
-    setCurrentPage(1);
-    setPageSize(value);
-  };
+  // const _onChangeSize = (value: number) => {
+  //   setCurrentPage(1);
+  //   setPageSize(value);
+  // };
 
   const tabs = [
     'Trending Coins',
@@ -95,7 +104,7 @@ const Trending = () => {
   ];
 
   const _onChangeTime = ({ key }: { key: string }) => {
-    const item = TIME_FILTER_ALL.find((a) => a?.key === key);
+    const item = TimeOptions.find((a) => a?.key === key);
     if (!item) return;
     setTimeSelected({
       ...item,
@@ -114,18 +123,29 @@ const Trending = () => {
   const renderDropdown = () => {
     return (
       <Dropdown
-        overlayClassName='overlay-menu-center'
+        overlayClassName={cn(
+          '[&_.ant-dropdown-menu]:!p-2',
+          '[&_.ant-dropdown-menu-item]:!py-2',
+          '[&_.ant-dropdown-menu-item-selected]:!bg-[#EEF2F6]'
+        )}
         menu={{
-          items: TIME_FILTER_ALL,
+          items: TimeOptions,
+          selectable: true,
+          selectedKeys: [timeSelected.key],
           onClick: _onChangeTime,
         }}
-        arrow
         trigger={['click']}
-        className='justify-center h-9 w-28 rounded border hover:cursor-pointer'
+        className='rounded border border-[#D1D2DC] hover:cursor-pointer mr-2'
       >
-        <div className='flex justify-between items-center py-2 px-4 text-sm font-medium font-jm'>
-          {timeSelected.label} <IconSelectArrow />
-        </div>
+        <Flex
+          gap={8}
+          justify='space-between'
+          align='center'
+          className='py-2 px-4'
+        >
+          <Text>{timeSelected.label}</Text>
+          <IconSelectArrow />
+        </Flex>
       </Dropdown>
     );
   };
@@ -133,13 +153,25 @@ const Trending = () => {
   return (
     <div className='tab-trending flex flex-col'>
       <Tabs
+        activeKey={activeKey}
+        onChange={setActiveKey}
         tabBarExtraContent={!isMobile && renderDropdown()}
         moreIcon={null}
         items={tabs.map((label, i) => {
           const id = String(i + 1);
           return {
             key: id,
-            label: label,
+            label: (
+              <Text
+                weight={activeKey === id ? 'bold' : undefined}
+                color={activeKey === id ? 'primary' : undefined}
+                size={16}
+                lineHeight={24}
+                className={cn(activeKey !== id && 'opacity-50')}
+              >
+                {label}
+              </Text>
+            ),
             children: (
               <>
                 {isMobile && <div className='pb-4'>{renderDropdown()}</div>}
@@ -148,16 +180,19 @@ const Trending = () => {
                   data={trendings}
                   type={'home_trending'}
                   onChange={handleOnChange}
-                  pageSize={pageSize}
-                  currentPage={currentPage}
+                  onChangePagingParams={setPagingParams}
+                  pageSize={pagingParams.pageSize}
+                  currentPage={pagingParams.page}
                   total={total}
-                  onChangePage={_onChangePage}
-                  onChangeSize={_onChangeSize}
                   renderHeader={() => null}
                 />
               </>
             ),
-            icon: <IconFire />,
+            icon: (
+              <div className={cn(activeKey !== id && 'opacity-50')}>
+                <IconFire />
+              </div>
+            ),
             disabled: true,
           };
         })}

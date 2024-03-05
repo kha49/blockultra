@@ -1,5 +1,5 @@
 import { APIClient } from '../helpers/api_helper';
-const prefix = "api-service/api/";
+const prefix = "api/";
 const apiClient = new APIClient();
 
 export const FetchCategoryDetail = (params) =>
@@ -9,4 +9,4 @@ export const FetchCategoryCoins = (params) =>
   apiClient.get(`${prefix}category/coins`, params);
 
 export const CategoryCoinsSearch = (params) =>
-  apiClient.get(`${prefix}categories/search`, params);
+  apiClient.get(`${prefix}category/coins/search`, params);

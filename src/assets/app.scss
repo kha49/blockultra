@@ -32,7 +32,6 @@ body {
   box-shadow: 0px 0px 16px 0px rgba(51, 55, 71, 0.08);
 }
 
-
 .pagination-mobile {
   display: none !important;
 }
@@ -55,4 +54,46 @@ body {
   font-family: 'Plus Jakarta Sans Medium';
   font-size: 14px;
   font-weight: 500;
+}
+
+.tooltip-light {
+  .ant-tooltip-arrow::before {
+    background: #fcfcfd !important;
+  }
+  .ant-tooltip-inner {
+    background: #fcfcfd !important;
+    color: #333747 !important;
+    font-family: 'Plus Jakarta Sans Medium' !important;
+    padding: 4px 8px !important;
+    font-size: 12px !important;
+    display: flex;
+    align-items: center;
+  }
+  &_large {
+    .ant-tooltip-arrow::before {
+      background: #fcfcfd !important;
+    }
+    .ant-tooltip-inner {
+      background: #fcfcfd !important;
+      color: #333747 !important;
+      font-family: 'Plus Jakarta Sans Medium' !important;
+      padding: 12px !important;
+      font-size: 12px !important;
+      display: flex;
+      align-items: center;
+    }
+  }
+}
+
+.container-shadow {
+  border-radius: 8px;
+  box-shadow: 0px 0px 16px 0px rgba(51, 55, 71, 0.08);
+  background-color: #ffffff;
+  font-family: Plus Jakarta Sans;
+}
+
+.header-filter__options .ant-btn {
+  border-radius: 8px;
+  height: 44px;
+  padding: 0 20px;
 }

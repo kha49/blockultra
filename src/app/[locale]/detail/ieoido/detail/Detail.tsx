@@ -1,158 +1,224 @@
-'use client'
-import { IconArrowDown } from '@/assets/icons/IconArrowDown';
-import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
-import { useEffect, useState } from 'react';
-import { changeImageUrl } from '@/helpers/functions';
+'use client';
+import IconFundraisingRoundsArrow from '@/assets/icons/IconFundraisingRoundsArrow';
+import Text from '@/components/Text';
+import { currencyFormat, nFormatter } from '@/helpers';
+import { changeImageUrl, cn } from '@/helpers/functions';
+import { Flex } from 'antd';
+import moment from 'moment';
+import Image from 'next/image';
+import Link from 'next/link';
+import { forwardRef, useEffect, useState } from 'react';
 
-const Detail = ({ ieoidos , tokenInfo}: any) => {
-  const isTrue = true;
-  const [listIeos, setListIeos] = useState<any[]>([]);
-
+const Detail = forwardRef(({ ieoidos, tokenInfo, refDetail }: any) => {
   useEffect(() => {
-    let temp:[] = [];
     for (let i in ieoidos) {
-      
       ieoidos[i].isVisible = false;
       ieoidos[i].id = i;
-      // temp
     }
-    // setListIeos[temp];
   }, []);
 
-
-    // const handleToggle = (itemId: any) => {
-    //   setListIeos((prevItems) => {
-    //     return prevItems.map((item) =>
-    //       item.id === itemId ? { ...item, isVisible: !item.isVisible } : item
-    //     );
-    //   });
-    // };
   return (
-    <div>
-      <div className='text-grey-700 text-xl font-bold font-jb mb-2'>Detail</div>
+    <Flex vertical ref={refDetail} gap={8}>
+      <Text weight='bold' size={20} lineHeight={28}>
+        Detail
+      </Text>
       <div>
         {ieoidos?.map((item: any, i: number) => {
-          return <ItemDetail key ={i} item={item} symbol={tokenInfo.symbol} />;
+          return <ItemDetail key={i} item={item} symbol={tokenInfo.symbol} />;
         })}
       </div>
-    </div>
+    </Flex>
   );
-};
+});
 
 export function ItemDetail({ item, symbol }: any) {
-  const [isVisible, setVisible] = useState(false);
+  const [isVisible, setVisible] = useState(item.isVisible);
   const handleToggle = (itemId: any) => {
-    setVisible(!isVisible)
-   }; 
+    setVisible(!isVisible);
+  };
   return (
-    <div key={item.id} className='box-shadow-common p-4 flex items-center justify-between flex-wrap gap-6 mb-6'>
-      <div className='flex flex-col gap-6 item-center'>
-        <div className='flex items-center gap-2'>
-          {
-            item.logo ? (<img
-              src={changeImageUrl(item.logo)}
-              alt='dao'
-            />): ""   
-          } 
-          <div className='text-sm text-grey-700 font-bold'>{item.name}</div>
-        </div>
-        {isVisible ? (
-          <div className='text-primary-500 text-sm font-semibold'>
-            {item?.time_start} - {item?.time_end}
-          </div>
-        ) : (
-          ''
-        )}
-      </div>
-      <div className='flex flex-col gap-6 item-center'>
-        <div className='text-center'>
-          <div className='text-grey-500 text-sm mb-2'>Price</div>
-          <div className='text-grey-700 text-sm font-semibold'>
-            {currencyFormat(item?.price.USD, '$')}
-          </div>
-        </div>
-        {isVisible ? (
-          <div className='text-grey-500 text-sm'>
-            Valuation:
-            <span className='font-semibold'>
-              {nFormatter(item?.valuation, 2, '$')}
-            </span>
-          </div>
-        ) : (
-          ''
-        )}
-      </div>
-
-      <div className='flex flex-col gap-6 item-center'>
-        <div className='text-center'>
-          <div className='text-grey-500 text-sm mb-2'>Raise</div>
-          <div className='text-grey-700 text-sm font-semibold'>
-            {nFormatter(item?.raised, 2, '$')}
-          </div>
-        </div>
-        {isVisible ? (
-          <div className='text-grey-500 text-sm'>
-            Tokens Offered:
-            <span className='font-semibold'>
-              {' '}
-              {nFormatter(item?.tokensOffered, 2, symbol)} ({' '}
-              {nFormatter(item?.percenOfTokens, 2, '%', true)})
-            </span>
-          </div>
-        ) : (
-          ''
-        )}
-      </div>
-      <div className='flex flex-col gap-6 item-center'>
-        <div className='text-center'>
-          <div className='text-grey-500 text-sm mb-2'>ROI</div>
-          <div className='text-grey-700 text-sm font-semibold'>
-            {' '}
-            {nFormatter(item?.roi, 2, symbol)}
-          </div>
-        </div>
-        {isVisible ? (
-          <div className='text-grey-500 text-sm'>
-            ATH ROI:
-            <span className='font-semibold'>
-              {' '}
-              {nFormatter(item?.athROI, 2, symbol)}
-            </span>
-          </div>
-        ) : (
-          ''
-        )}
-      </div>
-      <div className='flex flex-col gap-6 item-center'>
-        <div className='text-center'>
-          <div className='text-grey-500 text-sm mb-2'>Unlocked</div>
-          <div className='text-grey-700 text-sm font-semibold'>
-            {nFormatter(item?.unlockedPercent, 2, symbol)}
-          </div>
-        </div>
-        {isVisible ? (
-          <div className='text-grey-500 text-sm'>
-            {nFormatter(item?.unlockedTokens, 2, symbol)}~
-            <span className='font-semibold'>
-              {nFormatter(item?.unlockedValue, 2, '$')}~
-            </span>
-          </div>
-        ) : (
-          ''
-        )}
-      </div>
-      <div className='min-w-[100px] flex items-start justify-center'>
+    <div
+      key={item.id}
+      onClick={() => handleToggle(item)}
+      className={cn('box-shadow-common cursor-pointer')}
+    >
+      <Flex gap={24} align='center'>
+        <Flex
+          justify='space-between'
+          wrap='wrap'
+          gap={24}
+          align='flex-start'
+          flex={1}
+          className={cn('p-4')}
+        >
+          <Flex vertical gap={24}>
+            <Flex align='center' gap={8} className='min-h-[52px]'>
+              {item.logo ? (
+                <Image
+                  width={40}
+                  height={40}
+                  src={changeImageUrl(item.logo)}
+                  alt='dao'
+                />
+              ) : (
+                ''
+              )}
+              <Text
+                weight='bold'
+                size={20}
+                lineHeight={28}
+                ellipsis
+                maxWidth={200}
+                className={'min-w-40'}
+              >
+                {item.name}
+              </Text>
+            </Flex>
+            {isVisible && !!item?.time_start && !!item?.time_end ? (
+              <div>
+                <Link
+                  target='_blank'
+                  href={item?.linkToAnnouncement || '#'}
+                  onClick={(e) => e.stopPropagation()}
+                  className={cn(!item?.time_link && 'pointer-events-none')}
+                >
+                  <Text
+                    weight='semiBold'
+                    color={!!item?.time_link ? 'primary' : undefined}
+                  >
+                    {item?.time_start
+                      ? moment(item?.time_start).format('DD MMM YYYY')
+                      : '-'}{' '}
+                    -{' '}
+                    {item?.time_end
+                      ? moment(item?.time_end).format('DD MMM YYYY')
+                      : '-'}
+                  </Text>
+                </Link>
+              </div>
+            ) : (
+              ''
+            )}
+          </Flex>
+          <Flex vertical gap={24} align='center'>
+            <Flex vertical align='center' gap={8}>
+              <Text type='secondary'>Price</Text>
+              <Text weight='semiBold' size={16} lineHeight={24}>
+                {item?.price.USD ? currencyFormat(item?.price.USD, '$') : '-'}
+              </Text>
+            </Flex>
+            {isVisible && !!item?.valuation ? (
+              <Flex gap={2} align='center'>
+                <Text type='secondary'>Valuation:</Text>
+                <Text type='secondary' weight='semiBold'>
+                  {item?.valuation ? nFormatter(item?.valuation, 2, '$') : '-'}
+                </Text>
+              </Flex>
+            ) : (
+              ''
+            )}
+          </Flex>
+          <Flex vertical gap={24} align='center'>
+            <Flex vertical align='center' gap={8}>
+              <Text type='secondary'>Raise</Text>
+              <Text weight='semiBold' size={16} lineHeight={24}>
+                {item?.raised ? nFormatter(item?.raised, 2, '$') : '-'}
+              </Text>
+            </Flex>
+            {isVisible && !!item?.tokensOffered ? (
+              <Flex gap={2} align='center'>
+                <Text type='secondary'>Tokens Offered:</Text>
+                {item?.tokensOffered && item?.percenOfTokens ? (
+                  <Flex align='center' gap={2}>
+                    <Text type='secondary' weight='semiBold'>
+                      {item?.tokensOffered
+                        ? nFormatter(
+                            item?.tokensOffered,
+                            2,
+                            symbol,
+                            false,
+                            true
+                          )
+                        : '-'}
+                    </Text>
+                    <Text type='secondary' weight='semiBold'>
+                      (
+                      {item?.percenOfTokens
+                        ? nFormatter(item?.percenOfTokens, 2, '%', true)
+                        : '-'}
+                      )
+                    </Text>
+                  </Flex>
+                ) : (
+                  '-'
+                )}
+              </Flex>
+            ) : (
+              ''
+            )}
+          </Flex>
+          <Flex vertical gap={24} align='center'>
+            <Flex vertical align='center' gap={8}>
+              <Text type='secondary'>ROI</Text>
+              <Text weight='semiBold' size={16} lineHeight={24}>
+                {item?.roi ? nFormatter(item?.roi, 2, symbol) : '-'}
+              </Text>
+            </Flex>
+            {isVisible && !!item?.athROI ? (
+              <Flex gap={2} align='center'>
+                <Text type='secondary'>ATH ROI:</Text>
+                <Text type='secondary' weight='semiBold'>
+                  {item?.athROI ? nFormatter(item?.athROI, 2, symbol) : '-'}
+                </Text>
+              </Flex>
+            ) : (
+              ''
+            )}
+          </Flex>
+          <Flex vertical gap={24} align='center'>
+            <Flex vertical align='center' gap={8}>
+              <Text type='secondary'>Unlocked</Text>
+              <Text weight='semiBold' size={16} lineHeight={24}>
+                {!!Number(item?.unlockedPercent)
+                  ? nFormatter(item?.unlockedPercent, 2, symbol)
+                  : '-'}
+              </Text>
+            </Flex>
+            {isVisible ? (
+              !!Number(item?.unlockedTokens) &&
+              !!Number(item?.unlockedValue) ? (
+                <Flex gap={2} align='center'>
+                  <Text type='secondary' weight='semiBold'>
+                    {item?.unlockedTokens
+                      ? nFormatter(item?.unlockedTokens, 2, symbol)
+                      : '-'}
+                  </Text>
+                  <Text type='secondary' weight='semiBold'>
+                    ~
+                  </Text>
+                  <Text type='secondary' weight='semiBold'>
+                    {item?.unlockedValue
+                      ? nFormatter(item?.unlockedValue, 2, '$')
+                      : '-'}
+                  </Text>
+                </Flex>
+              ) : (
+                ''
+              )
+            ) : (
+              ''
+            )}
+          </Flex>
+        </Flex>
         <div
           className={
-            'min-w-[100px] flex items-start justify-center ' +
+            'min-w-[100px] flex items-start justify-center transition-all ' +
             (isVisible ? 'rotate-180' : '')
           }
-          onClick={() => handleToggle(item)}
-          // onClick={() => {}}
         >
-          <IconArrowDown />
+          <IconFundraisingRoundsArrow />
         </div>
-      </div>
+      </Flex>
     </div>
   );
 }

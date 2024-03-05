@@ -1,14 +1,20 @@
-import FilterCustom from '@/components/FilterCustom';
-import { Button, Checkbox, Select, Tag } from 'antd';
-import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
+import { ISearchFilter } from '@/app/home/coin/props';
 import { IconCustomCointTab } from '@/assets/icons/home/IconCustomCoinTab';
+import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
+import FilterCustom from '@/components/FilterCustom';
 import {
   ICustomTagProp,
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
-import { SearchCoinsFilter } from '@/usecases/home';
-import { ISearchFilter } from '@/app/home/coin/props';
+import {
+  SearchCategoriesFilter,
+  SearchCoinsFilter,
+  SearchFundraisingsFilter,
+  SearchUpcomingFilter,
+} from '@/usecases/home';
+import { Button, Checkbox, Select, Tag } from 'antd';
+import './styles.scss';
 
 export type ICoreTableHeaderProps = {
   onChangeFilterSelect?: (value: string[]) => void;
@@ -16,6 +22,7 @@ export type ICoreTableHeaderProps = {
   isFilter?: boolean;
   onCustomize?: () => void;
   onFilter?: () => void;
+  type: string;
 };
 
 export const CoreTableHeader = (props: ICoreTableHeaderProps) => {
@@ -25,21 +32,36 @@ export const CoreTableHeader = (props: ICoreTableHeaderProps) => {
     isFilter = true,
     onCustomize = () => {},
     onFilter = () => {},
+    type,
   } = props;
-  const _renderOption = ({ name, code, checked }: IOptionCustom) => {
+  const _renderOption = ({ name, code, key, checked, symbol }: IOptionCustom) => {
     return (
       <Select.Option isSelectOption={true} value={code} key={code}>
-        <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
-          <div className=''>
-            <span className='name mx-2'>{name}</span>
-            <span className='code px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5'>
-              {code}
+        <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 py-1 justify-between'>
+          <div className='flex gap-1 items-start'>
+            <span
+              style={{
+                fontFamily: 'Plus Jakarta Sans Medium',
+              }}
+              className='name'
+            >
+              {name}
             </span>
+            {symbol ? (
+              <div
+                style={{
+                  fontFamily: 'Plus Jakarta Sans Medium',
+                }}
+                className='code px-[8px] rounded-[4px] bg-[#EEF2F6] text-[#9FA4B7] leading-5 text-[12px] pt-[2px]'
+              >
+                {symbol}
+              </div>
+            ) : (
+              ''
+            )}
           </div>
-          <div className='ant-checkbox'>
-            {!checked ? (
-              <Checkbox disabled className='hover:cursor-pointer' />
-            ) : null}
+          <div className=''>
+            {!checked ? <Checkbox className='custom-checkbox' /> : null}
           </div>
         </div>
       </Select.Option>
@@ -53,9 +75,9 @@ export const CoreTableHeader = (props: ICoreTableHeaderProps) => {
       event.stopPropagation();
     };
 
-    if (index > 3) return <></>;
+    if (index > 2) return <></>;
 
-    if (index === 3)
+    if (index === 2)
       return (
         <Tag color='#5766ff' style={{ marginRight: 3 }}>
           ...
@@ -74,39 +96,71 @@ export const CoreTableHeader = (props: ICoreTableHeaderProps) => {
     );
   };
 
-  const _getData = async ({ searchKey }: IOptionAny) => {
-    const res: any = await SearchCoinsFilter({
-      search_key: searchKey,
-    });
-    if (!res) return [];
+  const handleDataFilterByType = async (
+    type: string,
+    searchKey: string | number | boolean
+  ) => {
+    switch (type) {
+      case 'home_fundraising':
+        return await SearchFundraisingsFilter({
+          search_key: searchKey,
+        });
 
+      case 'home_upcoming':
+        return await SearchUpcomingFilter({
+          search_key: searchKey,
+        });
+
+      case 'home_categories':
+        return await SearchCategoriesFilter({
+          search_key: searchKey,
+        });
+
+      default:
+        return await SearchCoinsFilter({
+          search_key: searchKey,
+        });
+    }
+  };
+
+  const _getData = async ({ searchKey }: IOptionAny) => {
+    const res: any = await handleDataFilterByType(type, searchKey);
+    if (!res) return [];
+    
     return res.map((e: ISearchFilter) => ({
-      id: e.key,
+      id: type == 'home_fundraising' || type == 'home_upcoming' || type == 'home_all_coins' ? e.key : e.slug,
       name: e.name,
-      code: e.key,
+      code: type == 'home_fundraising' || type == 'home_upcoming' || type == 'home_all_coins' ? e.key : e.slug,
       thumb: '',
       isSelected: false,
+      symbol: e.symbol,
     }));
+  };
+
+  const _renderPlaceholder = () => {
+    if (type == 'home_fundraising' || type == 'home_upcoming')
+      return 'Filter Project';
+    return 'Filter Coins';
   };
 
   return (
     <div className='core-table__header'>
       <FilterCustom
-        placeholder='Filter Coins'
+        placeholder={_renderPlaceholder()}
         renderOption={_renderOption}
         renderTag={_renderTag}
         onChange={onChangeFilterSelect}
         getData={_getData}
-        isSortSelected='alphabet'
+        // isSortSelected='alphabet'
       />
       <div className='wrap-btn-filter'>
         {isFilter && (
           <Button
             className='btn-filter !bg-white !text-grey-500'
             onClick={onFilter}
+            icon={<IconFilterCoinTab />}
             disabled
           >
-            <IconFilterCoinTab />
             Filters
           </Button>
         )}
@@ -115,9 +169,9 @@ export const CoreTableHeader = (props: ICoreTableHeaderProps) => {
           <Button
             className='btn-filter !bg-white !text-grey-500'
             onClick={onCustomize}
+            icon={<IconCustomCointTab />}
             disabled
           >
-            <IconCustomCointTab />
             Customize
           </Button>
         )}

@@ -1,3 +1,7 @@
+import { cx } from 'class-variance-authority';
+import { ClassValue } from 'class-variance-authority/dist/types';
+import { twMerge } from 'tailwind-merge';
+
 function getImageType(base64String: string) {
   const decodedData = atob(base64String);
   const uintArray = new Uint8Array(decodedData.length);
@@ -33,22 +37,24 @@ function getImageType(base64String: string) {
 
 export function changeImageUrl(logo: string) {
   if (!logo) return '';
-  if (
-    logo.includes('img.api.cryptorank.io') ||
-    logo.includes('img.cryptorank.io')
-  ) {
-    return logo;
-  } else {
-    if (logo.includes('data:image/')) {
+  try {
+    if (logo.includes('https://') || logo.includes('http://')) {
       return logo;
-    }
+    } else {
+      if (logo.includes('data:image/')) {
+        return logo;
+      }
 
-    const type = getImageType(logo);
-    if (type === 'svg') {
-      return `data:image/svg+xml;base64,${logo}`;
-    }
+      const type = getImageType(logo);
+      if (type === 'svg') {
+        return `data:image/svg+xml;base64,${logo}`;
+      }
 
-    return `data:image/png;base64,${logo}`;
+      return `data:image/png;base64,${logo}`;
+    }
+  } catch (error) {
+    console.log('logo', logo);
+    return '';
   }
 }
 
@@ -95,3 +101,45 @@ export function caculatorAverage24h(price: any, histPrice: any) {
   }
   return 0;
 }
+
+export const cn = (...inputs: ClassValue[]) => {
+  return twMerge(cx(inputs));
+};
+
+export const copyToClipboard = (text: string) => {
+  if (window.isSecureContext && navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+    return true;
+  } else {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    try {
+      document.execCommand('copy');
+    } catch (e) {
+      console.error('Unable to copy to clipboard', e);
+      return false;
+    }
+    document.body.removeChild(el);
+    return true;
+  }
+};
+
+type TDollarFormatOptions = {
+  removeSymbol?: boolean;
+  maxDigits?: number;
+};
+export const dollarFormat = (value: number, options?: TDollarFormatOptions) => {
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 0,
+    maximumFractionDigits: options?.maxDigits || 2,
+  });
+  let formattedValue = formatter.format(value);
+
+  if (options?.removeSymbol) formattedValue = formattedValue.replace('$', '');
+
+  return formattedValue;
+};

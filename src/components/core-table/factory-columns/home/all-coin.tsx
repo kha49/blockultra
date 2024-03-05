@@ -1,17 +1,25 @@
-import type { ColumnsType } from 'antd/es/table';
-import { get } from 'lodash';
+import Text from '@/components/Text';
+import { CoreCellName } from '@/components/core-table/core-cell-name';
 import {
   currencyFormat,
   nFormatter,
   percentFormat,
-  renderSortIcon,
   renderColumnId,
+  renderSortIcon,
 } from '@/helpers';
-import { CoreCellName } from '@/components/core-table/core-cell-name';
-import { changeImageUrl } from '@/helpers/functions';
+import { changeImageUrl, cn } from '@/helpers/functions';
+import type { ColumnsType } from 'antd/es/table';
+import { get } from 'lodash';
 
 const columns: ColumnsType<any> = [
-  renderColumnId(),
+  {
+    ...renderColumnId(),
+    render: (value) => (
+      <Text weight='semiBold' ellipsis>
+        {value._index}
+      </Text>
+    ),
+  },
   {
     key: 'name',
     title: 'Name',
@@ -24,6 +32,8 @@ const columns: ColumnsType<any> = [
         name={value.name}
         symbol={value.symbol}
         link={`/en/detail/${value.key}`}
+        labelClassName='font-jb font-bold'
+        actionTarget='_self'
       />
     ),
     sortIcon: renderSortIcon,
@@ -34,7 +44,10 @@ const columns: ColumnsType<any> = [
     title: 'Price',
     width: 120,
     align: 'right',
-    render: (value) => currencyFormat(value.price, '$'),
+    render: (value) => (
+      <Text weight='semiBold'>{currencyFormat(value.price, '$') || '-'}</Text>
+      // <Text weight='semiBold'>{value.price}</Text>
+    ),
     sortIcon: renderSortIcon,
     sorter: true,
   },
@@ -43,7 +56,11 @@ const columns: ColumnsType<any> = [
     title: '24h %',
     width: 135,
     align: 'right',
-    render: (value) => percentFormat(value.priceChangeIn24h),
+    render: (value) => (
+      <Text weight='semiBold' className={cn('[&>*]:!m-0')}>
+        {value.priceChangeIn24h ? percentFormat(value.priceChangeIn24h) : '-'}
+      </Text>
+    ),
     sorter: true,
   },
   {
@@ -51,7 +68,9 @@ const columns: ColumnsType<any> = [
     title: 'Volume (24h)',
     width: 154,
     align: 'right',
-    render: (value) => nFormatter(value.volume24h, 2, '$'),
+    render: (value) => (
+      <Text weight='semiBold'>{nFormatter(value.volume24h, 2, '$')}</Text>
+    ),
     sorter: true,
   },
   {
@@ -59,7 +78,9 @@ const columns: ColumnsType<any> = [
     title: 'Market Cap',
     width: 135,
     align: 'right',
-    render: (value) => nFormatter(+value.marketCap, 2, '$'),
+    render: (value) => (
+      <Text weight='semiBold'>{nFormatter(+value.marketCap, 2, '$')}</Text>
+    ),
     sorter: true,
   },
   {
@@ -67,16 +88,17 @@ const columns: ColumnsType<any> = [
     title: 'Price Graph (7d)',
     width: 229,
     align: 'right',
-    render: (value) => (
-      <div className='flex items-center justify-end'>
-        <img
-          alt='chart'
-          width={136}
-          height={40}
-          src={changeImageUrl(value.chart)}
-        />
-      </div>
-    ),
+    render: (value) =>
+      value.chart && (
+        <div className='flex items-center justify-end'>
+          <img
+            alt='chart'
+            width={136}
+            height={40}
+            src={changeImageUrl(value.chart)}
+          />
+        </div>
+      ),
   },
 ];
 

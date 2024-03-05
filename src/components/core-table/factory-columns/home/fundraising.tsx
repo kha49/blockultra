@@ -1,14 +1,23 @@
-import type { ColumnsType } from 'antd/es/table';
-import { nFormatter, renderColumnId, renderSortIcon } from '@/helpers';
-import { IFundraising } from '@/app/home/fundraising/props';
-import moment from 'moment/moment';
 import BackersModal from '@/app/[locale]/fundraising/[category]/components/backers-modal';
+import { IFundraising } from '@/app/home/fundraising/props';
 import DataGroup from '@/components/DataGroup';
+import Text from '@/components/Text';
 import { CoreCellName } from '@/components/core-table/core-cell-name';
+import { nFormatter, renderColumnId, renderSortIcon } from '@/helpers';
 import { changeImageUrl } from '@/helpers/functions';
+import type { ColumnsType } from 'antd/es/table';
+import { get } from 'lodash';
+import moment from 'moment/moment';
 
 const columns: ColumnsType<IFundraising> = [
-  renderColumnId(),
+  {
+    ...renderColumnId(),
+    render: (value) => (
+      <Text weight='semiBold' ellipsis>
+        {value._index}
+      </Text>
+    ),
+  },
   {
     key: 'name',
     title: 'Project',
@@ -19,30 +28,41 @@ const columns: ColumnsType<IFundraising> = [
     sorter: true,
     render: (value) => (
       <CoreCellName
+        labelClassName='font-jb font-bold'
         imagesUrl={[changeImageUrl(value.icon)]}
         name={value.name}
         symbol={value.key}
         link={`/en/detail/${value.slug}`}
+        actionTarget='_self'
       />
     ),
   },
   {
-    key: 'announceDate',
+    key: 'date',
     title: 'Date',
+    dataIndex: 'announceDate',
     sortIcon: renderSortIcon,
     sorter: true,
     width: 99,
     align: 'left',
-    render: (value) => moment(value.date).format('DD MMM YYYY'),
+    render: (value) => (
+      <Text weight='semiBold'>{moment(value).format('DD MMM YYYY')}</Text>
+    ),
   },
   {
-    key: 'fundsRaised',
+    key: 'raise',
     title: 'Amount Raised',
     width: 138,
     align: 'right',
     sortIcon: renderSortIcon,
     sorter: true,
-    render: (value) => nFormatter(+value.raise, 2, '$'),
+    render: (value) => {
+      return (
+        <Text weight='semiBold'>
+          {value.raise ? nFormatter(+value.raise, 2, '$') : '-'}
+        </Text>
+      );
+    },
   },
   {
     key: 'stage',
@@ -51,7 +71,7 @@ const columns: ColumnsType<IFundraising> = [
     align: 'left',
     sortIcon: renderSortIcon,
     sorter: true,
-    render: (value) => value.stage,
+    render: (value) => <Text weight='semiBold'>{value.stage}</Text>,
   },
   {
     key: 'valuation',
@@ -60,8 +80,11 @@ const columns: ColumnsType<IFundraising> = [
     sortIcon: renderSortIcon,
     sorter: false,
     align: 'right',
-    render: (value) =>
-      value.valuation ? nFormatter(+value.valuation, 2, '$') : 'N/A',
+    render: (value) => (
+      <Text weight='semiBold'>
+        {value.valuation ? nFormatter(+value.valuation, 2, '$') : '-'}
+      </Text>
+    ),
   },
   {
     key: 'backers',
@@ -70,20 +93,26 @@ const columns: ColumnsType<IFundraising> = [
     align: 'left',
     sortIcon: renderSortIcon,
     sorter: true,
-    render: (value) => (
-      <BackersModal data={value.funds}>
-        {({ onOpen }) => <DataGroup data={value.funds} onClick={onOpen} />}
-      </BackersModal>
-    ),
+    render: (value) => {
+      const funds = get(value, 'funds', []);
+      if (!funds.length) return '-';
+      return (
+        <BackersModal data={funds}>
+          {({ onOpen }) => (
+            <DataGroup data={funds} onClick={onOpen} maxWidth={225} />
+          )}
+        </BackersModal>
+      );
+    },
   },
   {
-    key: 'category',
+    key: 'category_name',
     title: 'Category',
     sortIcon: renderSortIcon,
     sorter: true,
     width: 186,
     align: 'left',
-    render: (value) => value.category?.name,
+    render: (value) => <Text weight='semiBold'>{value.category?.name}</Text>,
   },
 ];
 

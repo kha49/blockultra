@@ -6,28 +6,6 @@
       padding: 4px;
       overflow: hidden;
       border-radius: 20px;
-
-      &::before {
-        content: '';
-        position: absolute;
-        inset: -0.2rem;
-        z-index: -1;
-        background: linear-gradient(0deg, #547aff, #c3f2ff, #4551de);
-        animation: rotate 10s linear infinite;
-      }
-      &::after {
-        content: '';
-        position: absolute;
-        inset: -0.2rem;
-        z-index: -1;
-        background: linear-gradient(0deg, #547aff, #c3f2ff, #4551de);
-        animation: rotate 10s linear infinite;
-        filter: blur(10px);
-      }
-
-      img {
-        border-radius: 20px;
-      }
     }
   }
 
@@ -66,14 +44,5 @@
   100% {
     transform: translateY(0);
     opacity: 1;
-  }
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
   }
 }

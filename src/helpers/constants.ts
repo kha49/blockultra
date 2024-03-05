@@ -66,6 +66,8 @@ export enum HTTP_STATUS_CODE {
 
 export const PHONE_REGEX = /0[0-9]{9}/;
 
+export const FORMAT_NUMBER_REGEX = /\B(?=(\d{3})+(?!\d))/g;
+
 export const COLOR_CHART = {
   BITTER_LEMON: '#B5E612',
   MALACHITE: '#00D06C',
@@ -123,3 +125,19 @@ export const TIME_FILTER_ALL = [
     label: '1y',
   },
 ];
+
+export const SOCKET_EVENTS = {
+  coinChange: 'coinChange',
+};
+
+export enum TYPE_GLOBAL_SEARCH {
+  Trending,
+  Crypto,
+  Category,
+  Upcoming,
+  Exchange,
+  Launpatch,
+  Funcraising,
+  Backer,
+  Unlock
+};

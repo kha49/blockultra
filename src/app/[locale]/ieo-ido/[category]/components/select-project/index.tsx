@@ -4,32 +4,45 @@ import {
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
+import Text from '@/components/Text';
 import { FetchIeoIdo } from '@/usecases/ieo-ido';
-import { Checkbox, Select, Tag } from 'antd';
+import { Checkbox, Flex, Select, Tag } from 'antd';
 import React from 'react';
 import { getIeoIdoApiSearchPath } from '../../config';
 import { SearchProject } from '../../types';
 
 type PropsType = {
   category: string;
+  keySlug?: string;
   onFilterChange: (values: string[]) => void;
   placeholder?: string;
 };
 
 export default function SelectProject(props: PropsType) {
-  const _renderOption = ({ name, key, checked, code }: IOptionCustom) => {
+  const _renderOption = ({
+    name,
+    key,
+    checked,
+    code,
+    symbol,
+  }: IOptionCustom) => {
     return (
       <Select.Option isSelectOption={true} value={code} key={code}>
-        <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
-          <div className=''>
-            <span className='name mx-2'>{name}</span>
-          </div>
-          <div className='ant-checkbox'>
-            {!checked ? (
-              <Checkbox disabled className='hover:cursor-pointer' />
+        <Flex
+          justify='space-between'
+          gap={16}
+          className='select-coin-custom__item'
+        >
+          <div className='flex gap-1'>
+            <Text ellipsis>{name}</Text>
+            {symbol ? (
+              <div className='rounded py-0 bg-grey-200 text-[#9FA4B7] leading-5 px-2 text-xs font-medium'>
+                {symbol}
+              </div>
             ) : null}
           </div>
-        </div>
+          {!checked && <Checkbox className='custom-checkbox' />}
+        </Flex>
       </Select.Option>
     );
   };
@@ -41,9 +54,9 @@ export default function SelectProject(props: PropsType) {
       event.stopPropagation();
     };
 
-    if (index > 3) return <></>;
+    if (index > 2) return <></>;
 
-    if (index === 3)
+    if (index === 2)
       return (
         <Tag color='#5766ff' style={{ marginRight: 3 }}>
           ...
@@ -63,13 +76,22 @@ export default function SelectProject(props: PropsType) {
   };
 
   const _getData = async ({ searchKey }: IOptionAny) => {
-    //@ts-ignore
-    const data: SearchProject[] = await FetchIeoIdo(
-      getIeoIdoApiSearchPath(props.category),
-      {
-        search_key: searchKey || '',
-      }
-    );
+    let url = getIeoIdoApiSearchPath(props.category);
+    if (
+      (props.category === 'upcoming' || props.category === 'ended') &&
+      props.keySlug
+    ) {
+      url = `ieo-ido/launch-pad-detail/search?search_key${
+        searchKey ? `=${searchKey}` : ''
+      }&key=${props.keySlug}&status=${
+        props.category === 'ended' ? 'past' : 'upcoming'
+      }`;
+    } else if (props.category === 'upcoming' || props.category === 'ended') {
+      url += `?search_key${searchKey ? `=${searchKey}` : ''}&status=${
+        props.category === 'ended' ? 'past' : 'upcoming'
+      }`;
+    }
+    const data = (await FetchIeoIdo(url)) as unknown as SearchProject[];
 
     return data.map((searchItem: SearchProject) => ({
       id: searchItem.key,
@@ -77,6 +99,7 @@ export default function SelectProject(props: PropsType) {
       code: searchItem.key,
       thumb: '',
       isSelected: false,
+      symbol: searchItem.symbol,
     }));
   };
 
@@ -87,6 +110,8 @@ export default function SelectProject(props: PropsType) {
       renderTag={_renderTag}
       onChange={props.onFilterChange}
       getData={_getData}
+      className='!font-jm'
+      overlayClassName='[&_.ant-select-item]:!p-3'
     />
   );
 }

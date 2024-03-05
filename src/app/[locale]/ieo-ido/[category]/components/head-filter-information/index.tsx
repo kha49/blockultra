@@ -23,6 +23,8 @@ export default function HeadFilterInformation(props: PropsType) {
 
   const category = slug ? slug[1] || IeoIdoCategory.ended : _category;
 
+  const keySlug = slug ? slug[0] : '';
+
   const router = useRouter();
 
   const tags = getCategoryTags({ isDetail: true });
@@ -55,7 +57,7 @@ export default function HeadFilterInformation(props: PropsType) {
 
       <Flex gap={8} wrap='wrap' align='center' className='relative'>
         <SelectProject
-          placeholder='Filter Launchpads'
+          keySlug={keySlug}
           category={category}
           onFilterChange={(values) => props.onFilter({ search_key: values })}
         />

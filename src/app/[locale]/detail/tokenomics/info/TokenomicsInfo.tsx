@@ -5,6 +5,7 @@ import HexagonItem from '@/components/Hexa/Hexagon';
 import { nFormatter } from '@/helpers';
 import { COLOR_CHART } from '@/helpers/constants';
 import type { ColumnsType } from 'antd/es/table';
+import { useEffect, useState } from 'react';
 
 const columns: ColumnsType<ITokenomics> = [
   {
@@ -15,9 +16,9 @@ const columns: ColumnsType<ITokenomics> = [
     fixed: true,
     render: (_, value) => {
       return (
-        <div key={value.id} className='flex items-center gap-3'>
+        <div key={value._id} className='flex items-center gap-3'>
           <HexagonItem color={value.activeColor} />
-          <span className='text-grey-700 text-sm font-jm font-semibold'>
+          <span className='text-grey-700 text-sm font-jm font-semibold max-w-[62px] lg:max-w-[110px] truncate'>
             {value.name}
           </span>
         </div>
@@ -99,14 +100,21 @@ function getTokenReleaseSchedule(
 }
 
 const TokenomicsInfo = (props: any) => {
-  const allocations = props.data?.datas?.allocations || [];
-  const tokenInfo = props.tokenInfo;
+  const [allocations, setAllocations] = useState<any>([])
+  const [tokenInfo, setTokenInfo] = useState<any>(null)
 
-  if (allocations.length > 0) {
-    allocations.map((item: any, i: number) => {
-      item.activeColor = Object.values(COLOR_CHART)[i];
-    });
-  }
+  useEffect(() => {
+    let allocationsTemp = props.data?.datas?.allocations || [];
+    let tokenInfoTemp = props.tokenInfo;
+    if (allocationsTemp.length > 0) {
+      allocationsTemp.map((item: any, i: number) => {
+        item.activeColor = Object.values(COLOR_CHART)[i];
+      });
+    }
+    setAllocations(allocationsTemp)
+    setTokenInfo(tokenInfoTemp)
+  }, [props])
+  
 
   return (
     <div className='tokenomics-info grid grid-cols-12 gap-4 mb-6'>
@@ -119,26 +127,26 @@ const TokenomicsInfo = (props: any) => {
             <div className='flex items-center justify-between mb-3'>
               <div className='text-grey-500 text-sm'>Total Supply</div>
               <div className='text-grey-700 text-sm'>
-                {nFormatter(tokenInfo.totalSupply, 2, tokenInfo.symbol)}
+                {nFormatter(tokenInfo?.totalSupply, 2, tokenInfo?.symbol)}
               </div>
             </div>
             <div className='flex items-center justify-between mb-3'>
               <div className='text-grey-500 text-sm'>Max Supply</div>
               <div className='text-grey-700 text-sm'>
-                {nFormatter(tokenInfo.maxSupply, 2, tokenInfo.symbol)}
+                {nFormatter(tokenInfo?.maxSupply, 2, tokenInfo?.symbol)}
               </div>
             </div>
             <div className='flex items-center justify-between mb-3'>
               <div className='text-grey-500 text-sm'>Initial Circ. Supply</div>
 
               <div className='text-grey-700 text-sm'>
-                {nFormatter(tokenInfo.circ, 2, tokenInfo.symbol)}
+                {nFormatter(tokenInfo?.circ, 2, tokenInfo?.symbol)}
               </div>
             </div>
             <div className='flex items-center justify-between mb-3'>
               <div className='text-grey-500 text-sm'>Initial Maket Cap</div>
               <div className='text-grey-700 text-sm'>
-                {nFormatter(tokenInfo.marketCap, 2, '$')}
+                {nFormatter(tokenInfo?.marketCap, 2, '$')}
               </div>
             </div>
             <div className='flex items-center justify-between mb-3'>
@@ -159,7 +167,7 @@ const TokenomicsInfo = (props: any) => {
         </div>
       </div>
       <div className='col-span-12 lg:col-span-9'>
-        <div className='box-shadow-common p-6 rounded-lg'>
+        <div className='box-shadow-common p-6 rounded-lg h-full'>
           <div className='overflow-x-auto hide-scroll'>
             <CommonTable
               columns={columns}

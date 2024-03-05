@@ -1,16 +1,18 @@
 'use client';
-import { Flex } from 'antd';
-import React, { useCallback, useEffect, useState } from 'react';
-import './styles.scss';
-import { getColumnsFundraising, getFundraisingPathApi } from '../../config';
-import { useParams } from 'next/navigation';
+import BaseTable from '@/components/BaseTable';
+import { getIndexTable } from '@/helpers';
+import { ORDER } from '@/helpers/constants';
+import { IPagingParams } from '@/models/IPaging';
 import { IResponseAxios } from '@/models/IResponse';
 import { FetchFundraising } from '@/usecases/fundraising';
-import { ORDER } from '@/helpers/constants';
-import { useDebounce } from 'usehooks-ts';
+import { Flex } from 'antd';
 import { isArray } from 'lodash';
+import { useParams } from 'next/navigation';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useDebounce } from 'usehooks-ts';
+import { getColumnsFundraising, getFundraisingPathApi } from '../../config';
 import HeadFilter from '../head-filter';
-import BaseTable from '@/components/BaseTable';
+import './styles.scss';
 
 // const HeadFilter = dynamic(() => import('../head-filter'), { ssr: false });
 // const BaseTable = dynamic(() => import('@/components/BaseTable'), {
@@ -21,10 +23,13 @@ export default function FunDTable() {
   const params = useParams<{ locale: string; category: string }>();
 
   const [data, setData] = useState<any[]>([]);
-  const [pageSize, setPageSize] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [pageSize, setPageSize] = useState(10);
+  // const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
-
+  const [pagingParams, setPagingParams] = useState<IPagingParams>({
+    page: 1,
+    pageSize: 50,
+  });
   const [order, setOrder] = useState({
     columnKey: '',
     order: '',
@@ -33,22 +38,37 @@ export default function FunDTable() {
   const [keyFilter, setKeyFilter] = useState<string[]>([]);
   const debouncedValue = useDebounce<string[]>(keyFilter, 500);
 
-  const _onChangePage = (page: number) => {
-    setCurrentPage(page);
-  };
+  // const _onChangePage = (page: number) => {
+  //   setCurrentPage(page);
+  // };
 
-  const _onChangeSize = (value: number) => {
-    setCurrentPage(1);
-    setPageSize(value);
-  };
+  // const _onChangeSize = (value: number) => {
+  //   setCurrentPage(1);
+  //   setPageSize(value);
+  // };
+
+  const formattedData = useMemo(
+    () =>
+      data.map((item, index) => {
+        return {
+          ...item,
+          _index: getIndexTable(
+            pagingParams.page || 1,
+            pagingParams.pageSize || 10,
+            index
+          ),
+        };
+      }),
+    [pagingParams, data]
+  );
 
   const columns = getColumnsFundraising(params.category);
 
   const getTopbacker = useCallback(async () => {
     const url = getFundraisingPathApi(params.category);
     const response: IResponseAxios<any> = await FetchFundraising(url, {
-      limit: pageSize,
-      page: currentPage,
+      limit: pagingParams.pageSize,
+      page: pagingParams.page,
       sort_by: order.columnKey,
       sort_order: ORDER[order.order as keyof typeof ORDER],
       search_key: debouncedValue.join(','),
@@ -58,7 +78,7 @@ export default function FunDTable() {
     const { data, total } = response;
     setData(data);
     setTotal(total!!);
-  }, [pageSize, currentPage, order, params.category, debouncedValue]);
+  }, [pagingParams, order, params.category, debouncedValue]);
 
   useEffect(() => {
     getTopbacker();
@@ -66,20 +86,23 @@ export default function FunDTable() {
 
   const _onChangeFilter = (keys: string[]) => {
     setKeyFilter(keys);
-    setCurrentPage(1);
+    setPagingParams({ ...pagingParams, page: 1 });
   };
 
   return (
-    <Flex vertical gap={16}>
+    <Flex
+      vertical
+      gap={16}
+      className='p-6 rounded-lg shadow-[0px_0px_16px_0px_#33374714]'
+    >
       <HeadFilter layout={params.category} onChange={_onChangeFilter} />
       <BaseTable
         columns={columns}
-        data={data}
-        pageSize={pageSize}
-        currentPage={currentPage}
+        data={formattedData}
+        pageSize={pagingParams.pageSize}
+        currentPage={pagingParams.page}
         total={total}
-        _onChangePage={_onChangePage}
-        _onChangeSize={_onChangeSize}
+        onChangePagingParams={setPagingParams}
         showSorterTooltip={false}
         onChange={(_page: any, _filter: any, sort: any[]) => {
           const itemSort = isArray(sort) ? sort[0] : sort;

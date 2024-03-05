@@ -22,6 +22,7 @@ export interface ISearchFilter {
   key: string;
   name: string;
   image: Image;
+  symbol: string;
 }
 
 interface Image {

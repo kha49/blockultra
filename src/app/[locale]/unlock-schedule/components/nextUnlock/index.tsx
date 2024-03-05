@@ -1,9 +1,7 @@
-import { currencyFormat, fancyTimeFormat, nFormatter } from '@/helpers';
-import { INextUnlock } from '../../types';
-import { memo, useEffect, useState } from 'react';
-import { useInterval } from 'usehooks-ts';
-import moment from 'moment';
 import CountdownTimer from '@/components/CountdownTimer/CountDownTimer';
+import { currencyFormat, nFormatter } from '@/helpers';
+import { memo } from 'react';
+import { INextUnlock } from '../../types';
 
 const PriceUnlock = memo((props: INextUnlock) => {
   const { nextTokenPrice, nextTokenPricePercent } = props;
@@ -12,14 +10,13 @@ const PriceUnlock = memo((props: INextUnlock) => {
       <p className='text-sm text-center font-semibold font-jsb'>
         {nextTokenPrice ? nFormatter(nextTokenPrice || 0, 2, '$') : '-'}
       </p>
-      {
-        nextTokenPricePercent ? (
-          <p className='text-xs text-grey-400 text-center mt-1 font-normal'>
-            {currencyFormat(nextTokenPricePercent || 0, '', { isAutoZero: true })}%
-            of M.Cap
-          </p>
-        ) : '-'
-      }
+      {nextTokenPricePercent ? (
+        <p className='text-xs text-grey-400 text-center mt-1 font-normal'>
+          {currencyFormat(nextTokenPricePercent || 0, '')}% of M.Cap
+        </p>
+      ) : (
+        '-'
+      )}
     </div>
   );
 });

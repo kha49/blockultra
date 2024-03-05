@@ -1,11 +1,28 @@
-import { changeImageUrl } from '@/helpers/functions';
-import { Modal } from 'antd';
+import IconCrown from '@/assets/icons/IconCrown';
+import Tag from '@/components/Tag';
+import Text from '@/components/Text';
+import { changeImageUrl, cn } from '@/helpers/functions';
+import { Badge, Flex, Modal } from 'antd';
 import Image from 'next/image';
-import { useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 
-const BackerList = ({ backers, initNumber, type }: any) => {
+const BackerList = ({
+  backers,
+  initNumber,
+  type,
+  hasTier = false,
+  modalTier = false,
+}: any) => {
   const [showMore, setShowMore] = useState(false);
   const visibleItems = backers?.slice(0, initNumber);
+
+  const LeadBacker: any[] = useMemo(() => {
+    return backers?.filter((item: any) => item.type === 'LEAD');
+  }, [backers]);
+
+  const OtherBacker: any[] = useMemo(() => {
+    return backers?.filter((item: any) => item.type !== 'LEAD');
+  }, [backers]);
 
   const handleCancel = () => {
     setShowMore(false);
@@ -16,9 +33,9 @@ const BackerList = ({ backers, initNumber, type }: any) => {
       {backers && (
         <div>
           <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
-            {visibleItems?.map((item: any, index: any) => (
-              <BackerItem key={index} item={item} />
-            ))}
+            {visibleItems?.map((item: any, index: any) => {
+              return <BackerItem key={index} item={item} hasTier={hasTier} />;
+            })}
             {backers?.length > initNumber && (
               <button onClick={() => setShowMore(true)}>
                 {' '}
@@ -29,18 +46,50 @@ const BackerList = ({ backers, initNumber, type }: any) => {
             )}
           </div>
           <Modal
-            title={type?.toUpperCase()}
+            title={
+              <Text capitalize weight='bold' size={20} lineHeight={28}>
+                {type}
+              </Text>
+            }
+            styles={{
+              header: {
+                marginBottom: 24,
+              },
+            }}
             open={showMore}
             onCancel={handleCancel}
             footer={false}
           >
-            <div className='flex flex-col flex-wrap items-start gap-5 w-full mt-6'>
-              {...Array.from(Array(backers?.length).keys()).map((item) => {
-                return (
-                  <BackerItem key={item} item={backers[item]} />
-                );
-              })}
-            </div>
+            <Flex vertical gap={24}>
+              {!!LeadBacker.length && (
+                <Flex vertical gap={16}>
+                  <Text weight='bold'>Lead</Text>
+                  <Flex vertical gap={16}>
+                    {LeadBacker.map((item, i) => (
+                      <BackerItem
+                        key={i}
+                        item={item}
+                        imageSize={32}
+                        hasTier={modalTier}
+                      />
+                    ))}
+                  </Flex>
+                </Flex>
+              )}
+              <Flex vertical gap={16}>
+                {!!LeadBacker.length && <Text weight='bold'>Other</Text>}
+                <Flex vertical gap={16}>
+                  {OtherBacker.map((item, i) => (
+                    <BackerItem
+                      key={i}
+                      item={item}
+                      imageSize={32}
+                      hasTier={modalTier}
+                    />
+                  ))}
+                </Flex>
+              </Flex>
+            </Flex>
           </Modal>
         </div>
       )}
@@ -48,28 +97,59 @@ const BackerList = ({ backers, initNumber, type }: any) => {
   );
 };
 
-export const BackerItem = ({ item  }:any) => {
+export const BackerItem = ({ item, imageSize = 48, hasTier = false }: any) => {
+  const Logo = useMemo(() => {
+    if (item?.logo) {
+      const LogoItem = (
+        <Image
+          src={changeImageUrl(item?.logo)}
+          height={imageSize}
+          width={imageSize}
+          alt={item.name}
+        />
+      );
+      if (item?.type === 'LEAD')
+        return (
+          <Badge
+            color='#ffffff'
+            count={
+              <Flex
+                align='center'
+                justify='center'
+                className={cn(
+                  'bg-white rounded-full',
+                  'border-[0.5px] border-solid border-[#E7E7E7]',
+                  imageSize === 48 ? 'w-4 h-4' : 'w-3 h-3'
+                )}
+              >
+                <IconCrown />
+              </Flex>
+            }
+            offset={[imageSize === 48 ? -8 : -6, imageSize === 48 ? 6 : 4]}
+          >
+            {LogoItem}
+          </Badge>
+        );
+      return LogoItem;
+    }
+    return null;
+  }, [item]);
+
   return (
-    <div className='flex justify-center items-center gap-4'>
-      {
-        item?.logo ? (
-          <div className='w-12 h-12'>
-            <img src={changeImageUrl(item?.logo)} height={50} width={50} alt={item.name} />
-          </div>
-        ) : ''
-      }
-      <div>
-        <p className='text-grey-700 font-semibold text-sm mb-1'>{item.name}</p>
-        {
-          item?.tier ? (
-            <div className='bg-grey-200 rounded-sm inline-block px-2 py-0.5'>
-              <p className='text-grey-500 text-xs font-medium'>{item.tier ? `Tier ${item.tier}` : '-'}</p>
-            </div>
-          ) : ''
-        }
-      </div>
-    </div>
+    <Flex gap={12} align='center'>
+      {Logo}
+      <Flex vertical gap={4}>
+        <Text>{item.name}</Text>
+        {hasTier && (
+          <Tag>
+            <Text type='secondary' size={12}>
+              Tier {item.tier}
+            </Text>
+          </Tag>
+        )}
+      </Flex>
+    </Flex>
   );
 };
 
-export default BackerList;
+export default memo(BackerList);

@@ -5,6 +5,7 @@ export interface ISearchData {
   name: string;
   code: string;
   thumb: string | null;
+  symbol: string;
   isSelected: boolean;
   [key: string]: string | number | boolean | any;
 }
@@ -23,6 +24,8 @@ export interface IFilterCustom {
   isSortSelected?: 'alphabet' | 'oldToNew' | 'newToOld';
   value?: any[];
   resetValue?: () => void;
+  className?: string;
+  overlayClassName?: string;
 }
 
 export interface ICustomTagProp extends CustomTagProps {

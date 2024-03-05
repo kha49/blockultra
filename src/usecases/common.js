@@ -2,7 +2,7 @@ import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
 
-const prefix = "api-service/api/";
+const prefix = "api/";
 
 export const GlobalSearchCoins = (params) =>
   apiClient.get(prefix + 'global-search-coin', params);

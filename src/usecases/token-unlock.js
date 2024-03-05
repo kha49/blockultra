@@ -1,7 +1,7 @@
 import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
-const prefix = "api-service/api/";
+const prefix = "api/";
 const baseUrl = `${prefix}token-unlocks`;
 
 export const FetchTokenUnlock = (params) => apiClient.get(baseUrl, params);

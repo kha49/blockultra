@@ -1,8 +1,10 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
+import BreadcrumbContext from '@/context/Breadcrumb/BreadcrumbContext';
 import { TIME_FILTER } from '@/helpers/constants';
 import { FetchCategoryDetail } from '@/usecases/category';
+import { Flex } from 'antd';
 import CategoryOverview from './components/category-overview';
 import CategoryTable from './components/category-table';
 import './styles.scss';
@@ -15,12 +17,18 @@ type PageProps = {
 export default function CategoryDetail(props: PageProps) {
   const [category, setCategory] = useState<any>({});
 
+  const { handleBreadcrumb } = useContext(BreadcrumbContext);
+
   const getCategoryDetail = async ({
     time = TIME_FILTER['24H'],
   }: {
     time?: TIME_FILTER;
   } = {}) => {
-    const response = await FetchCategoryDetail({ id: props.params.id, time });
+    const response: any = await FetchCategoryDetail({
+      id: props.params.id,
+      time,
+    });
+    if (response.name) handleBreadcrumb([{ title: response.name }]);
     setCategory(response);
   };
 
@@ -29,9 +37,9 @@ export default function CategoryDetail(props: PageProps) {
   }, [props.params]);
 
   return (
-    <>
+    <Flex vertical gap={24}>
       <CategoryOverview onFilter={getCategoryDetail} category={category} />
       <CategoryTable />
-    </>
+    </Flex>
   );
 }

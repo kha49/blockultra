@@ -1,28 +1,36 @@
+'use client';
 import { Page } from '@/components/page';
+import BreadcrumbContext from '@/context/Breadcrumb/BreadcrumbContext';
 import { Flex } from 'antd';
-import { useLocale } from 'next-intl';
 import dynamic from 'next/dynamic';
+import { useContext, useEffect } from 'react';
 
 const ExchangeTabs = dynamic(() => import('./tabs'), { ssr: false });
 const ExchangeTable = dynamic(() => import('./table'), { ssr: false });
 
 export default function Exchange() {
-  const locale = useLocale()
+  const { handleBreadcrumb } = useContext(BreadcrumbContext);
+
   const breadcrumbs = [
-    {
-      title: <a href="/">BlockUltra</a>,
-    },
     {
       title: 'Exchanges',
     },
     {
-      title: <a href={`/${locale}/exchange/spot`}>Spot</a>
-    }
+      title: 'Spot',
+    },
   ];
 
+  useEffect(() => {
+    handleBreadcrumb(breadcrumbs, { resetData: true });
+  }, []);
+
   return (
-    <Page breadcrumbs={breadcrumbs}>
-      <Flex className='rounded-lg shadow p-6' vertical gap={16}>
+    <Page>
+      <Flex
+        className='rounded-lg shadow-[0px_0px_16px_0px_#33374714] p-6'
+        vertical
+        gap={16}
+      >
         <ExchangeTabs />
         <ExchangeTable />
       </Flex>

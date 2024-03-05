@@ -1,216 +1,165 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import './style.scss';
-import { Checkbox, Select, Tag } from 'antd';
-import type { ColumnsType } from 'antd/es/table';
-import { FetchList, SearchCoinsInFilter } from '@/usecases/exchange';
-import FilterCustom from '@/components/FilterCustom';
-import ReactECharts from 'echarts-for-react';
 import BaseTable from '@/components/BaseTable';
+import FilterCustom from '@/components/FilterCustom';
 import {
   ICustomTagProp,
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
-import { renderSortIcon, nFormatter, percentFormat } from '@/helpers';
-import { IExchangeSpot } from '../props';
+import Text from '@/components/Text';
+import { nFormatter, percentFormat, renderSortIcon } from '@/helpers';
 import { COLOR_CHART, ORDER } from '@/helpers/constants';
-import { useDebounce } from 'usehooks-ts';
-import { ISearchFilter } from '../props';
-import { isArray } from 'lodash';
 import { changeImageUrl } from '@/helpers/functions';
+import { IPagingParams } from '@/models/IPaging';
+import { FetchList, SearchCoinsInFilter } from '@/usecases/exchange';
+import { Checkbox, Flex, Select, Tag, Tooltip } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import ReactECharts from 'echarts-for-react';
+import { isArray } from 'lodash';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useDebounce } from 'usehooks-ts';
+import { IExchangeSpot, ISearchFilter } from '../props';
+import './style.scss';
 
-const columns: ColumnsType<IExchangeSpot> = [
-  {
-    key: 'id',
-    title: '#',
-    width: 50,
-    align: 'left',
-    fixed: true,
-    render: (_, value, index) => {
-      return index + 1;
-    },
-  },
-  {
-    key: 'name',
-    title: 'Name',
-    width: 294,
-    align: 'left',
-    fixed: true,
-    render: (_, value) => {
-      return (
-        <span className='table-header'>
-          <Link href={`spot/${value.key2}`}>
-            <div className='inline-flex items-center'>
-              {
-                value?.icon ? (
-                  <img src={changeImageUrl(value.icon)} alt={value.name} className='w-8 h-8' />
-                ) : ''
-              }
-              <div className='mx-2 text-grey-700 text-sm font-bold font-jb hover:text-primary-500 truncate max-w-full'>
-                {value.name}
-              </div>
-            </div>
-          </Link>
-        </span>
-      );
-    },
-    sortIcon: renderSortIcon,
-    sorter: true,
-  },
-  {
-    key: 'tier',
-    title: 'Tier',
-    dataIndex: 'tier',
-    width: 26,
-    align: 'center',
-    sorter: true,
-    render: (_, value) => {
-      return <p className='text-right font-jsb'>{value?.tier ? value?.tier : '-'}</p>;
-    },
-  },
-  {
-    key: 'volume24h',
-    title: 'Volume (24h)',
-    dataIndex: 'volume24h',
-    width: 128,
-    align: 'right',
-    sorter: true,
-    render: (_, value) => {
-      return (
-        <div className='text-right font-jsb'>
-          <p className='text-grey-700 text-sm font-semibold'>
-            {value?.volume24h ? nFormatter(value?.volume24h, 2, '$') : '-'}
-          </p>
-          {value?.volumn24hPercent ? percentFormat(value?.volumn24hPercent, 'text-sm font-bold') : '-'}
-        </div>
-      );
-    },
-    sortIcon: renderSortIcon,
-  },
-  {
-    key: 'currenciesCount',
-    title: 'Coins',
-    width: 96,
-    align: 'right',
-    render: (_, value) => {
-      return <p className='text-right font-jsb'>{value?.currenciesCount ? value?.currenciesCount : '-'}</p>;
-    },
-    sorter: true,
-    sortIcon: renderSortIcon,
-  },
-  {
-    key: 'country',
-    title: 'Country',
-    width: 130,
-    align: 'center',
-    render: (_, value: any) => {
-      return value?.country ? (
-        <div className='flex justify-center items-center'>
-          <img
-            className='w-8 h-4.5'
-            src={`/Flag/Country=${value?.country}, Style=Flag, Radius=Off.svg`}
-          />
-          {/* <div>{value.country}</div> */}
-        </div>
-      ) : (
-        <div className='text-grey-700'>-</div>
-      );
-    },
-  },
-  {
-    key: 'marketShare',
-    title: 'Market Share',
-    dataIndex: 'marketShare',
-    width: 148,
-    align: 'left',
-    sorter: false,
-    render: (_, value) => {
-      return (
-        <div className='flex items-center gap-2'>
-          <ReactECharts
-            style={{
-              height: 40,
-              width: 40,
-            }}
-            option={{
-              option: {
-                tooltips: { enabled: false },
-                hover: { mode: null },
-              },
-              grid: {
-                left: 0,
-                top: 0,
-                right: 0,
-                bottom: 0,
-              },
-              series: [
-                {
-                  name: 'Access From',
-                  type: 'pie',
-                  radius: ['40%', '70%'],
-                  avoidLabelOverlap: false,
-                  label: {
-                    show: false,
-                    position: 'center',
-                  },
-                  labelLine: {
-                    show: false,
-                  },
-                  emphasis: {
-                    focus: false,
-                    scale: false,
-                  },
-                  data: [
-                    {
-                      value: value.percentVolume,
-                      name: 'Gainers',
-                      itemStyle: {
-                        color: COLOR_CHART.CRAYOLA,
-                      },
-                    },
-                    {
-                      value: 100 - value.percentVolume,
-                      name: 'losers',
-                      itemStyle: {
-                        color: COLOR_CHART.RADICAL_RED,
-                      },
-                    },
-                  ],
-                },
-              ],
-            }}
-          />
-          <span className='font-jsb'>{value.percentVolume}%</span>
-        </div>
-      );
-    },
-  },
-  {
-    key: 'graph',
-    title: 'Volume Graph (7d)',
-    dataIndex: 'graph',
-    width: 162,
-    align: 'right',
-    sorter: false,
-    render: (_, value) => {
-      try {
+const ExchangeTable = () => {
+  const columns: ColumnsType<IExchangeSpot> = [
+    {
+      key: 'id',
+      title: '#',
+      width: 50,
+      align: 'left',
+      fixed: true,
+      render: (_, value, index) => {
         return (
-          <div className='flex items-center justify-end relative'>
+          <Text weight='semiBold'>
+            {(pagingParams.page - 1) * pagingParams.pageSize + index + 1}
+          </Text>
+        );
+      },
+    },
+    {
+      key: 'name',
+      title: 'Name',
+      width: 294,
+      align: 'left',
+      fixed: true,
+      render: (_, value) => {
+        return (
+          <span className='table-header'>
+            <Link href={`spot/${value.key2}`}>
+              <Flex align='center' gap={8}>
+                {value?.icon ? (
+                  <img
+                    src={changeImageUrl(value.icon)}
+                    alt={value.name}
+                    className='w-8 h-8'
+                  />
+                ) : (
+                  ''
+                )}
+                <Text weight='bold' maxWidth={294} ellipsis>
+                  {value.name}
+                </Text>
+              </Flex>
+            </Link>
+          </span>
+        );
+      },
+      sortIcon: renderSortIcon,
+      sorter: true,
+    },
+    {
+      key: 'tier',
+      title: 'Tier',
+      dataIndex: 'tier',
+      width: 26,
+      align: 'right',
+      sorter: true,
+      render: (_, value) => {
+        return <Text weight='semiBold'>{value?.tier || '-'}</Text>;
+      },
+    },
+    {
+      key: 'volume24h',
+      title: 'Volume (24h)',
+      dataIndex: 'volume24h',
+      width: 128,
+      align: 'right',
+      sorter: true,
+      render: (_, value) => {
+        return (
+          <Flex vertical>
+            <Text weight='semiBold'>
+              {value?.volume24h ? nFormatter(value?.volume24h, 2, '$') : '-'}
+            </Text>
+            <Text weight='bold' noChildrenStyle>
+              {value?.volumn24hPercent
+                ? percentFormat(value?.volumn24hPercent, 'text-sm font-bold')
+                : null}
+            </Text>
+          </Flex>
+        );
+      },
+      sortIcon: renderSortIcon,
+    },
+    {
+      key: 'currenciesCount',
+      title: 'Coins',
+      width: 96,
+      align: 'right',
+      render: (_, value) => {
+        return <Text weight='semiBold'>{value?.currenciesCount || '-'}</Text>;
+      },
+      sorter: true,
+      sortIcon: renderSortIcon,
+    },
+    {
+      key: 'country',
+      title: 'Country',
+      width: 130,
+      align: 'center',
+      sorter: true,
+      render: (_, value: any) => {
+        return value?.country ? (
+          <div className='flex justify-center items-center'>
+            <Tooltip
+              placement='top'
+              title={<Text size={12}>{value?.country}</Text>}
+              trigger={'hover'}
+              overlayClassName='tooltip-light'
+            >
+              <img
+                className='w-8 h-4.5'
+                src={`/Flag/Country=${value?.country}, Style=Flag, Radius=Off.svg`}
+              />
+            </Tooltip>
+          </div>
+        ) : (
+          <div className='text-grey-700'>-</div>
+        );
+      },
+    },
+    {
+      key: 'percentVolume',
+      title: 'Market Share',
+      dataIndex: 'marketShare',
+      width: 148,
+      align: 'left',
+      sorter: true,
+      render: (_, value) => {
+        return (
+          <div className='flex items-center gap-2'>
             <ReactECharts
+              style={{
+                height: 40,
+                width: 40,
+              }}
               option={{
-                title: {
-                  show: false,
-                },
-                xAxis: {
-                  type: 'category',
-                  show: false,
-                },
-                yAxis: {
-                  type: 'value',
-                  show: false,
+                option: {
+                  tooltips: { enabled: false },
+                  hover: { mode: null },
                 },
                 grid: {
                   left: 0,
@@ -220,64 +169,134 @@ const columns: ColumnsType<IExchangeSpot> = [
                 },
                 series: [
                   {
-                    data: value.dataChart.volumes,
-                    type: 'line',
-                    areaStyle: {
-                      color: {
-                        type: 'linear',
-                        x: 0,
-                        y: 0,
-                        x2: 0,
-                        y2: 1,
-                        colorStops: [
-                          {
-                            offset: 0,
-                            color:
-                              value.dataChart.volumes[99] -
-                                value.dataChart.volumes[0] <
-                              0
-                                ? 'rgba(255, 0, 0, 0.5)'
-                                : 'rgba(0, 128, 0, 0.5)',
-                          },
-                          {
-                            offset: 1,
-                            color:
-                              value.dataChart.volumes[99] -
-                                value.dataChart.volumes[0] <
-                              0
-                                ? 'rgba(255, 0, 0, 0)'
-                                : 'rgba(0, 128, 0, 0)',
-                          }, // Điểm cuối gradient color
-                        ],
+                    name: 'Access From',
+                    type: 'pie',
+                    radius: ['40%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                      show: false,
+                      position: 'center',
+                    },
+                    labelLine: {
+                      show: false,
+                    },
+                    emphasis: {
+                      focus: false,
+                      scale: false,
+                    },
+                    data: [
+                      {
+                        value: value.percentVolume,
+                        name: 'Gainers',
+                        itemStyle: {
+                          color: COLOR_CHART.CRAYOLA,
+                        },
                       },
-                    },
-                    lineStyle: {
-                      color:
-                        value.dataChart.volumes[99] -
-                          value.dataChart.volumes[0] <
-                        0
-                          ? 'rgba(255, 0, 0, 0.5)'
-                          : 'rgba(0, 128, 0, 0.5)', // Màu xanh lá cây cho đường line
-                    },
-                    showSymbol: false,
+                      {
+                        value: 100 - value.percentVolume,
+                        name: 'losers',
+                        itemStyle: {
+                          color: COLOR_CHART.RADICAL_RED,
+                        },
+                      },
+                    ],
                   },
                 ],
               }}
-              style={{ width: '240px', height: '62px' }}
             />
+            <Text weight='semiBold'>{value.percentVolume}%</Text>
           </div>
         );
-      } catch (error) {
-        return null;
-      }
+      },
     },
-  },
-];
-
-const ExchangeTable = () => {
+    {
+      key: 'graph',
+      title: 'Volume Graph (7d)',
+      dataIndex: 'graph',
+      width: 162,
+      align: 'right',
+      sorter: false,
+      render: (_, value) => {
+        try {
+          return (
+            <div className='flex items-center justify-end relative'>
+              <ReactECharts
+                option={{
+                  title: {
+                    show: false,
+                  },
+                  xAxis: {
+                    type: 'category',
+                    show: false,
+                  },
+                  yAxis: {
+                    type: 'value',
+                    show: false,
+                  },
+                  grid: {
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                  },
+                  series: [
+                    {
+                      data: value.dataChart.volumes,
+                      type: 'line',
+                      areaStyle: {
+                        color: {
+                          type: 'linear',
+                          x: 0,
+                          y: 0,
+                          x2: 0,
+                          y2: 1,
+                          colorStops: [
+                            {
+                              offset: 0,
+                              color:
+                                value.dataChart.volumes[99] -
+                                  value.dataChart.volumes[0] <
+                                0
+                                  ? 'rgba(255, 0, 0, 0.5)'
+                                  : 'rgba(0, 128, 0, 0.5)',
+                            },
+                            {
+                              offset: 1,
+                              color:
+                                value.dataChart.volumes[99] -
+                                  value.dataChart.volumes[0] <
+                                0
+                                  ? 'rgba(255, 0, 0, 0)'
+                                  : 'rgba(0, 128, 0, 0)',
+                            }, // Điểm cuối gradient color
+                          ],
+                        },
+                      },
+                      lineStyle: {
+                        color:
+                          value.dataChart.volumes[99] -
+                            value.dataChart.volumes[0] <
+                          0
+                            ? 'rgba(255, 0, 0, 0.5)'
+                            : 'rgba(0, 128, 0, 0.5)', // Màu xanh lá cây cho đường line
+                      },
+                      showSymbol: false,
+                    },
+                  ],
+                }}
+                style={{ width: '240px', height: '62px' }}
+              />
+            </div>
+          );
+        } catch (error) {
+          return null;
+        }
+      },
+    },
+  ];
   const [data, setData] = useState<IExchangeSpot[]>([]);
-  const [pageSize, setPageSize] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [pageSize, setPageSize] = useState(50);
+  // const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(999);
   const [order, setOrder] = useState({
     columnKey: 'volume24h',
@@ -285,11 +304,15 @@ const ExchangeTable = () => {
   });
   const [keyFilter, setKeyFilter] = useState<string[]>([]);
   const debouncedValue = useDebounce<string[]>(keyFilter, 300);
+  const [pagingParams, setPagingParams] = useState<IPagingParams>({
+    page: 1,
+    pageSize: 50,
+  });
 
   const getCoins = async () => {
     const response: any = await FetchList({
-      limit: pageSize,
-      page: currentPage,
+      limit: pagingParams.pageSize,
+      page: pagingParams.page,
       sort_by: order.columnKey,
       sort_order: ORDER[order.order as keyof typeof ORDER],
       search_key: keyFilter.join(','),
@@ -303,6 +326,7 @@ const ExchangeTable = () => {
         key2: item.key,
         key: index,
       }));
+      console.log(dataClone);
       setData(dataClone);
     } else {
       setData(data);
@@ -314,16 +338,16 @@ const ExchangeTable = () => {
 
   useEffect(() => {
     getCoins();
-  }, [pageSize, currentPage, order, debouncedValue]);
+  }, [pagingParams, order, debouncedValue]);
 
-  const _onChangePage = (page: number) => {
-    setCurrentPage(page);
-  };
+  // const _onChangePage = (page: number) => {
+  //   setCurrentPage(page);
+  // };
 
-  const _onChangeSize = (value: number) => {
-    setCurrentPage(1);
-    setPageSize(value);
-  };
+  // const _onChangeSize = (value: number) => {
+  //   setCurrentPage(1);
+  //   setPageSize(value);
+  // };
 
   const _renderTag = (options: ICustomTagProp) => {
     const { value, closable, onClose, index, rawData } = options;
@@ -332,9 +356,9 @@ const ExchangeTable = () => {
       event.stopPropagation();
     };
 
-    if (index > 3) return <></>;
+    if (index > 2) return <></>;
 
-    if (index === 3)
+    if (index === 2)
       return (
         <Tag color='#5766ff' style={{ marginRight: 3 }}>
           ...
@@ -365,22 +389,25 @@ const ExchangeTable = () => {
       code: e.key,
       thumb: '',
       isSelected: false,
+      symbol: e.symbol,
     }));
   };
 
-  const _renderOption = ({ name, code, checked }: IOptionCustom) => {
+  const _renderOption = ({ name, code, checked, symbol }: IOptionCustom) => {
+    console.log(symbol);
     return (
       <Select.Option isSelectOption={true} value={code} key={name}>
-        <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
-          <div className=''>
-            <span className='name mx-2'>{name}</span>
+        <Flex
+          justify='space-between'
+          gap={16}
+          className='select-coin-custom__item'
+        >
+          <div className='flex gap-1'>
+            <Text ellipsis>{name}</Text>
+            {/* <div>{symbol}</div> */}
           </div>
-          <div className='ant-checkbox'>
-            {!checked ? (
-              <Checkbox disabled className='hover:cursor-pointer' />
-            ) : null}
-          </div>
-        </div>
+          {!checked && <Checkbox className='custom-checkbox' />}
+        </Flex>
       </Select.Option>
     );
   };
@@ -394,12 +421,14 @@ const ExchangeTable = () => {
       <div className='filter flex justify-between mb-4'>
         <div className='flex'>
           <FilterCustom
-            placeholder='Search'
+            placeholder='Filter exchanges'
             renderOption={_renderOption}
             renderTag={_renderTag}
             onChange={_onSelectFilter}
             getData={_getData}
-            isSortSelected='alphabet'
+            // isSortSelected='alphabet'
+            className='!font-jm'
+            overlayClassName='[&_.ant-select-item]:!p-3'
           />
         </div>
       </div>
@@ -407,12 +436,11 @@ const ExchangeTable = () => {
         <BaseTable
           columns={columns}
           data={data}
-          pageSize={pageSize}
-          currentPage={currentPage}
+          pageSize={pagingParams.pageSize}
+          currentPage={pagingParams.page}
           total={total}
-          _onChangePage={_onChangePage}
-          _onChangeSize={_onChangeSize}
-          pagination={{ position: ['none'], pageSize }}
+          onChangePagingParams={setPagingParams}
+          pagination={{ position: ['none'], pageSize: pagingParams.pageSize }}
           onChange={(_page: any, _filter: any, sort: any[]) => {
             const itemSort = isArray(sort) ? sort[0] : sort;
             setOrder({

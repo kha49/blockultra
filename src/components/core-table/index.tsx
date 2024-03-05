@@ -15,14 +15,16 @@ import CommonTable from '../CommonTable/common-table';
 import React, { HTMLAttributes, useMemo } from 'react';
 import { getIndexTable } from '@/helpers';
 import clsx from 'clsx';
+import { IPagingParams } from '@/models/IPaging';
 
 export type CoreTableProps<T = AnyObject> = TableProps<T> & {
   data: T[];
   total?: number;
   pageSize?: number;
   currentPage?: number;
-  onChangePage?: (page: number) => void;
-  onChangeSize?: (size: number) => void;
+  // onChangePage?: (page: number) => void;
+  // onChangeSize?: (size: number) => void;
+  onChangePagingParams?: (params: IPagingParams) => void;
   type: FactoryColumns;
   mobileColumnsKey?: string[];
   renderHeader?: () => React.ReactNode;

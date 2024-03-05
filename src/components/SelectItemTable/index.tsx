@@ -1,3 +1,4 @@
+import Text from '@/components/Text';
 import { Select } from 'antd';
 import './styles.scss';
 interface IProps {
@@ -13,14 +14,13 @@ const SelectItemTable = ({ onChange, pageSize }: IProps) => {
   return (
     <Select
       defaultValue={pageSize?.toString() || '10'}
-      style={{ width: 140 }}
       onChange={_onChange}
-      className='select-count-common'
+      className='select-count-common !w-[155px] !h-9'
       options={[
-        { value: '10', label: 'Show rows 10' },
-        { value: '20', label: 'Show rows 20' },
-        { value: '50', label: 'Show rows 50' },
-        { value: '100', label: 'Show rows 100' },
+        { value: '10', label: <Text weight='semiBold'>Show rows 10</Text> },
+        { value: '20', label: <Text weight='semiBold'>Show rows 20</Text> },
+        { value: '50', label: <Text weight='semiBold'>Show rows 50</Text> },
+        { value: '100', label: <Text weight='semiBold'>Show rows 100</Text> },
       ]}
     />
   );

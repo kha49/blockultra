@@ -32,6 +32,8 @@ const config: Config = {
         orange: {
           '400': '#F89152',
           '500': '#F7931A',
+          '600': '#FF8D18',
+          '700': '#FF4D17',
         },
       },
       maxWidth: {

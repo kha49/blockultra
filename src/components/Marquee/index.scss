@@ -12,11 +12,11 @@
   &__wrapper {
     top: 0;
     left: 100%;
-    width: 100%;
+    width: max-content;
     overflow: hidden;
     position: absolute;
     white-space: nowrap;
-    animation: scroll2 30s linear infinite;
+    animation: scroll2 10s linear infinite;
 
     > a {
       position: relative;
@@ -92,7 +92,8 @@
 }
 
 .gas-tooltip {
+  max-width: 100% !important;
   .ant-tooltip-inner {
-    min-width: 350px;
+    padding: 16px !important;
   }
 }

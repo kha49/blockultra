@@ -1,15 +1,16 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-import _, { get } from 'lodash';
-import { COLOR_CHART } from '@/helpers/constants';
 import { IconHexagon } from '@/assets/icons';
+import Text from '@/components/Text';
 import DoughnutChart from '@/components/chart/Doughnut';
-import { getDatasetAtEvent } from 'react-chartjs-2';
+import { COLOR_CHART } from '@/helpers/constants';
+import { cn } from '@/helpers/functions';
 import { useDisclosure } from '@/hooks/useDisclosure';
-import { Modal } from 'antd';
-import { ItemCategoryBanker } from '../../../../types';
+import { Flex, Modal } from 'antd';
 import ReactECharts from 'echarts-for-react';
+import { round } from 'lodash';
+import { useEffect, useRef, useState } from 'react';
+import { ItemCategoryBanker } from '../../../../types';
 
 interface IChartData {
   labels: string[];
@@ -32,23 +33,32 @@ const ModalChart = ({ data }: { data: ItemCategoryBanker[] }) => {
     label: '',
     value: '',
   });
-  let dataClone = []
-
+  const [dataCheck, setDataCheck] = useState<any[]>([]);
   useEffect(() => {
     if (!data) return;
-    console.log('data', data)
-    dataClone = []
-    dataClone = data.map((d) => d.count > 0)
-    const length = data.length;
+    const sumCount = data.reduce((a, b) => a + b.count, 0);
+    const dataHasPercent = data.map((d) => ({
+      ...d,
+      percent: round((d.count / sumCount) * 100, 2),
+    }));
+    const dataOther = dataHasPercent.slice(3);
+    setDataCheck(dataHasPercent);
+    const length = dataHasPercent.length;
     const colorChart = Object.keys(COLOR_CHART)
       .splice(0, length)
       .map((e: string) => COLOR_CHART[e as keyof typeof COLOR_CHART]);
     const dataChart = {
-      labels: data.map((d) => d.name),
+      labels: [...dataHasPercent.slice(0, 3).map((d) => d.name), 'Other'],
       datasets: [
         {
           label: 'aaa',
-          data: data.map((d) => d.count),
+          data: [
+            ...dataHasPercent.slice(0, 3).map((d) => d.percent),
+            round(
+              (dataOther.reduce((a, b) => a + b.count, 0) / sumCount) * 100,
+              2
+            ),
+          ],
           backgroundColor: colorChart,
           hoverOffset: 10,
           borderWidth: 5,
@@ -59,35 +69,33 @@ const ModalChart = ({ data }: { data: ItemCategoryBanker[] }) => {
     setDataChart(dataChart);
 
     setLabelFocus({
-      label: data[0].name,
-      value: data[0].count + '',
+      label: dataHasPercent[0].name,
+      value: dataHasPercent[0].percent + '',
     });
   }, [data]);
 
-  const onClickDoughnut = (event: any) => {
-    const chart = chartRef.current as any;
-    const activePoints = getDatasetAtEvent(chart, event);
-    if (activePoints.length > 0) {
-      onOpen();
-    }
-  };
-
   const _renderChart = () => {
-    if (!dataChart || dataClone.length === 0) return <></>;
+    if (!dataChart || dataCheck.length === 0) return <></>;
     return (
       <>
-        <div className='absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex-col flex items-center justify-center'>
-          <div className='text-xl font-bold text-grey-700'>
+        <Flex
+          vertical
+          align='center'
+          justify='center'
+          className={cn(
+            'absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
+          )}
+        >
+          <Text size={20} lineHeight={28} weight='bold' ellipsis maxWidth={100}>
             {labelFocus.label}
-          </div>
-          <div className='text-base font-semibold text-grey-500'>
+          </Text>
+          <Text size={16} lineHeight={24} type='secondary'>
             {labelFocus.value}%
-          </div>
-        </div>
+          </Text>
+        </Flex>
         <DoughnutChart
           data={dataChart}
           ref={chartRef}
-          onClick={onClickDoughnut}
           options={{
             plugins: {
               legend: {
@@ -103,7 +111,7 @@ const ModalChart = ({ data }: { data: ItemCategoryBanker[] }) => {
                 let ctx = activeElements[0].element.$context;
                 let label = chart.data.labels[ctx.dataIndex];
                 let value = chart.data.datasets[0].data[ctx.dataIndex];
-                setLabelFocus({ label, value }); 
+                setLabelFocus({ label, value });
               }
             },
           }}
@@ -112,26 +120,41 @@ const ModalChart = ({ data }: { data: ItemCategoryBanker[] }) => {
     );
   };
 
-  const _renderLabels = () => {
-    if (!dataChart || dataClone.length === 0) return null;
-    const { datasets, labels } = dataChart as any;
+  const _renderLabels = (data?: any[]) => {
+    if (!dataChart || dataCheck.length === 0) return null;
+
+    const { datasets, labels } = dataChart;
     const dtSetFirstItem = datasets[0];
     return (
       <>
-        {dtSetFirstItem.data.map((item: any, index: number) => (
-          <li
-            key={index}
-            className='flex items-center gap-3'
-            style={{
-              color: dtSetFirstItem.backgroundColor[index],
-            }}
-          >
-            <IconHexagon />
-            <div className='text-sm font-medium text-grey-700 font-jm'>
-              {labels[index]}: {item}%
-            </div>
-          </li>
-        ))}
+        {(data?.map((d) => d.percent) || dtSetFirstItem.data).map(
+          (item: any, index: number) => (
+            <li
+              key={index}
+              className={
+                'flex items-center gap-3 ' +
+                cn(
+                  index === dtSetFirstItem.data.length - 1 &&
+                    !data &&
+                    'cursor-pointer'
+                )
+              }
+              style={{
+                color: dtSetFirstItem.backgroundColor[index],
+              }}
+              onClick={
+                index === dtSetFirstItem.data.length - 1 && !data
+                  ? () => onOpen()
+                  : undefined
+              }
+            >
+              <IconHexagon />
+              <Text>
+                {(data && data[index].name) || labels[index]}: {item}%
+              </Text>
+            </li>
+          )
+        )}
       </>
     );
   };
@@ -165,34 +188,45 @@ const ModalChart = ({ data }: { data: ItemCategoryBanker[] }) => {
   };
 
   return (
-    <div className='flex flex-1 flex-col gap-6 py-6'>
-      <div className='text-base text-grey-700 font-bold text-center font-jm'>
+    <div className='flex flex-1 flex-col gap-6 p-6'>
+      <Text weight='bold' size={16} lineHeight={24} className={'text-center'}>
         Main Investment Categories
-      </div>
-      { dataClone.length > 0 ? (
-        <div className='gap-5 md:gap-10 flex flex-col md:flex-col xl:flex-row flex-wrap items-center justify-center flex-1'>
+      </Text>
+      {dataCheck.length > 0 ? (
+        <Flex
+          wrap='wrap'
+          align='center'
+          justify='center'
+          flex={1}
+          className={cn('gap-5 md:gap-10 flex-col md:flex-col', 'xl:flex-row')}
+        >
           <div className='w-[194px] h-[194px] relative'>{_renderChart()}</div>
 
           <ul className='gap-3 flex flex-col'>{_renderLabels()}</ul>
-        </div>
-      ): (
-          <div className='flex items-center justify-center relative'>
-            <ReactECharts option={optionPie2} style={{
+        </Flex>
+      ) : (
+        <div className='flex items-center justify-center relative'>
+          <ReactECharts
+            option={optionPie2}
+            style={{
               height: 250,
               width: 250,
-            }} />
-            <div className='text-grey-200 text-2xl absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4'>N/A</div>
+            }}
+          />
+          <div className='font-jm text-grey-200 text-2xl absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4'>
+            N/A
           </div>
+        </div>
       )}
       <Modal
-        title={<div className='text-xl'>Main Investment Categories</div>}
+        title={<div className='text-xl'>Main Investment Categories Other</div>}
         open={isOpen}
         onOk={onClose}
         onCancel={onClose}
         footer={null}
       >
         <ul className='gap-3 flex flex-col mt-6'>
-          {_renderLabels()}
+          {_renderLabels(dataCheck.slice(3, dataCheck.length))}
         </ul>
       </Modal>
     </div>

@@ -1,26 +1,25 @@
-export const IconFacebook = () => {
+export const IconFacebook = ({ width = 32, height = 32 }) => {
   return (
     <svg
-      width='32'
-      height='32'
-      viewBox='0 0 32 32'
-      fill='none'
       xmlns='http://www.w3.org/2000/svg'
+      width={width}
+      height={height}
+      fill='none'
+      viewBox={`0 0 32 32`}
     >
-      <g clipPath='url(#clip0_770_48567)'>
+      <g clipPath='url(#clip0_7424_40491)'>
         <path
-          d='M22.4908 17.4616L23.2957 12.1615H18.2606V8.72358C18.2606 7.27321 18.9626 5.85866 21.2178 5.85866H23.5085V1.3464C23.5085 1.3464 21.4306 0.988281 19.4449 0.988281C15.2962 0.988281 12.5872 3.52732 12.5872 8.12195V12.1615H7.97754V17.4616H12.5872V30.275C13.5126 30.4218 14.4594 30.497 15.4239 30.497C16.3883 30.497 17.3351 30.4218 18.2606 30.275V17.4616H22.4908Z'
           fill='#9FA4B7'
-        />
+          d='M22.49 17.462l.806-5.3H18.26V8.723c0-1.45.702-2.865 2.957-2.865h2.29V1.346S21.432.988 19.446.988c-4.149 0-6.858 2.54-6.858 7.134v4.04h-4.61v5.3h4.61v12.813c.926.147 1.873.222 2.837.222.965 0 1.911-.075 2.837-.222V17.462h4.23z'
+        ></path>
       </g>
       <defs>
-        <clipPath id='clip0_770_48567'>
-          <rect
-            width='31.0618'
-            height='31.0618'
-            fill='white'
-            transform='translate(0.211914 0.211914)'
-          />
+        <clipPath id='clip0_7424_40491'>
+          <path
+            fill='#fff'
+            d='M0 0H31.062V31.062H0z'
+            transform='translate(.212 .212)'
+          ></path>
         </clipPath>
       </defs>
     </svg>

@@ -4,22 +4,20 @@ import SwitchAllocation from '@/components/SwitchAllocation/SwitchAllocation';
 import './index.scss';
 import { COLOR_CHART } from '@/helpers/constants';
 import ReactECharts from 'echarts-for-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { nFormatter } from '@/helpers';
 import moment from 'moment';
-
-// interface IAllocation {
-//   id?: number;
-//   title?: string;
-//   isActive?: boolean;
-//   activeColor?: string;
-// }
+import Text from '@/components/Text';
 
 export default function TokenAllocation(props: any) {
   const [allocations, setAllocations] = useState<ITokenomics[]>([]);
   const [cirChart, setCirChart] = useState([]);
   const [schedule, setSchedule] = useState([]);
   const [time, setTime] = useState([])
+  const [name, setName] = useState('')
+  const [percent, setPercent] = useState('')
+  let allocationsData = props.data?.datas?.allocations || [];
+  let scheduleData = props.data?.chart || [];
   
   useEffect(() => {
     let cirChartTemp: any = [];
@@ -28,7 +26,7 @@ export default function TokenAllocation(props: any) {
     const propAllocation = props.data?.datas?.allocations || [];
     if (propAllocation.length > 0) {
       propAllocation.map((item: any, i: number) => {
-        cirChartTemp.push({ value: item.tokens_percent });
+        cirChartTemp.push({ value: item.tokens_percent, name: item.name });
         item.activeColor = Object.values(COLOR_CHART)[i];
         item.isActive = true;
       })
@@ -36,6 +34,7 @@ export default function TokenAllocation(props: any) {
     if (scheduleTemp.length > 0) {
       scheduleTemp.map((item: any) => {
         item.data = item.tokens
+        item.isActive = true
       })
       timeTemp = scheduleTemp[0]?.times && scheduleTemp[0]?.times.length > 0 ? scheduleTemp[0]?.times.map((item: any) => {
         return item = moment(item).format('DD/MM/YYYY')
@@ -45,99 +44,139 @@ export default function TokenAllocation(props: any) {
     setSchedule(scheduleTemp);
     setCirChart(cirChartTemp);
     setTime(timeTemp);
-  },[])
+    setName(cirChartTemp[0].name)
+    setPercent(cirChartTemp[0].value ? cirChartTemp[0].value + '%' : '')
+  },[props])
 
-  const optionPie = {
-    color: [
-      COLOR_CHART.BITTER_LEMON,
-      COLOR_CHART.MALACHITE,
-      COLOR_CHART.PAOLO_VERONESE_GREEN,
-      COLOR_CHART.TURQUOISE_SURF,
-      COLOR_CHART.CERULEAN_FROST,
-      COLOR_CHART.PLUMP_PURPLE,
-      COLOR_CHART.PURPUREUS,
-      COLOR_CHART.JAZZBERRY_JAM,
-      COLOR_CHART.CERISE,
-      COLOR_CHART.SUNSET_ORANGE,
-    ],
-    series: [
-      {
-        name: 'Token Allocation',
-        type: 'pie',
-        radius: ['50%', '70%'],
-        itemStyle: {
-          borderRadius: 5,
-          borderColor: '#fff',
-          borderWidth: 3,
-        },
-        label: {
-          show: false,
-          position: 'center',
-        },
-        emphasis: {
+  const optionPie = useMemo(
+    () => ({
+      color: [
+        COLOR_CHART.BITTER_LEMON,
+        COLOR_CHART.MALACHITE,
+        COLOR_CHART.PAOLO_VERONESE_GREEN,
+        COLOR_CHART.TURQUOISE_SURF,
+        COLOR_CHART.CERULEAN_FROST,
+        COLOR_CHART.PLUMP_PURPLE,
+        COLOR_CHART.PURPUREUS,
+        COLOR_CHART.JAZZBERRY_JAM,
+        COLOR_CHART.CERISE,
+        COLOR_CHART.SUNSET_ORANGE,
+      ],
+      series: [
+        {
+          name: 'Token Allocation',
+          type: 'pie',
+          radius: ['50%', '70%'],
+          itemStyle: {
+            borderRadius: 5,
+            borderColor: '#fff',
+            borderWidth: 3,
+          },
           label: {
-            show: true,
-            fontSize: 40,
-            fontWeight: 'bold',
+            show: false,
+          },
+          showInLegend: false,
+          labelLine: {
+            show: false,
+          },
+          data: cirChart,
+        },
+      ],
+    }),
+    [cirChart]
+  );
+
+  const optionStackArea = useMemo(
+    () => ({
+      color: [
+        COLOR_CHART.BITTER_LEMON,
+        COLOR_CHART.MALACHITE,
+        COLOR_CHART.PAOLO_VERONESE_GREEN,
+        COLOR_CHART.TURQUOISE_SURF,
+        COLOR_CHART.CERULEAN_FROST,
+        COLOR_CHART.PLUMP_PURPLE,
+        COLOR_CHART.PURPUREUS,
+        COLOR_CHART.JAZZBERRY_JAM,
+        COLOR_CHART.CERISE,
+        COLOR_CHART.SUNSET_ORANGE,
+      ],
+      title: {
+        text: '',
+      },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: {
+          type: 'cross',
+          label: {
+            backgroundColor: '#6a7985',
           },
         },
-        labelLine: {
-          show: false,
-        },
-        data: cirChart,
       },
-    ],
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true,
+      },
+      xAxis: [
+        {
+          type: 'category',
+          boundaryGap: false,
+          data: time,
+        },
+      ],
+      yAxis: [
+        {
+          type: 'value',
+        },
+      ],
+      series: schedule,
+    }),
+    [cirChart]
+  );
+
+  const handler = (e: { _id: string; isActive: boolean }) => {
+    let cirChartTemp: any = [];
+    let scheduleTemp: any = [];
+    let index = allocationsData.findIndex((item: any) => item._id === e._id)
+    allocationsData[index].isActive = !allocationsData[index].isActive
+    scheduleData[index].isActive = !scheduleData[index].isActive
+    allocationsData.map((item: any, i: number) => {
+      cirChartTemp.push({ value: item.isActive ? item.tokens_percent : 0 , name: item.name });
+      item.activeColor = Object.values(COLOR_CHART)[i];
+    })
+    let emptyArr = scheduleData[0].tokens.map(() => '0')
+    scheduleTemp = scheduleData
+    scheduleTemp.map((item: any) => {
+      item.data = item.isActive ? item.tokens : emptyArr
+    })
+    let firstItem = allocationsData.find((item: any) => item.isActive === true)
+    if (firstItem) {
+      setName(firstItem.name || '')
+      setPercent(firstItem.tokens_percent ? firstItem.tokens_percent + '%' : '')
+    } else {
+      setName('')
+      setPercent('')
+    }
+    setCirChart(cirChartTemp);
+    setSchedule(scheduleTemp);
   };
 
-  const optionStackArea = {
-    color: [
-      COLOR_CHART.BITTER_LEMON,
-      COLOR_CHART.MALACHITE,
-      COLOR_CHART.PAOLO_VERONESE_GREEN,
-      COLOR_CHART.TURQUOISE_SURF,
-      COLOR_CHART.CERULEAN_FROST,
-      COLOR_CHART.PLUMP_PURPLE,
-      COLOR_CHART.PURPUREUS,
-      COLOR_CHART.JAZZBERRY_JAM,
-      COLOR_CHART.CERISE,
-      COLOR_CHART.SUNSET_ORANGE,
-    ],
-    title: {
-      text: '',
-    },
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-        label: {
-          backgroundColor: '#6a7985',
-        },
-      },
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true,
-    },
-    xAxis: [
-      {
-        type: 'category',
-        boundaryGap: false,
-        data: time,
-      },
-    ],
-    yAxis: [
-      {
-        type: 'value',
-      },
-    ],
-    series: schedule,
+  const handleMouseOverChart = (param: any) => {
+    setName(param.name)
+    setPercent(param.percent ? param.percent + '%' : '')
   };
 
-  const handler = (e: { id: string; isActive: boolean }) => {
-    console.log('e', e);
-  };
+  const ChartPie = useMemo(() => {
+    return (
+      <ReactECharts
+        option={optionPie}
+        onEvents={{
+          mouseover: handleMouseOverChart,
+        }}
+      />
+    );
+  }, [optionPie]);
 
   return (
     <div className='token grid grid-cols-1 lg:grid-cols-2 gap-4'>
@@ -147,17 +186,25 @@ export default function TokenAllocation(props: any) {
         </div>
         <div className='flex flex-col lg:flex-row items-center'>
           <div className='relative'>
-            <ReactECharts option={optionPie} />
+            {ChartPie}
             <div className='absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 flex flex-col justify-center items-center'>
               <div className='text-grey-700 text-xl font-jm font-medium'>
-                StableCoins
+                <Text
+                  weight='bold'
+                  size={20}
+                  lineHeight={28}
+                  ellipsis={{ open: false }}
+                  maxWidth={100}
+                >
+                  {name}
+                </Text>
               </div>
               <div className='text-grey-500 text-sm font-jm font-medium'>
-                60%
+                {percent}
               </div>
             </div>
           </div>
-          <div className='note'>
+          <div className='note min-w-[300px]'>
             {allocations && allocations.length > 0
               ? allocations.map((item, index) => {
                   return (
@@ -166,13 +213,13 @@ export default function TokenAllocation(props: any) {
                       key={index}
                     >
                       <SwitchAllocation
-                        id={item.id}
+                        _id={item._id}
                         isActive={item.isActive}
                         title={item.name}
                         activeColor={item.activeColor}
                         onChange={(e: any) => handler(e)}
                       />
-                      <div className='flex items-center justify-between gap-4'>
+                      <div className='flex items-center justify-between gap-4 max-w-[125px] w-full'>
                         <div className='text-grey-700 text-medium text-xs'>
                           {nFormatter(item.tokens, 2, props.tokenInfo.symbol)}
                         </div>
@@ -198,7 +245,7 @@ export default function TokenAllocation(props: any) {
         </div>
         {
           schedule && schedule.length > 0 ? (
-            <ReactECharts option={optionStackArea} />
+            <ReactECharts option={optionStackArea} notMerge={true} />
           ) : ''
         }
       </div>

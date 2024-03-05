@@ -1,18 +1,27 @@
-import type { ColumnsType } from 'antd/es/table';
-import Link from 'next/link';
+import Text from '@/components/Text';
+import { CoreCellName } from '@/components/core-table/core-cell-name';
 import {
   nFormatter,
   percentFormat,
   renderColumnId,
   renderSortIcon,
 } from '@/helpers';
-import { get, round } from 'lodash';
-import ReactECharts from 'echarts-for-react';
 import { COLOR_CHART } from '@/helpers/constants';
-import { CoreCellName } from '@/components/core-table/core-cell-name';
+import { cn } from '@/helpers/functions';
+import { Flex } from 'antd';
+import type { ColumnsType } from 'antd/es/table';
+import ReactECharts from 'echarts-for-react';
+import { round } from 'lodash';
 
 const columns: ColumnsType<IHomeCategory> = [
-  renderColumnId(),
+  {
+    ...renderColumnId(),
+    render: (value) => (
+      <Text weight='semiBold' ellipsis>
+        {value._index}
+      </Text>
+    ),
+  },
   {
     key: 'name',
     title: 'Name',
@@ -21,10 +30,12 @@ const columns: ColumnsType<IHomeCategory> = [
     fixed: true,
     render: (value) => (
       <CoreCellName
-        imagesUrl={value.rankedCoins}
+        imagesUrl={value.rankedCoins.map((c: any) => c.iconUrl)}
         name={value.name}
         symbol={value.symbol}
         link={`/en/categories/${value.id}`}
+        labelClassName='font-jb font-bold'
+        actionTarget='_self'
       />
     ),
     sortIcon: renderSortIcon,
@@ -33,13 +44,13 @@ const columns: ColumnsType<IHomeCategory> = [
   {
     key: 'avgPriceChange',
     title: 'Avg Price Change (24h)',
-    width: 158,
+    width: 168,
     align: 'right',
     render: (_, value) => {
       return (
-        <div className={'text-center min-[500px]:text-right'}>
+        <Text weight='semiBold' className={cn('[&>*]:!m-0')}>
           {percentFormat(value.avgPriceChange['24H'])}
-        </div>
+        </Text>
       );
     },
     sortIcon: renderSortIcon,
@@ -53,10 +64,12 @@ const columns: ColumnsType<IHomeCategory> = [
     render: (_, value) => {
       const { marketCapChangeIn24h } = value;
       return (
-        <p className='flex flex-col justify-end'>
-          {nFormatter(value.market_cap, 2, '$')}
-          {percentFormat(marketCapChangeIn24h)}
-        </p>
+        <Flex vertical>
+          <Text weight='semiBold'>{nFormatter(value.market_cap, 2, '$')}</Text>
+          <Text weight='semiBold' className={cn('[&>*]:!m-0')}>
+            {marketCapChangeIn24h ? percentFormat(marketCapChangeIn24h) : null}
+          </Text>
+        </Flex>
       );
     },
     sortIcon: renderSortIcon,
@@ -70,10 +83,12 @@ const columns: ColumnsType<IHomeCategory> = [
     render: (_, value) => {
       const { volumeChangeIn24h } = value;
       return (
-        <p className='flex flex-col justify-end'>
-          {nFormatter(value.volume24h, 2, '$')}
-          {percentFormat(volumeChangeIn24h)}
-        </p>
+        <Flex vertical>
+          <Text weight='semiBold'>{nFormatter(value.volume24h, 2, '$')}</Text>
+          <Text weight='semiBold' className={cn('[&>*]:!m-0')}>
+            {volumeChangeIn24h ? percentFormat(volumeChangeIn24h) : null}
+          </Text>
+        </Flex>
       );
     },
     sortIcon: renderSortIcon,
@@ -86,10 +101,10 @@ const columns: ColumnsType<IHomeCategory> = [
     width: 158,
     render: (_, value) => {
       return (
-        <span className='text-grey-700'>
+        <Text weight='semiBold'>
           {round(value.dominance, 2) !== 0 ? round(value.dominance, 2) : '0.00'}
           %
-        </span>
+        </Text>
       );
     },
     sortIcon: renderSortIcon,
@@ -99,63 +114,40 @@ const columns: ColumnsType<IHomeCategory> = [
     key: 'gainers',
     title: 'Gainers',
     align: 'right',
-    width: 158,
+    width: 120,
     render: (_, value) => {
       return (
-        <div className='flex items-center justify-end'>
+        <Flex gap={4} align='center' justify='flex-start'>
           <ReactECharts
-            style={{
-              height: 40,
-              width: 40,
-            }}
+            style={{ width: 44, height: 44 }}
+            className='ml-5'
             option={{
-              option: {
-                tooltips: { enabled: false },
-                hover: { mode: null },
-              },
-              emphasis: {
-                scale: false,
-              },
+              color: [COLOR_CHART.RADICAL_RED, COLOR_CHART.CRAYOLA],
               series: [
                 {
-                  name: 'Access From',
                   type: 'pie',
                   radius: ['40%', '70%'],
                   avoidLabelOverlap: false,
+                  silent: true,
                   label: {
                     show: false,
-                    position: 'center',
-                  },
-                  emphasis: {
-                    scale: false,
                   },
                   labelLine: {
                     show: false,
                   },
-                  data: [
-                    {
-                      value: value.losers,
-                      name: 'losers',
-                      itemStyle: {
-                        color: COLOR_CHART.RADICAL_RED,
-                      },
-                    },
-                    {
-                      value: value.gainers,
-                      name: 'Gainers',
-                      itemStyle: {
-                        color: COLOR_CHART.CRAYOLA,
-                      },
-                    },
-                  ],
+                  emphasis: {
+                    focus: false,
+                    scale: false,
+                  },
+                  data: [value.losers, value.gainers],
                 },
               ],
             }}
           />
-          <span className='ml-1 w-[54px] text-left'>
+          <Text weight='semiBold'>
             {round((value.gainers / (value.gainers + value.losers)) * 100, 2)}%
-          </span>
-        </div>
+          </Text>
+        </Flex>
       );
     },
     sortIcon: renderSortIcon,

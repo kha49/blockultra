@@ -1,8 +1,10 @@
 'use client';
-import { Button } from 'antd';
+import { Button, Flex } from 'antd';
 import { useState } from 'react';
 
+import { IconCustomCointTab } from '@/assets/icons/home/IconCustomCoinTab';
 import { IconFilterCoinTab } from '@/assets/icons/home/IconFilterCoinTab';
+import Text from '@/components/Text';
 import { CategoryCoinsFilterType } from '../types';
 import SearchSelect from './search-select';
 
@@ -14,8 +16,8 @@ export default function HeadFilter({
   const [keys, setSearchKeys] = useState<string[]>([]);
 
   return (
-    <div className='filter flex justify-between mb-4'>
-      <div className='flex'>
+    <div className='filter flex justify-between'>
+      <Flex gap={8} align='center'>
         <SearchSelect
           placeholder='Filter coins'
           onFilterChange={(keys) => {
@@ -29,27 +31,23 @@ export default function HeadFilter({
         />
         <div className='hidden xl:block md:block'>
           <Button
-            // disabled={keys.length === 0}
             disabled
-            className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm !bg-white !text-grey-500'
+            className='!bg-white !h-11 !rounded-lg !py-0 !px-5'
             onClick={() => onFilter({ search_key: keys })}
           >
-            <div className='flex'>
+            <Flex align='center' gap={8}>
               <IconFilterCoinTab />
-              <span className='ml-1'>Filters</span>
-            </div>
+              <Text type='secondary'>Filters</Text>
+            </Flex>
           </Button>
         </div>
-      </div>
+      </Flex>
       <div className='hidden xl:block md:block'>
-        <Button
-          disabled
-          className='ml-1 !h-full hover:!border-primary-500 hover:!text-primary-500 !font-jm !bg-white !text-grey-500'
-        >
-          <div className='flex'>
-            <IconFilterCoinTab />
-            <span className='ml-1'>Customize</span>
-          </div>
+        <Button disabled className='!bg-white !h-11 !rounded-lg !py-0 !px-5'>
+          <Flex align='center' gap={8}>
+            <IconCustomCointTab />
+            <Text type='secondary'>Customize</Text>
+          </Flex>
         </Button>
       </div>
     </div>

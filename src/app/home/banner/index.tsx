@@ -1,10 +1,9 @@
-import './index.scss';
-import Image from 'next/image';
 import SearchInput from '@/components/SearchInput/SearchInput';
+import './index.scss';
 
 export default function Banner() {
   return (
-    <div className='banner mx-auto max-w-2xl px-4 py-3 hidden md:block'>
+    <div className='banner px-10 hidden md:block'>
       <div className='banner__wrapper'>
         <div className='grid items-center grid-cols-1 lg:grid-cols-2 gap-20 md:gap-30 xl:gap-40'>
           <div className='banner__wrapper__search'>
@@ -20,8 +19,10 @@ export default function Banner() {
             </div>
             <SearchInput isButton={true} />
           </div>
-          <div className='banner__wrapper__image mx-auto'>
-            <Image src='/banner.jpg' alt='banner' width={518} height={315} />
+          <div className='banner__wrapper__image ml-auto'>
+            <video autoPlay muted loop>
+              <source src="/video/tablet.mp4" type="video/mp4"></source>
+            </video>
           </div>
         </div>
       </div>

@@ -1,7 +1,9 @@
-import { Dropdown, Space } from 'antd';
-import { useState } from 'react';
 import IconSelectArrow from '@/assets/icons/IconSelectArrow';
+import Text from '@/components/Text';
 import { TIME_FILTER_ALL } from '@/helpers/constants';
+import { cn } from '@/helpers/functions';
+import { Dropdown, Flex } from 'antd';
+import { useState } from 'react';
 
 const allCoin = [
   {
@@ -17,8 +19,8 @@ const allCoin = [
     label: 'Top 300',
   },
   {
-    key: '1000',
-    label: 'Top 1000',
+    key: '500',
+    label: 'Top 500',
   },
 ];
 
@@ -28,18 +30,21 @@ type GainersHeaderProps = {
 };
 
 const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
-  const [coinSelected, setCoinSelected] = useState({
-    key: 'all',
-    label: 'All Coins',
-  });
+  const CoinOptions = allCoin.map((item) => ({
+    ...item,
+    label: <Text weight='semiBold'>{item.label}</Text>,
+  }));
 
-  const [timeSelected, setTimeSelected] = useState({
-    key: '1d',
-    label: '24h',
-  });
+  const TimeOptions = TIME_FILTER_ALL.map((item) => ({
+    ...item,
+    label: <Text weight='semiBold'>{item.label}</Text>,
+  }));
+
+  const [coinSelected, setCoinSelected] = useState(CoinOptions[0]);
+  const [timeSelected, setTimeSelected] = useState(TimeOptions[0]);
 
   const _onChangeCoin = ({ key }: { key: string }) => {
-    const item = allCoin.find((a) => a?.key === key);
+    const item = CoinOptions.find((a) => a?.key === key);
     if (!item) return;
     setCoinSelected({
       ...item,
@@ -48,7 +53,7 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
   };
 
   const _onChangeTime = ({ key }: { key: string }) => {
-    const item = TIME_FILTER_ALL.find((a) => a?.key === key);
+    const item = TimeOptions.find((a) => a?.key === key);
     if (!item) return;
     setTimeSelected({
       ...item,
@@ -67,32 +72,54 @@ const GainersHeader = ({ onFilterCoins, onFilterTime }: GainersHeaderProps) => {
         }
       >
         <Dropdown
-          overlayClassName='overlay-menu-center'
+          overlayClassName={cn(
+            '[&_.ant-dropdown-menu]:!p-2',
+            '[&_.ant-dropdown-menu-item]:!py-2',
+            '[&_.ant-dropdown-menu-item-selected]:!bg-[#EEF2F6]'
+          )}
           menu={{
-            items: allCoin,
+            items: CoinOptions,
+            selectable: true,
+            selectedKeys: [coinSelected.key],
             onClick: _onChangeCoin,
           }}
-          arrow
           trigger={['click']}
-          className='justify-center h-9 w-28 rounded border hover:cursor-pointer'
+          className='rounded border border-[#D1D2DC] hover:cursor-pointer'
         >
-          <div className='flex justify-between items-center py-2 px-4 text-sm font-medium font-jm'>
-            {coinSelected.label} <IconSelectArrow />
-          </div>
+          <Flex
+            gap={8}
+            justify='space-between'
+            align='center'
+            className='py-2 px-4'
+          >
+            <Text >{coinSelected.label}</Text>
+            <IconSelectArrow />
+          </Flex>
         </Dropdown>
         <Dropdown
-          overlayClassName='overlay-menu-center'
+          overlayClassName={cn(
+            '[&_.ant-dropdown-menu]:!p-2',
+            '[&_.ant-dropdown-menu-item]:!py-2',
+            '[&_.ant-dropdown-menu-item-selected]:!bg-[#EEF2F6]'
+          )}
           menu={{
-            items: TIME_FILTER_ALL,
+            items: TimeOptions,
+            selectable: true,
+            selectedKeys: [timeSelected.key],
             onClick: _onChangeTime,
           }}
-          arrow
           trigger={['click']}
-          className='justify-center h-9 w-28 rounded border hover:cursor-pointer'
+          className='rounded border border-[#D1D2DC] hover:cursor-pointer'
         >
-          <div className='flex justify-between items-center py-2 px-4 text-sm font-medium font-jm'>
-            {timeSelected.label} <IconSelectArrow />
-          </div>
+          <Flex
+            gap={8}
+            justify='space-between'
+            align='center'
+            className='py-2 px-4'
+          >
+            <Text >{timeSelected.label}</Text>
+            <IconSelectArrow />
+          </Flex>
         </Dropdown>
       </div>
     </div>

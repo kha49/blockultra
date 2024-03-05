@@ -6,15 +6,34 @@
   .modal-search-item {
     &__title {
       color: #9fa4b7;
+      margin-left: 12px;
+      margin-top: 16px;
+      margin-bottom: 16px;
     }
 
     &__list {
+      &::-webkit-scrollbar {
+        display: block !important;
+        width: 4px;
+        height: 4px;
+      }
+      &::-webkit-scrollbar-thumb {
+        background: #e5e6eb !important;
+      }
+      &::-webkit-scrollbar-track {
+        box-shadow: none !important;
+      }
+      scrollbar-width: auto !important;
       &__item {
         &:hover {
           background-color: #eef2f6;
         }
 
         .coin {
+          .coin-name {
+            color: #333747;
+          }
+
           .coin-tag {
             border-radius: 4px;
             background-color: #eef2f6;

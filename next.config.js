@@ -8,8 +8,12 @@ const nextConfig = {
   eslint: {
     dirs: ['src'],
   },
-
+  images: {
+    domains: ['img.api.cryptorank.io', 'img.cryptorank.io'],
+  },
   reactStrictMode: false,
+  output: 'standalone',
+  distDir: 'build',
 };
 
 module.exports = withNextIntl(nextConfig);

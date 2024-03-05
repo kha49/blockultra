@@ -1,20 +1,26 @@
-import { useEffect, useState } from 'react';
-import './style.scss';
+import { ORDER } from '@/helpers/constants';
 import { FetchFundraisings } from '@/usecases/home';
 import { isArray } from 'lodash';
-import { ORDER } from '@/helpers/constants';
+import { useEffect, useState } from 'react';
+import './style.scss';
 
-import { useDebounce } from 'usehooks-ts';
 import { CoreTable } from '@/components/core-table';
+import { IPagingParams } from '@/models/IPaging';
+import { useDebounce } from 'usehooks-ts';
 
 const Fundraising = () => {
   const [fundraisings, setFundraisings] = useState([]);
-  const [pageSize, setPageSize] = useState(50);
-  const [currentPage, setCurrentPage] = useState(1);
+  // const [pageSize, setPageSize] = useState(50);
+  // const [currentPage, setCurrentPage] = useState(1);
   const [total, setTotal] = useState(0);
   const [order, setOrder] = useState({
     columnKey: '',
     order: '',
+  });
+
+  const [pagingParams, setPagingParams] = useState<IPagingParams>({
+    page: 1,
+    pageSize: 20,
   });
 
   const [keyFilter, setKeyFilter] = useState<string[]>([]);
@@ -29,22 +35,22 @@ const Fundraising = () => {
 
   useEffect(() => {
     getFundraisings({
-      limit: pageSize,
-      page: currentPage,
+      limit: pagingParams.pageSize,
+      page: pagingParams.page,
       sort_order: ORDER[order.order as keyof typeof ORDER],
-      sort_by: order.columnKey,
+      sort_by: order.order ? order.columnKey : '',
       search_key: debouncedValue.join(','),
     });
-  }, [pageSize, currentPage, order, debouncedValue]);
+  }, [pagingParams, order, debouncedValue]);
 
-  const _onChangePage = (page: number) => {
-    setCurrentPage(page);
-  };
+  // const _onChangePage = (page: number) => {
+  //   setCurrentPage(page);
+  // };
 
-  const _onChangeSize = (value: number) => {
-    setCurrentPage(1);
-    setPageSize(value);
-  };
+  // const _onChangeSize = (value: number) => {
+  //   setCurrentPage(1);
+  //   setPageSize(value);
+  // };
   const handleOnChange = (_page: any, _filter: any, sort: any) => {
     const itemSort = isArray(sort) ? sort[0] : sort;
     setOrder({
@@ -59,11 +65,10 @@ const Fundraising = () => {
       data={fundraisings}
       type={'home_fundraising'}
       onChange={handleOnChange}
-      pageSize={pageSize}
-      currentPage={currentPage}
+      pageSize={pagingParams.pageSize}
+      currentPage={pagingParams.page}
+      onChangePagingParams={setPagingParams}
       total={total}
-      onChangePage={_onChangePage}
-      onChangeSize={_onChangeSize}
       onChangeFilterSelect={setKeyFilter}
       isCustomize={false}
       isFilter={false}

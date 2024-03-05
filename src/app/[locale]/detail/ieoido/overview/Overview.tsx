@@ -1,81 +1,130 @@
-import BackerList from '@/components/BackerList/BackerList';
+import Tag from '@/components/Tag';
+import Text from '@/components/Text';
 import { currencyFormat, nFormatter } from '@/helpers';
-import React from 'react';
+import { changeImageUrl } from '@/helpers/functions';
+import { Flex } from 'antd';
+import Image from 'next/image';
+import { useMemo } from 'react';
 
 const Overview = (props: any) => {
-  const overView = props.overView;
+  const overView = props?.overView;
+  const ieoidos = props?.ieoidos;
 
-  // let totalRaise = 0, totalePrice = 0 , totalTokens = 0;
-
-  // for (let i in data) {
-  //   totalRaise += data[i].raise?.USD | 0
-  //   totalePrice += data[i].price |0
-  //   totalTokens += data[i].tokensForSale | 0;
-  // }
+  const IeoIdos = useMemo(() => {
+    return (ieoidos || [])?.map((item: any) => ({
+      ...item,
+      tier: 1,
+    }));
+  }, [ieoidos]);
   return (
-    <div className='mb-6'>
-      <div className='text-grey-700 text-xl font-bold font-jb mb-2'>
+    <Flex vertical gap={8} className='mb-6'>
+      <Text weight='bold' size={20} lineHeight={28}>
         Overview
-      </div>
+      </Text>
       <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
         <div className='box-shadow-common'>
           <div className='p-6 text-center border-b border-grey-300'>
-            <div className='text-grey-700 text-base font-bold font-jb'>
+            <Text weight='bold' size={16} lineHeight={24}>
               Summary
-            </div>
+            </Text>
           </div>
           <div className='p-6'>
             <div className='flex items-center justify-between gap-4 flex-wrap'>
-              <div className='text-center'>
-                <div className='text-grey-500 text-xs font-medium font-jm mb-2'>
+              <Flex vertical gap={8} align='center'>
+                <Text size={12} type='secondary'>
                   Total Raise
-                </div>
-                <div className='text-grey-700 text-base font-semibold font-jsb'>
-                  {nFormatter(overView?.totalRaise, 2, '$')}
-                </div>
-              </div>
-              <div className='text-center'>
-                <div className='text-grey-500 text-xs font-medium font-jm mb-2'>
+                </Text>
+                <Text weight='semiBold' size={16} lineHeight={24}>
+                  {overView?.totalRaise
+                    ? nFormatter(overView?.totalRaise, 2, '$')
+                    : '-'}
+                </Text>
+              </Flex>
+              <Flex vertical gap={8} align='center'>
+                <Text size={12} type='secondary'>
                   Avg Price
-                </div>
-                <div className='text-grey-700 text-base font-semibold font-jsb'>
-                  {currencyFormat(overView?.avgPrice, '$', {
-                    numberRound: 4,
-                    isAutoZero: false,
-                  })}
-                </div>
-              </div>
-              <div className='text-center'>
-                <div className='text-grey-500 text-xs font-medium font-jm mb-2'>
+                </Text>
+                <Text weight='semiBold' size={16} lineHeight={24}>
+                  {overView?.avgPrice
+                    ? currencyFormat(overView?.avgPrice, '$', {
+                        numberRound: 4,
+                      })
+                    : '-'}
+                </Text>
+              </Flex>
+              <Flex vertical gap={8} align='center'>
+                <Text size={12} type='secondary'>
                   Total Tokens Offered
-                </div>
-                <div className='text-grey-700 text-base font-semibold font-jsb'>
-                  {nFormatter(
-                    overView?.totalTokensOffered,
-                    2,
-                    props?.tokenInfo?.symbol
-                  )}
-                </div>
-              </div>
+                </Text>
+                <Text weight='semiBold' size={16} lineHeight={24}>
+                  {overView?.totalTokensOffered
+                    ? nFormatter(
+                        overView?.totalTokensOffered,
+                        2,
+                        props?.tokenInfo?.symbol,
+                        false,
+                        true
+                      )
+                    : '-'}
+                </Text>
+              </Flex>
             </div>
           </div>
         </div>
         <div className='box-shadow-common'>
-          <div className='p-6 text-center border-b border-grey-300'>
-            <div className='text-grey-700 text-base font-bold font-jb'>
-              Launchpads{' '}
-              <span className='text-grey-500'>{overView?.backers?.length}</span>
-            </div>
-          </div>
-
-          <BackerList
-            backers={overView.backers}
-            initNumber={4}
-            type={'backer'}
-          /> 
+          <Flex justify='center' className='p-6 border-b border-grey-300'>
+            <Flex gap={2}>
+              <Text weight='bold' size={16} lineHeight={24}>
+                Launchpads
+              </Text>
+              <Text type='secondary' weight='bold' size={16} lineHeight={24}>
+                {IeoIdos?.length || 0}
+              </Text>
+            </Flex>
+          </Flex>
+          <Flex
+            wrap='wrap'
+            align='center'
+            justify='space-around'
+            gap={16}
+            className='w-full p-6'
+          >
+            {IeoIdos.slice(0, 3).map((item: any, i: number) => {
+              return (
+                <Flex key={i} gap={12} align='center'>
+                  <Image
+                    src={changeImageUrl(item?.logo)}
+                    height={48}
+                    width={48}
+                    alt={item.name}
+                  />
+                  <Flex vertical gap={4}>
+                    <Text>{item.name}</Text>
+                    <Tag>
+                      <Text type='secondary' size={12}>
+                        Tier {item.tier}
+                      </Text>
+                    </Tag>
+                  </Flex>
+                </Flex>
+              );
+            })}
+            {IeoIdos.length > 3 && (
+              <Flex align='center'>
+                <Text
+                  color='primary'
+                  size={12}
+                  onClick={props.handleScroll}
+                  className={'cursor-pointer'}
+                >
+                  +{IeoIdos.length - 3} Launchpads
+                </Text>
+              </Flex>
+            )}
+          </Flex>
         </div>
       </div>
-    </div>
+    </Flex>
   );
 };
 

@@ -1,8 +1,10 @@
 'use client';
-import './index.scss';
 import { Page } from '@/components/page';
-import { IeoIdoTable } from './components/ieo-ido-table';
+import BreadcrumbContext from '@/context/Breadcrumb/BreadcrumbContext';
+import { useContext, useEffect } from 'react';
+import IeoIdoTable from './components/ieo-ido-table';
 import { getIeoIdoBreadcrumbs } from './config';
+import './index.scss';
 
 type PageProps = {
   params: {
@@ -11,12 +13,37 @@ type PageProps = {
   };
 };
 
-export default function IeoIdoPage({ params }: PageProps) {
-  const breadcrumbs = getIeoIdoBreadcrumbs(params.category);
+const IeoIdoPage = ({ params }: PageProps) => {
+  const { handleBreadcrumb } = useContext(BreadcrumbContext);
+
+  // try {
+  //   const data: any = await FetchIeoIdo(getIeoIdoApiPath(params.category), {
+  //     limit: 50,
+  //     page: 1,
+  //     sort_order: 'desc',
+  //     is_hot: 'all',
+  //   });
+
+  //   return (
+  //     <Page breadcrumbs={breadcrumbs}>
+  //       <IeoIdoTable dataSSR={data} />
+  //     </Page>
+  //   );
+  // } catch (error) {
+  //   return <h1>Internal Server Error</h1>;
+  // }
+
+  useEffect(() => {
+    handleBreadcrumb(getIeoIdoBreadcrumbs(params.category, params.locale), {
+      resetData: true,
+    });
+  }, [params]);
 
   return (
-    <Page breadcrumbs={breadcrumbs}>
+    <Page>
       <IeoIdoTable />
     </Page>
   );
-}
+};
+
+export default IeoIdoPage;

@@ -1,28 +1,38 @@
-import type { ColumnsType } from 'antd/es/table';
-import { nFormatter2, renderColumnId, renderSortIcon } from '@/helpers';
 import BackersModal from '@/app/[locale]/fundraising/[category]/components/backers-modal';
-import DataGroup from '@/components/DataGroup';
 import LaunchpadModal from '@/app/[locale]/fundraising/[category]/components/launchpad-modal';
-import moment from 'moment/moment';
+import DataGroup from '@/components/DataGroup';
+import Text from '@/components/Text';
 import { CoreCellName } from '@/components/core-table/core-cell-name';
+import { nFormatter2, renderColumnId, renderSortIcon } from '@/helpers';
 import { changeImageUrl } from '@/helpers/functions';
+import type { ColumnsType } from 'antd/es/table';
+import moment from 'moment/moment';
 
 const columns: ColumnsType<any> = [
-  renderColumnId(),
+  {
+    ...renderColumnId(),
+    render: (value) => (
+      <Text weight='semiBold' ellipsis>
+        {value._index}
+      </Text>
+    ),
+  },
   {
     key: 'name',
     title: 'Project',
-    width: 228,
+    width: 216,
     align: 'left',
     sortIcon: renderSortIcon,
     sorter: true,
     fixed: true,
     render: (value) => (
       <CoreCellName
+        labelClassName='font-jb font-bold'
         imagesUrl={[changeImageUrl(value.image)]}
         name={value.project}
         symbol={value.symbol}
         link={`/en/detail/${value.key}`}
+        actionTarget='_self'
       />
     ),
   },
@@ -34,7 +44,9 @@ const columns: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, value) => {
-      return nFormatter2(value.initialCap, 2, '$');
+      return (
+        <Text weight='semiBold'>{nFormatter2(value.initialCap, 2, '$')}</Text>
+      );
     },
   },
   {
@@ -45,7 +57,11 @@ const columns: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, value) => {
-      return nFormatter2(value.totalRaise, 2, '$');
+      return (
+        <Text weight='semiBold'>
+          {value.totalRaise ? nFormatter2(value.totalRaise, 2, '$') : '-'}
+        </Text>
+      );
     },
   },
   {
@@ -56,9 +72,12 @@ const columns: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, value) => {
+      if (!value.backers || !value.backers.length) return '-';
       return (
         <BackersModal data={value.backers as any}>
-          {({ onOpen }) => <DataGroup data={value.backers} onClick={onOpen} />}
+          {({ onOpen }) => (
+            <DataGroup data={value.backers} onClick={onOpen} maxWidth={200} />
+          )}
         </BackersModal>
       );
     },
@@ -71,7 +90,11 @@ const columns: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, { category_name }) => {
-      return <p className='textover-ellipsis'>{category_name}</p>;
+      return (
+        <Text ellipsis weight='semiBold' className='!max-w-[165px]'>
+          {category_name}
+        </Text>
+      );
     },
   },
   {
@@ -82,13 +105,17 @@ const columns: ColumnsType<any> = [
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, value) => {
+      if (!value.launchpads || !value.launchpads.length) return '-';
+
       const launchpad = value.launchpads.map((e: any) => ({
         ...e,
         avatarUrl: e.image,
       }));
       return (
         <LaunchpadModal data={launchpad}>
-          {({ onOpen }) => <DataGroup data={launchpad} onClick={onOpen} />}
+          {({ onOpen }) => (
+            <DataGroup data={launchpad} onClick={onOpen} maxWidth={165} />
+          )}
         </LaunchpadModal>
       );
     },
@@ -97,11 +124,15 @@ const columns: ColumnsType<any> = [
     key: 'start_date',
     title: 'Start Date',
     width: 100,
-    align: 'center',
+    align: 'left',
     sortIcon: renderSortIcon,
     sorter: true,
     render: (_, value) => {
-      return moment(value.created_at).format('DD MMM YYYY');
+      return (
+        <Text weight='semiBold'>
+          {value.start_date ? moment(value.start_date).format('DD MMM YYYY') : "-"}
+        </Text>
+      );
     },
   },
 ];

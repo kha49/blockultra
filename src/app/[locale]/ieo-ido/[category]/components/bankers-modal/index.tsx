@@ -1,10 +1,10 @@
-import { Avatar, Flex, Modal } from 'antd';
-import Link from 'next/link';
-import React from 'react';
-import { IIeoIdoData } from '../../types';
-import { IeoIdoCategory } from '../../config';
-import { useParams } from 'next/navigation';
+import Text from '@/components/Text';
 import { changeImageUrl } from '@/helpers/functions';
+import { Avatar, Flex, Modal } from 'antd';
+import { useParams } from 'next/navigation';
+import React, { useMemo } from 'react';
+import { IeoIdoCategory } from '../../config';
+import { IIeoIdoData } from '../../types';
 
 type IChildrenCallback = {
   onOpen: () => void;
@@ -31,6 +31,27 @@ export default function BankersModal(props: BankersModalProps) {
   }>();
   const category = slug ? slug[1] || IeoIdoCategory.ended : _category;
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const Leads = useMemo(
+    () =>
+      data.filter(
+        (item: any) =>
+          (item.lead !== undefined && item.lead) ||
+          (item.is_lead !== undefined && item.is_lead)
+      ),
+    [data]
+  );
+
+  const Others = useMemo(
+    () =>
+      data.filter(
+        (item: any) =>
+          (item.lead !== undefined && !item.lead) ||
+          (item.is_lead !== undefined && !item.is_lead)
+      ),
+    [data]
+  );
+
   const showModal = () => {
     setIsOpen(true);
   };
@@ -44,39 +65,103 @@ export default function BankersModal(props: BankersModalProps) {
     isOpen,
   };
 
+  const handleGoToBacker = (id: number, name: string) => {
+    window.open(
+      window.location.origin + `/${locale}/fundraising/top-backers/detail/${id}`
+    );
+  };
+
   return (
     <>
       {children(childrenCallback)}
       <Modal
-        title='Backers'
+        title={
+          <Text weight='bold' size={20} lineHeight={28}>
+            Backers
+          </Text>
+        }
         onCancel={handleCancel}
         centered
         open={isOpen}
         footer={null}
         styles={{
+          header: {
+            paddingTop: 20,
+            paddingLeft: 24,
+            paddingRight: 24,
+            marginBottom: 24,
+          },
           content: {
-            height: 'auto',
+            overflow: 'hidden',
+            padding: 0,
+            maxHeight: 648,
+          },
+          body: {
+            paddingBottom: 20,
+            paddingLeft: 24,
+            paddingRight: 20,
+            marginRight: 4,
             overflowY: 'auto',
+            height: 'auto',
+            maxHeight: 572,
           },
         }}
+        classNames={{
+          content: 'modal-scroll',
+        }}
       >
-        {data && (
-          <Flex vertical gap={24} className='mt-6'>
-            {data?.map((item, index) => (
-              <Link
-                href={`/${locale}/ieo-ido/${IeoIdoCategory.topIdoLaunchpads}/${item.key}/${category}`}
-                key={index}
-                target='_blank'
-                className='flex items-center gap-2 hover:cursor-pointer'
-              >
-                <Avatar src={changeImageUrl(item.image)} alt='avatar' size={32} />
-                <span className='text-sm font-normal text-[#333747]'>
-                  {item.name}
-                </span>
-              </Link>
-            ))}
-          </Flex>
-        )}
+        <Flex vertical gap={24}>
+          {Leads.length > 0 && (
+            <Flex vertical gap={16}>
+              <Text weight='bold'>Lead</Text>
+              {Leads.map((item: any) => {
+                return (
+                  <Flex align='center' gap={8} key={item.name}>
+                    <Avatar
+                      src={changeImageUrl(item.image)}
+                      alt='avatar'
+                      size={34}
+                      className='!flex items-center justify-center'
+                    />
+                    <Text
+                      className={'cursor-pointer'}
+                      onClick={() =>
+                        handleGoToBacker(item.id || item.key, item.name)
+                      }
+                    >
+                      {item?.name || ''}
+                    </Text>
+                  </Flex>
+                );
+              })}
+            </Flex>
+          )}
+          {Others.length > 0 && (
+            <Flex vertical gap={16}>
+              {Leads.length > 0 && <Text weight='bold'>Other</Text>}
+              {Others.map((item: any) => {
+                return (
+                  <Flex align='center' gap={8} key={item.name}>
+                    <Avatar
+                      src={changeImageUrl(item.image)}
+                      alt='avatar'
+                      size={34}
+                      className='!flex items-center justify-center'
+                    />
+                    <Text
+                      className={'cursor-pointer'}
+                      onClick={() =>
+                        handleGoToBacker(item.id || item.key, item.name)
+                      }
+                    >
+                      {item?.name || ''}
+                    </Text>
+                  </Flex>
+                );
+              })}
+            </Flex>
+          )}
+        </Flex>
       </Modal>
     </>
   );

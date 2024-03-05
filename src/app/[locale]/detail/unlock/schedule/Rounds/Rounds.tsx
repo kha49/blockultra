@@ -1,9 +1,10 @@
 import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
-import IconCircle from '@/assets/icons/IconCircle';
 import CountdownTimer from '@/components/CountdownTimer/CountDownTimer';
+import Text from '@/components/Text';
 import { currencyFormat, nFormatter } from '@/helpers';
-import { Table } from 'antd';
+import { Flex, Table, Tooltip } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
+import moment from 'moment';
 
 const Rounds = ({ data, tokenInfo }: any) => {
   if (!data) return;
@@ -15,24 +16,39 @@ const Rounds = ({ data, tokenInfo }: any) => {
   const columns: ColumnsType<IUnlock> = [
     {
       key: 'rounds',
-      title: 'Rounds',
+      title: <Text weight='bold'>Rounds</Text>,
       align: 'left',
-      width: 250,
+      width: 300,
       render: (_, value) => {
         return (
-          <div>
-            <div className='text-grey-700 text-sm mb-2 font-bold font-jb flex gap-2'>
-              {value.name} <IconCheckedCompleted />
-            </div>
-            <div className='flex gap-2 items-center text-xs font-medium'>
-              <span className='text-grey-700'>
-                {nFormatter(value.allocation, 2, '')}
-              </span>
-              <span className='text-grey-500'>
+          <Flex vertical gap={8}>
+            <Flex gap={4} align='center'>
+              <Text weight='bold' ellipsis maxWidth={276}>
+                {value.name}
+              </Text>
+              {value.unlockedPercent === 100 ? (
+                <div>
+                  <IconCheckedCompleted />
+                </div>
+              ) : (
+                ''
+              )}
+            </Flex>
+            <Flex align='center' gap={4}>
+              <Tooltip
+                title={<Text size={12}>Allocation</Text>}
+                placement='bottom'
+                overlayClassName='tooltip-light'
+              >
+                <Text size={12}>
+                  {tokenInfo.symbol} {nFormatter(value.allocation, 2, '')}
+                </Text>
+              </Tooltip>
+              <Text size={12} type='secondary'>
                 {nFormatter(value.allocationPercent, 2, '')}%
-              </span>
-            </div>
-          </div>
+              </Text>
+            </Flex>
+          </Flex>
         );
       },
     },
@@ -40,93 +56,97 @@ const Rounds = ({ data, tokenInfo }: any) => {
       key: 'unlock',
       title: () => {
         return (
-          <div className='flex items-center justify-between'>
-            <div className='text-sm text-grey-700 font-bold font-jb'>
-              Unlocked
-            </div>
-          </div>
+          <Flex align='center' justify='space-between'>
+            <Text weight='bold'>Unlocked</Text>
+            <Text weight='bold'>Locked</Text>
+          </Flex>
         );
       },
       width: 400,
       align: 'center',
       render: (_, value) => {
-        // const unlock = value.nextUnlockToken/ value.nextUnlockPercent;
-        // const nextlock = 1 - unlock;
-        const countDownTime = new Date(value.startDate);
-        const startDate = new Date(value.startDate || Date.now());
-        const endDate = new Date(value.endDate || Date.now());
-
         return (
-          <div className='w-full max-w-[380px]'>
-            <div className='flex items-center justify-between'>
-              <span className='text-grey-700 text-xs md:text-sm font-semibold font-jsb'>
+          <Flex vertical className='w-full max-w-[400px]'>
+            <Flex align='center' justify='space-between'>
+              <Text weight='semiBold'>
                 {nFormatter(value.unlockedPercent, 2, '%', true)}
-              </span>
-              <span className='text-grey-700 text-xs md:text-sm font-semibold font-jsb'>
+              </Text>
+              <Text weight='semiBold'>
                 {nFormatter(value.lockedPercent, 2, '%', true)}
-              </span>
-            </div>
+              </Text>
+            </Flex>
             <div className='py-2 relative'>
               <div
                 className='unlock absolute top-1/2 left-0 -translate-y-1/2 bg-primary-500 h-1.5 rounded-xl z-20'
                 style={{ width: value.unlockedPercent + '%' }}
               ></div>
               <div
-                className='next-lock absolute top-1/2 left-0 -translate-y-1/2 bg-orange-500 h-1.5 rounded-xl z-10'
-                style={{ width: value.lockedPercent + '%' }}
+                className='next-lock absolute top-1/2 -translate-y-1/2 bg-orange-500 h-1.5 rounded-xl z-10'
+                style={{
+                  width: value.nextUnlockPercent
+                    ? value.nextUnlockPercent + value.unlockedPercent + '%'
+                    : 0,
+                }}
               ></div>
               <div className='locked bg-grey-300 w-full h-1.5 rounded-xl'></div>
             </div>
-            <div className='flex items-center justify-between flex-wrap'>
-              <span className='text-grey-500 text-xs font-medium font-jm'>
-                Start: {startDate.toDateString()}
-              </span>
-              <span className='text-grey-500 text-xs font-medium font-jm'>
-                End: {endDate.toDateString()}
-              </span>
-            </div>
-          </div>
+            <Flex wrap='wrap' align='center' justify='space-between'>
+              <Text type='secondary' size={12}>
+                {value.startDate
+                  ? 'Start: ' + moment(value.startDate).format('DD/MM/YYYY')
+                  : '-'}
+              </Text>
+              <Text type='secondary' size={12}>
+                {value.endDate
+                  ? 'End: ' + moment(value.endDate).format('DD/MM/YYYY')
+                  : '-'}
+              </Text>
+            </Flex>
+          </Flex>
         );
       },
     },
     {
       key: 'tgeUnlock',
-      title: 'TGE Unlock',
-      width: 300,
+      title: <Text weight='bold'>TGE Unlock</Text>,
+      width: 268,
       align: 'center',
       render: (_, value) => {
         return (
-          <div className='text-center'>
-            <div className='text-grey-700 text-sm mb-2 font-bold font-jb'>
-              {nFormatter(value.tgeUnlockToken, 2, '')}
-            </div>
-            <div className='text-xs font-medium text-grey-500'>
-              {value.tgeUnlockPercent}%
-            </div>
-          </div>
+          <Flex vertical gap={8} align='center' className='text-center'>
+            <Text weight='semiBold'>
+              {value.tgeUnlockPercent ? value.tgeUnlockPercent + '%' : '-'}
+            </Text>
+            <Text size={12} type='secondary'>
+              {value.tgeUnlockToken
+                ? nFormatter(value.tgeUnlockToken, 2, '')
+                : ''}
+            </Text>
+          </Flex>
         );
       },
     },
     {
       key: 'nextUnlock',
-      title: 'Next Unlock',
-      width: 500,
+      title: <Text weight='bold'>Next Unlock</Text>,
+      width: 396,
       align: 'center',
       render: (_, value) => {
         const countDownTime = new Date(value.timer);
-        const isUnlock = true;
+        const isUnlock = value.lockedPercent > 0;
+
+        if (!value.nextUnlockPercent) return '-';
         return (
-          <div>
+          <Flex justify='flex-end'>
             {isUnlock ? (
-              <div className='md:flex items-center justify-between gap-9'>
-                <div className='w-full mb-4'>
-                  <div className='flex items-center justify-center gap-3'>
-                    <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
-                      {currencyFormat(value.nextUnlockPercent, '')}%
-                    </span>
-                  </div>
-                  <div className='text-grey-500 text-sm'>
-                    {nFormatter(value?.nextUnlockToken, 2, '')}~
+              <div className='md:flex items-center gap-7'>
+                <Flex vertical gap={8} align='center'>
+                  <Text weight='semiBold'>
+                    {currencyFormat(value.nextUnlockPercent, '')}%
+                  </Text>
+                  <Text size={12} type='secondary'>
+                    {tokenInfo.symbol}{' '}
+                    {nFormatter(value?.nextUnlockToken, 2, '')} ~{' '}
                     {nFormatter(value?.nextUnlockValue, 2, '$')} (
                     {nFormatter(
                       (value?.nextUnlockValue * 100) / tokenInfo.marketCap,
@@ -134,19 +154,19 @@ const Rounds = ({ data, tokenInfo }: any) => {
                       ''
                     )}
                     % of M.Cap)
-                  </div>
-                  <CountdownTimer targetDate={countDownTime} />
-                </div>
+                  </Text>
+                </Flex>
+                <CountdownTimer targetDate={countDownTime} className='m-0' />
               </div>
             ) : (
-              <div className='flex items-center justify-center w-full gap-2'>
+              <Flex gap={8} align='center' justify='center' className='w-full'>
                 <IconCheckedCompleted />
-                <span className='font-bold font-jb text-sm text-sp-green-500'>
+                <Text weight='bold' color='success'>
                   Fully Unlocked
-                </span>
-              </div>
+                </Text>
+              </Flex>
             )}
-          </div>
+          </Flex>
         );
       },
     },
@@ -154,11 +174,7 @@ const Rounds = ({ data, tokenInfo }: any) => {
   return (
     <div>
       <div className='overflow-x-auto hide-scroll'>
-        <Table
-          columns={columns}
-          dataSource={unlocksData}
-          pagination={{ position: ['none'] }}
-        />
+        <Table columns={columns} dataSource={unlocksData} pagination={false} />
       </div>
     </div>
   );

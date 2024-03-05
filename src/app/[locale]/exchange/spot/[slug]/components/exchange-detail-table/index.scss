@@ -32,3 +32,13 @@
     display: flex !important;
   }
 }
+
+.custom-checkbox .ant-checkbox-inner {
+  width: 20px !important; 
+  height: 20px !important; 
+}
+
+.custom-checkbox .ant-checkbox-inner::after {
+  width: 10px !important; 
+  height: 10px !important; 
+}

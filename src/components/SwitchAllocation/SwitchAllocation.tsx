@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 
 interface Props {
-  id?: number;
+  _id?: number | string;
   title?: string;
   isActive?: boolean;
   activeColor?: string;
@@ -10,7 +10,7 @@ interface Props {
 }
 
 const SwitchAllocation = ({
-  id,
+  _id,
   isActive = false,
   onChange,
   activeColor = '',
@@ -21,7 +21,7 @@ const SwitchAllocation = ({
   const handleToggle = () => {
     setState(!state);
     if (onChange) {
-      onChange({ id, state });
+      onChange({ _id, state });
     }
   };
 
@@ -40,7 +40,7 @@ const SwitchAllocation = ({
         }
         style={{ backgroundColor: state ? activeColor : 'rgb(229 231 235 / 1' }}
       ></div>
-      <span className='ms-3 text-sm font-medium text-gray-900 dark:text-gray-300'>
+      <span className='ms-3 text-sm font-medium text-gray-900 dark:text-gray-300 max-w-[100px] truncate'>
         {title}
       </span>
     </label>

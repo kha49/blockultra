@@ -13,7 +13,7 @@
 }
 
 .slick-prev {
-  left: 23px;
+  left: -16px;
   z-index: 9;
 
   svg {
@@ -22,13 +22,14 @@
 }
 
 .slick-next {
-  right: 23px;
+  right: -16px;
 }
 
 .slick-prev,
 .slick-next {
   width: 32px;
   height: 32px;
+  opacity: 0.6;
 
   &::before {
     display: none;

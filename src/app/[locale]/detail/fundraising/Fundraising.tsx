@@ -1,17 +1,50 @@
 'use client';
 
-import { nFormatter } from '@/helpers';
-import { FetchCoinFundraising } from '@/usecases/coin-info';
-import { useEffect, useState } from 'react';
-import BackerList, { BackerItem } from '@/components/BackerList/BackerList';
-import IconFundraisingRoundsDetail from '@/assets/icons/IconFundraisingRoundsDetail';
 import IconFundraisingRoundsArrow from '@/assets/icons/IconFundraisingRoundsArrow';
+import IconFundraisingRoundsDetail from '@/assets/icons/IconFundraisingRoundsDetail';
+import BackerList, { BackerItem } from '@/components/BackerList/BackerList';
+import Text from '@/components/Text';
+import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
+import { cn } from '@/helpers/functions';
+import { FetchCoinFundraising } from '@/usecases/coin-info';
+import { Divider, Flex } from 'antd';
+import moment from 'moment';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
+const Fundraising = (props: any) => {
+  const searchParams = useSearchParams();
+  const target = searchParams.get('target');
 
-const Fundraising = (props:any) => {
+  const refDetail = useRef<HTMLDivElement>(null);
+  const refBacker = useRef<HTMLDivElement>(null);
+
   const [overView, setOverview] = useState<any>([]);
   const [fundraisings, setFundraisings] = useState<IFundraisings[]>([]);
   const symbol = props.data?.symbol || '';
+
+  const PricePerRound: any[] = useMemo(() => {
+    if (
+      !!overView?.pricePerRoundName?.length &&
+      !!overView?.pricePerRoundPrice?.length
+    ) {
+      return overView?.pricePerRoundName.map((item: any, index: any) => {
+        return {
+          name: item,
+          price: overView?.pricePerRoundPrice[index],
+        };
+      });
+    }
+    return [];
+  }, [overView]);
+
+  const handleGoToDetail = () => {
+    if (refDetail.current)
+      refDetail.current.scrollIntoView({
+        behavior: 'smooth',
+      });
+  };
 
   useEffect(() => {
     fetchFundraising();
@@ -24,7 +57,7 @@ const Fundraising = (props:any) => {
     });
     setOverview(res?.overview);
     let fundraisings = res?.fundraisings || [];
-  
+
     for (let i in fundraisings) {
       fundraisings[i].id = i;
       fundraisings[i].isVisible = false;
@@ -41,229 +74,325 @@ const Fundraising = (props:any) => {
     });
   };
 
+  useLayoutEffect(() => {
+    if (target === 'backer') {
+      setTimeout(() => {
+        if (refBacker.current)
+          refBacker.current.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+      }, 500);
+    }
+  }, [target]);
+
   return (
-    <div>
-      <h1 className='text-grey-700 text-xl font-bold mb-2'>Overview</h1>
-      <div className='grid grid-cols-12 gap-4 mb-6'>
-        <div className='col-span-12 md:col-span-6 bg-white rounded-lg box-shadow-common'>
-          <div>
-            <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
-              <h1 className='text-grey-700 text-base font-bold'>Summary</h1>
+    <Flex vertical>
+      <Flex vertical gap={8} className='pb-3'>
+        <Text weight='bold' size={20} lineHeight={28}>
+          Overview
+        </Text>
+        <Flex vertical gap={24}>
+          <div className='grid grid-cols-12 gap-4'>
+            <div className='col-span-12 md:col-span-6 bg-white rounded-lg box-shadow-common'>
+              <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
+                <Text weight='bold' size={16} lineHeight={24}>
+                  Summary
+                </Text>
+              </div>
+              <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
+                <Flex vertical gap={4} align='center'>
+                  <Text type='secondary' size={12}>
+                    Total Funds Raised
+                  </Text>
+                  <Text weight='semiBold' size={16} lineHeight={24}>
+                    {overView?.totalFundRaised
+                      ? nFormatter(overView?.totalFundRaised | 0, 2, '$')
+                      : '-'}
+                  </Text>
+                </Flex>
+                <Flex vertical gap={4} align='center'>
+                  <Text type='secondary' size={12}>
+                    AVG Price
+                  </Text>
+                  <Text weight='semiBold' size={16} lineHeight={24}>
+                    {overView?.avgPrice
+                      ? nFormatter(overView?.avgPrice | 0, 2, '$')
+                      : '-'}
+                  </Text>
+                </Flex>
+                <Flex vertical gap={4} align='center'>
+                  <Text type='secondary' size={12}>
+                    Rounds
+                  </Text>
+                  <Text weight='semiBold' size={16} lineHeight={24}>
+                    {overView?.round_number ? overView?.round_number : '-'}
+                  </Text>
+                </Flex>
+                <Flex vertical gap={4} align='center'>
+                  <Text type='secondary' size={12}>
+                    Lead Backers
+                  </Text>
+                  <Text weight='semiBold' size={16} lineHeight={24}>
+                    {overView?.leadBackers ? overView?.leadBackers : '-'}
+                  </Text>
+                </Flex>
+              </div>
             </div>
-            <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
-              <div className='text-center'>
-                <p className='text-grey-500 font-medium text-xs mb-2'>
-                  Total Funds Raised
-                </p>
-                <h2 className='text-grey-700 text-base font-semibold'>
-                  {overView?.totalFundRaised ? nFormatter(overView?.totalFundRaised | 0, 2, '$') : '-'}
-                </h2>
+            <div className='col-span-12 md:col-span-6 bg-white rounded-lg box-shadow-common'>
+              <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
+                <Text weight='bold' size={16} lineHeight={24}>
+                  Price Per Round
+                </Text>
               </div>
-              <div className='text-center'>
-                <p className='text-grey-500 font-medium text-xs mb-2'>
-                  AVG Price
-                </p>
-                <h2 className='text-grey-700 text-base font-semibold'>
-                  {overView?.avgPrice ? nFormatter(overView?.avgPrice | 0, 2, '$') : '-'}
-                </h2>
-              </div>
-              <div className='text-center'>
-                <p className='text-grey-500 font-medium text-xs mb-2'>
-                  Rounds
-                </p>
-                <h2 className='text-grey-700 text-base font-semibold'>
-                  {overView?.round_number ? overView?.round_number : '-'}
-                </h2>
-              </div>
-              <div className='text-center'>
-                <p className='text-grey-500 font-medium text-xs mb-2'>
-                  Lead Backers
-                </p>
-                <h2 className='text-grey-700 text-base font-semibold'>
-                  {overView?.leadBackers ? overView?.leadBackers : '-'}
-                </h2>
+              <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
+                {PricePerRound.slice(0, 4).map((item, i) => {
+                  return (
+                    <Flex key={i} vertical gap={4} align='center'>
+                      <Text type='secondary' size={12}>
+                        {item.name}
+                      </Text>
+                      <Text weight='semiBold' size={16} lineHeight={24}>
+                        {item.price ? currencyFormat(item.price, '$') : '-'}
+                      </Text>
+                    </Flex>
+                  );
+                })}
+                {PricePerRound.length > 4 && (
+                  <Flex align='center'>
+                    <Text
+                      color='primary'
+                      size={12}
+                      onClick={handleGoToDetail}
+                      className={'cursor-pointer'}
+                    >
+                      +{PricePerRound.length - 4} Rounds
+                    </Text>
+                  </Flex>
+                )}
               </div>
             </div>
           </div>
-        </div>
-        <div className='col-span-12 md:col-span-6 bg-white rounded-lg box-shadow-common'>
-          <div className='flex flex-col gap-2'>
-            <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
-              <h1 className='text-grey-700 text-base font-bold'>
-                Price Per Round
-              </h1>
-            </div>
-            <div className='w-full p-6 flex flex-wrap items-center justify-around gap-4'>
-              <div className='text-center'>
-                <p className='text-grey-500 font-medium text-xs mb-2'>
-                  Private
-                </p>
-                <h2 className='text-grey-700 text-base font-semibold'>
-                  {overView?.pricePerRoundPrice ? nFormatter(overView?.pricePerRoundPrice, 2, '$') : '-'}
-                </h2>
-              </div>
-              <div className='text-center'>
-                <p className='text-grey-500 font-medium text-xs mb-2'>
-                  Strategic
-                </p>
-                <h2 className='text-grey-700 text-base font-semibold'>
-                  {overView?.strategic ? nFormatter(overView?.strategic, 2, '$') : '-'}
-                </h2>
-              </div>
-              <div className='text-center'>
-                <p className='text-grey-500 font-medium text-xs mb-2'>Seed</p>
-                <h2 className='text-grey-700 text-base font-semibold'>
-                  {overView?.seed ? nFormatter(overView?.seed, 2, '$') : '-'}
-                </h2>
-              </div>
-              <div className='text-center'>
-                <p className='text-grey-500 font-medium text-xs mb-2'>
-                  Pre-Seed
-                </p>
-                <h2 className='text-grey-700 text-base font-semibold'>
-                  {overView?.pre_seed ? nFormatter(overView?.pre_seed, 2, '$') : '-'}
-                </h2>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='bg-white rounded-lg box-shadow-common mb-6'>
-        <div className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'>
-          <h1 className='text-grey-700 text-base font-bold'>
-            Backer
-            <span className='text-grey-500 ml-1'>
-              {overView?.backers?.length}
-            </span>
-          </h1>
-        </div>
-        <BackerList
-          backers={overView?.backers}
-          initNumber={4}
-          type={'backer'}
-        />
-      </div>
-      <h1 className='text-grey-700 text-xl font-bold mb-2'>
-        Details
-      </h1>
-      {fundraisings.map((item, index) => (
-        <div
-          key={index}
-          className='box-shadow-common mb-6'
-        >
-          <div className='flex items-center justify-between flex-wrap gap-6 p-4'>
-            <div className='flex flex-col gap-6 item-center'>
-              <div className='flex items-center gap-2'>
-                <IconFundraisingRoundsDetail />
-                <div className='text-sm text-grey-700 font-bold'>
-                  {item.type}
-                </div>
-              </div>
-              {item.isVisible ? (
-                <div className='text-primary-500 text-sm font-semibold'>
-                  {new Date(item.date || Date.now()).toLocaleDateString()}
-                </div>
-              ) : (
-                ''
-              )}
-            </div>
-            <div className='flex flex-col gap-6 item-center'>
-              <div className='text-center'>
-                <div className='text-grey-500 text-sm mb-2'>Price</div>
-                <div className='text-grey-700 text-sm font-semibold'>
-                  {nFormatter(item.price || 0, 2, '$')}
-                </div>
-              </div>
-              {item.isVisible ? (
-                <div className='text-grey-500 text-sm'>
-                  Valuation:
-                  <span className='font-semibold'>
-                    {nFormatter(item.valuation || 0, 2, '$')}
-                  </span>
-                </div>
-              ) : (
-                ''
-              )}
-            </div>
-            <div className='flex flex-col gap-6 item-center'>
-              <div className='text-center'>
-                <div className='text-grey-500 text-sm mb-2'>Raise</div>
-                <div className='text-grey-700 text-sm font-semibold'>
-                  {nFormatter(item.raised | 0, 2, '$')}
-                </div>
-              </div>
-              {item.isVisible ? (
-                <div className='text-grey-500 text-sm'>
-                  Tokens Offered:{' '}
-                  <span className='font-semibold'>
-                    {nFormatter(item.tokensOffered || 0, 2, '$')}(
-                    {nFormatter(item.percenOfTokens || 0, 2, '%', true)})
-                  </span>
-                </div>
-              ) : (
-                ''
-              )}
-            </div>
-            <div className='flex flex-col gap-6 item-center'>
-              <div className='text-center'>
-                <div className='text-grey-500 text-sm mb-2'>ROI</div>
-                <div className='text-grey-700 text-sm font-semibold'>
-                  {nFormatter(item.roi || 0, 2, 'x', true)}
-                </div>
-              </div>
-              {item.isVisible ? (
-                <div className='text-grey-500 text-sm'>
-                  ATH ROI:
-                  <span className='font-semibold'>
-                    {nFormatter(item.athROI || 0, 2, 'x', true)}
-                  </span>
-                </div>
-              ) : (
-                ''
-              )}
-            </div>
-            <div className='flex flex-col gap-6 item-center'>
-              <div className='text-center'>
-                <div className='text-grey-500 text-sm mb-2'>Unlocked</div>
-                <div className='text-grey-700 text-sm font-semibold'>
-                  {nFormatter(item.unlockedPercent | 0, 2, '%', true)}
-                </div>
-              </div>
-              {item.isVisible ? (
-                <div className='text-grey-500 text-sm'>
-                  {nFormatter(item.unlockedTokens || 0, 2, symbol)}~
-                  <span className='font-semibold'>
-                    {nFormatter(item.unlockedValue || 0, 2, symbol)}
-                  </span>
-                </div>
-              ) : (
-                ''
-              )}
-            </div>
+          <div className='bg-white rounded-lg box-shadow-common'>
             <div
-              className={
-                'min-w-[100px] flex items-start justify-center transition-all ' +
-                (item.isVisible ? 'rotate-180' : '')
-              }
-              onClick={() => handleToggle(item.id)}
+              ref={refBacker}
+              className='w-full px-6 py-2 border-b border-solid border-grey-200 flex justify-center items-center'
             >
-              <IconFundraisingRoundsArrow />
+              <Text weight='bold' size={16} lineHeight={24}>
+                Backer{' '}
+                <Text type='secondary' size={16} lineHeight={24}>
+                  {overView?.backers?.length}
+                </Text>
+              </Text>
             </div>
+            <BackerList
+              hasTier
+              backers={overView?.backers}
+              initNumber={4}
+              type={'backer'}
+            />
           </div>
-          {
-            item?.backers && item?.backers.length > 0 ? (
-              <div className={'w-full p-6 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 items-start border-t border-grey-300 ' + (item.isVisible ? '' : 'hidden') }>
-                {item?.backers.map((item: any, index: any) => (
-                  <div className='flex justify-start items-center'>
-                    <BackerItem key={index} item={item} />
-                  </div>
-                ))}
+        </Flex>
+      </Flex>
+      <Flex ref={refDetail} vertical gap={8} className='py-3'>
+        <Text weight='bold' size={20} lineHeight={28}>
+          Details
+        </Text>
+        {fundraisings.map((item, index) => (
+          <div
+            key={index}
+            onClick={() => handleToggle(item.id)}
+            className='box-shadow-common cursor-pointer'
+          >
+            <Flex gap={24} align='center'>
+              <Flex
+                justify='space-between'
+                wrap='wrap'
+                gap={24}
+                align='flex-start'
+                flex={1}
+                className={cn('p-4')}
+              >
+                <div className='flex flex-col gap-6'>
+                  <Flex gap={8} align='center' className='min-h-[52px]'>
+                    <IconFundraisingRoundsDetail />
+                    <Text
+                      weight='bold'
+                      size={20}
+                      lineHeight={28}
+                      ellipsis
+                      maxWidth={200}
+                      className={'min-w-40'}
+                    >
+                      {item.type}
+                    </Text>
+                  </Flex>
+                  {item.isVisible ? (
+                    <div>
+                      <Link
+                        target='_blank'
+                        href={item?.linkToAnnouncement}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Text weight='semiBold' color='primary'>
+                          {item?.date
+                            ? moment(item?.date).format('DD MMM YYYY')
+                            : '-'}
+                        </Text>
+                      </Link>
+                    </div>
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <div className='flex flex-col gap-6 item-center'>
+                  <Flex vertical gap={8} align='center'>
+                    <Text type='secondary'>Price</Text>
+                    <Text weight='semiBold' size={16} lineHeight={24}>
+                      {item?.price ? currencyFormat(item?.price, '$') : '-'}
+                    </Text>
+                  </Flex>
+                  {item.isVisible && item?.valuation && (
+                    <Text type='secondary'>
+                      Valuation:{' '}
+                      <Text type='secondary' weight='semiBold'>
+                        {item?.valuation
+                          ? currencyFormat(item?.valuation || 0, '$')
+                          : ''}
+                      </Text>
+                    </Text>
+                  )}
+                </div>
+                <div className='flex flex-col gap-6 item-center'>
+                  <Flex vertical gap={8} align='center'>
+                    <Text type='secondary'>Raise</Text>
+                    <Text weight='semiBold' size={16} lineHeight={24}>
+                      {item?.raised
+                        ? currencyFormat(item?.raised | 0, '$')
+                        : '-'}
+                    </Text>
+                  </Flex>
+                  {item.isVisible && item?.tokensOffered ? (
+                    <Flex gap={2}>
+                      <Text type='secondary'>Tokens Offered:</Text>
+                      <Text type='secondary' weight='semiBold'>
+                        {item?.tokensOffered
+                          ? currencyFormat(item.tokensOffered || 0, '$')
+                          : ''}
+                      </Text>
+                      {item?.percenOfTokens && (
+                        <Text type='secondary' weight='semiBold'>
+                          (
+                          {item?.percenOfTokens
+                            ? nFormatter(item?.percenOfTokens, 2, '%', true)
+                            : '-'}
+                          )
+                        </Text>
+                      )}
+                    </Flex>
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <div className='flex flex-col gap-6 item-center'>
+                  <Flex vertical gap={8} align='center'>
+                    <Text type='secondary'>ROI</Text>
+                    <Text weight='semiBold' size={16} lineHeight={24}>
+                      {item?.roi
+                        ? nFormatter(item.roi || 0, 2, 'x', true)
+                        : '-'}
+                    </Text>
+                  </Flex>
+                  {item.isVisible && item?.athROI ? (
+                    <Text type='secondary'>
+                      ATH ROI:{' '}
+                      <Text type='secondary' weight='semiBold'>
+                        {item?.athROI
+                          ? nFormatter(item.athROI || 0, 2, 'x', true)
+                          : ''}
+                      </Text>
+                    </Text>
+                  ) : (
+                    ''
+                  )}
+                </div>
+                <div className='flex flex-col gap-6 item-center'>
+                  <Flex vertical gap={8} align='center'>
+                    <Text type='secondary'>Unlocked</Text>
+                    <Text weight='semiBold' size={16} lineHeight={24}>
+                      {item?.unlockedPercent
+                        ? nFormatter(item.unlockedPercent | 0, 2, '%', true)
+                        : '-'}
+                    </Text>
+                  </Flex>
+                  {item.isVisible ? (
+                    item?.unlockedTokens && item?.unlockedValue ? (
+                      <Text type='secondary'>
+                        {item?.unlockedTokens
+                          ? currencyFormat(item.unlockedTokens || 0, symbol)
+                          : '-'}{' '}
+                        ~{' '}
+                        {item?.unlockedValue
+                          ? currencyFormat(item.unlockedValue || 0, symbol)
+                          : '-'}
+                      </Text>
+                    ) : (
+                      ''
+                    )
+                  ) : (
+                    ''
+                  )}
+                </div>
+              </Flex>
+              <div
+                className={
+                  'min-w-[100px] flex items-start justify-center transition-all ' +
+                  (item.isVisible ? 'rotate-180' : '')
+                }
+              >
+                <IconFundraisingRoundsArrow />
               </div>
-            ) : ''
-          }
-        </div>
-      ))}
-    </div>
+            </Flex>
+            {item?.backers && item?.backers.length > 0 ? (
+              <>
+                {item.isVisible && (
+                  <Divider className='!border-[#E5E6EB] !m-0' />
+                )}
+                <Flex
+                  gap={16}
+                  vertical
+                  align='center'
+                  className={cn('py-6', !item.isVisible && '!hidden')}
+                >
+                  <Text
+                    type='secondary'
+                    weight='bold'
+                    size={16}
+                    lineHeight={24}
+                  >
+                    Backers {item?.backers.length}
+                  </Text>
+                  <div
+                    className={cn(
+                      'w-full px-6 grid grid-cols-1 md:grid-cols-3',
+                      'lg:grid-cols-4 xl:grid-cols-5 gap-6 items-start'
+                    )}
+                  >
+                    {item?.backers.map((item: any, index: any) => (
+                      <div className='flex justify-start items-center'>
+                        <BackerItem key={index} item={item} hasTier />
+                      </div>
+                    ))}
+                  </div>
+                </Flex>
+              </>
+            ) : (
+              ''
+            )}
+          </div>
+        ))}
+      </Flex>
+    </Flex>
   );
 };
 

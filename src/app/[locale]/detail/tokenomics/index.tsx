@@ -1,14 +1,21 @@
+'use client';
+
 import { FetchCoinTokenomics } from '@/usecases/coin-info';
 import TokenomicsInfo from './info/TokenomicsInfo';
 import TokenAllocation from './token';
+import { useEffect, useState } from 'react';
 
-export default async  function Tokenomics(props:any) {
-
+export default function Tokenomics(props:any) {
+  const [tokenomics, setTokenomics] = useState(null)
   async function fetchTokenomics() {
-    const tokenomics = FetchCoinTokenomics({ coin_key: props.slug });
-    return tokenomics;
+    const token: any = await FetchCoinTokenomics({ coin_key: props.slug });
+    setTokenomics(token)
   }
-  const tokenomics = await fetchTokenomics();
+
+  useEffect(() => {
+    fetchTokenomics()
+  }, [])
+  
   return (
     <div>
       {

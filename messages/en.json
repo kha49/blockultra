@@ -2,5 +2,9 @@
   "Header": {
     "watchlist": "Watchlist",
     "portfolio": "Portfolio"
+  },
+  "UnlockSchedule": {
+    "usThisWeek": "Unlocks This Week",
+    "usNextWeek": "Unlocks Next Week"
   }
 }

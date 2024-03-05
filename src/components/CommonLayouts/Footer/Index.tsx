@@ -3,13 +3,23 @@ import { IconFacebook } from '@/assets/icons/IconFacebook';
 import { IconPinterest } from '@/assets/icons/IconPinterest';
 import { IconTikTok } from '@/assets/icons/IconTikTok';
 import { IconYoutube } from '@/assets/icons/IconYoutube';
+import { cn } from '@/helpers/functions';
 import Image from 'next/image';
 import './index.scss';
 
 export default function Footer() {
   return (
-    <div className='footer mx-auto max-w-2xl px-4 py-3'>
-      <div className='footer__wrapper lg:flex justify-between gap-8 lg:gap-auto '>
+    <div
+      className={cn(
+        'footer mx-auto max-w-2xl px-4',
+        'border-t border-[#E5E6EB] border-solid'
+      )}
+    >
+      <div
+        className={cn(
+          'footer__wrapper lg:flex justify-between gap-8 lg:gap-auto py-6'
+        )}
+      >
         <div className='introduce mb-10 lg:mb-0'>
           <div className='introduce__image mb-4'>
             <Image src='/logo.png' alt='logo' width={131} height={131} />

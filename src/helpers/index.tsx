@@ -1,13 +1,25 @@
 import { IconDown } from '@/assets/icons/home/IconDown';
 import { IconUp } from '@/assets/icons/home/IconUp';
 import { Tooltip } from 'antd';
-import { round } from 'lodash';
 import { ColumnType } from 'antd/es/table/interface';
+import { round } from 'lodash';
+import { ReactNode } from 'react';
+import { cn, dollarFormat } from './functions';
+
+const recursiveZero: (num: number, digits: number) => string = (
+  num,
+  digits
+) => {
+  const numNumber = Number(num);
+  if (numNumber === 0) return '0';
+  const numFixed = round(numNumber, digits);
+  if (numFixed === 0) return recursiveZero(num, digits + 1);
+  return numFixed.toString();
+};
 
 interface IoptionCurrencyFormat {
-  isAutoZero?: boolean;
   numberRound?: number;
-  addToolTip?: boolean;
+  symbolLast?: true;
 }
 
 export const sleep = (time: number) => {
@@ -29,45 +41,100 @@ export const currencyFormat = (
   options?: IoptionCurrencyFormat
 ) => {
   if (!value) return 0;
-  if (value > 1000) {
-    return nFormatter(value, 2, currencySymbol);
-  }
+  if (value >= 1)
+    return nFormatter(
+      value,
+      options?.numberRound || 2,
+      currencySymbol,
+      options?.symbolLast
+    );
 
-  let price = 0;
-  let roundNumber = options?.numberRound ?? 2;
-  do {
-    price = round(value, roundNumber);
+  let roundValue = 0;
+  let roundValueString = '';
+  let roundNumber = options?.numberRound || 3;
 
-    if (price === 0) {
+  const valueString = value.toString();
+  if (valueString.includes('e')) {
+    const lastNumber = valueString.split('e')[1];
+    roundNumber = Math.abs(Number(lastNumber)) + 1;
+  } else {
+    while (true) {
+      const priceArray = value?.toFixed(roundNumber).split('');
+      if (
+        !!Number(priceArray[priceArray.length - 3]) &&
+        Number(priceArray[priceArray.length - 3]) !== 0
+      )
+        break;
+
       roundNumber += 1;
     }
-  } while (price === 0);
+  }
 
-  const priceFomat = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: roundNumber,
-  })
-    .format(round(price, roundNumber))
-    .replace('$', '');
+  roundValue = Number(
+    dollarFormat(value, { removeSymbol: true, maxDigits: roundNumber })
+  );
+  roundValueString = value.toFixed(roundNumber);
 
-  if (priceFomat.length >= 7 && value < 1) {
-    return tooltipMaxLength(priceFomat, currencySymbol);
+  while (true) {
+    if (roundValueString.slice(-1) === '0')
+      roundValueString = roundValueString.slice(0, -1);
+    else break;
+  }
+
+  if (Math.abs(roundValue) < 0.0001 && Math.abs(value) < 1) {
+    let quantity = 3;
+    if (roundValueString.slice(-3, -1) === '00') quantity = 2;
+    else if (roundValueString.slice(-3, -2) !== '0') quantity = 4;
+    return tooltipMaxLength(roundValueString, currencySymbol, quantity);
   }
 
   return (
     <span className='whitespace-nowrap'>
-      {`${currencySymbol}${priceFomat}`}
+      {`${!options?.symbolLast ? currencySymbol : ''}${roundValue}${
+        options?.symbolLast ? currencySymbol : ''
+      }`}
     </span>
   );
 };
 
-export const percentFormat = (value: number, className?: string) => {
-  if (!value) {
-    value = 0;
+export const percentFormat: any = (
+  value: number,
+  className?: string,
+  options = {
+    precision: 2,
+    noSymbol: false,
+    noStyle: false,
   }
+): string | ReactNode => {
+  if (!value) return 0;
   try {
-    const roundValue = round(value, 2);
+    let roundValue = 0;
+    let roundValueString = '';
+    if (Math.abs(value) > 1) roundValue = round(value, options?.precision);
+    else {
+      let roundNumber = options?.precision ?? 2;
+
+      const valueString = value.toString();
+      if (valueString.includes('e')) {
+        const lastNumber = valueString.split('e')[1];
+        roundNumber = Math.abs(Number(lastNumber)) + 1;
+      } else {
+        while (true) {
+          const priceArray = value.toFixed(roundNumber).split('');
+          if (
+            !!Number(priceArray[priceArray.length - 2]) &&
+            Number(priceArray[priceArray.length - 2]) !== 0
+          )
+            break;
+
+          roundNumber += 1;
+        }
+      }
+
+      roundValue = round(value, roundNumber);
+      roundValueString = value.toFixed(roundNumber);
+    }
+
     let textStyle = 'text-gray-10';
     if (roundValue === 0) {
       textStyle = 'text-gray-500';
@@ -77,10 +144,34 @@ export const percentFormat = (value: number, className?: string) => {
       textStyle = 'text-red-500';
     }
 
+    while (true) {
+      const lastRoundValue = roundValueString.slice(-1);
+      if (lastRoundValue === '0')
+        roundValueString = roundValueString.slice(0, -1);
+      else break;
+    }
+
+    if (Math.abs(roundValue) < 0.0001 && Math.abs(value) < 1) {
+      let quantity = 3;
+      if (roundValueString.slice(-3, -1) === '00') quantity = 2;
+      return tooltipMaxLength(
+        roundValueString,
+        options?.noSymbol ? '' : '%',
+        quantity,
+        true,
+        options.noStyle ? undefined : textStyle
+      );
+    }
+
     return (
-      <p className={`${textStyle} whitespace-nowrap ${className}`}>
+      <p
+        className={`${
+          !options.noStyle && textStyle
+        } whitespace-nowrap ${className}`}
+      >
         {value >= 0 ? '+' : ''}
-        {roundValue !== 0 ? roundValue : '0.00'}%
+        {roundValue !== 0 ? roundValue : '0.00'}
+        {options?.noSymbol ? '' : '%'}
       </p>
     );
   } catch (error) {
@@ -118,44 +209,10 @@ export const nFormatter = (
   num: number,
   digits: number,
   symbol: string,
-  positionSymbolEnd?: boolean
+  positionSymbolEnd?: boolean,
+  space?: boolean
 ) => {
-  if (!num) {
-    return 0;
-  }
-  const lookup = [
-    { value: 1, symbol: '' },
-    { value: 1e3, symbol: 'K' },
-    { value: 1e6, symbol: 'M' },
-    { value: 1e9, symbol: 'B' },
-    { value: 1e12, symbol: 'T' },
-    { value: 1e15, symbol: 'P' },
-    { value: 1e18, symbol: 'E' },
-  ];
-  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
-  var item = lookup
-    .slice()
-    .reverse()
-    .find(function (item) {
-      return num >= item.value;
-    });
-  const price = item
-    ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
-    : '0';
-  return (
-    <span className='whitespace-nowrap'>
-      {positionSymbolEnd ? price + symbol : symbol + price}
-    </span>
-  );
-};
-
-export const nFormatter2 = (
-  num: number,
-  digits: number,
-  symbol: string,
-  positionSymbolEnd?: boolean
-) => {
-  if (!num) {
+  if (!num || !Number(num)) {
     return '-';
   }
   const lookup = [
@@ -176,7 +233,45 @@ export const nFormatter2 = (
     });
   const price = item
     ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
-    : '0';
+    : recursiveZero(num, digits);
+
+  return (
+    <span className='whitespace-nowrap'>
+      {positionSymbolEnd
+        ? price + (space ? ' ' : '') + symbol
+        : symbol + (space ? ' ' : '') + price}
+    </span>
+  );
+};
+
+export const nFormatter2 = (
+  num: number,
+  digits: number,
+  symbol: string,
+  positionSymbolEnd?: boolean
+) => {
+  if (!num || !Number(num)) {
+    return '-';
+  }
+  const lookup = [
+    { value: 1, symbol: '' },
+    { value: 1e3, symbol: 'K' },
+    { value: 1e6, symbol: 'M' },
+    { value: 1e9, symbol: 'B' },
+    { value: 1e12, symbol: 'T' },
+    { value: 1e15, symbol: 'P' },
+    { value: 1e18, symbol: 'E' },
+  ];
+  const rx = /\.0+$|(\.[0-9]*[1-9])0+$/;
+  var item = lookup
+    .slice()
+    .reverse()
+    .find(function (item) {
+      return num >= item.value;
+    });
+  const price = item
+    ? (num / item.value).toFixed(digits).replace(rx, '$1') + item.symbol
+    : recursiveZero(num, digits);
   return (
     <span className='whitespace-nowrap'>
       {positionSymbolEnd ? price + symbol : symbol + price}
@@ -243,15 +338,29 @@ export const convertNumberToThreeDot = (num: any) => {
   );
 };
 
-export const tooltipMaxLength = (value: string | number, symbol: string) => {
-  value = value.toString();
-  if (value.length < 7) return value;
-  const start = value.slice(0, 3);
-  const end = value.slice(value.length - 3, value.length);
-  const tooltipData = start.concat('...').concat(end);
+export const tooltipMaxLength = (
+  value: string | number,
+  symbol: string,
+  quantity = 4,
+  symbolEnd?: boolean,
+  textStyle?: string
+) => {
+  const isNegativeNumber = Number(value) < 0;
+  const valueString = value.toString();
+  const start = valueString.slice(0, isNegativeNumber ? 4 : 3);
+  const end = valueString.slice(
+    valueString.length - quantity,
+    valueString.length
+  );
+  let tooltipData = `${start.concat('...').concat(end)}`;
+  if (symbolEnd) tooltipData += symbol;
+  else tooltipData = symbol.concat(tooltipData);
+  if (symbol === '%' && !isNegativeNumber) tooltipData = `+${tooltipData}`;
   return (
-    <Tooltip title={value.toString()}>
-      <span className='whitespace-nowrap'>{`${symbol}${tooltipData}`}</span>
+    <Tooltip title={valueString} overlayClassName='tooltip-light'>
+      <span
+        className={cn(`whitespace-nowrap`, textStyle)}
+      >{`${tooltipData}`}</span>
     </Tooltip>
   );
 };

@@ -22,13 +22,14 @@ const IntroduceCoin = (props: any) => {
           </a>
         </div>
       </div>
-      <div className='mb-6 text-sm text-grey-600 max-h-[300px] overflow-y-auto' dangerouslySetInnerHTML={
-        { __html: props.data?.description }
-      }>
-      </div>
+      <div
+        className='mb-6 text-sm text-grey-600 max-h-[300px] overflow-y-auto'
+        dangerouslySetInnerHTML={{ __html: props.data?.description }}
+      ></div>
       <div className='w-full flex'>
         <button
-          className={`text-sm px-10 py-3 rounded-lg whitespace-nowrap btn-primary text-white mx-auto`}
+          disabled
+          className={`text-sm px-10 py-3 rounded-lg whitespace-nowrap btn-disabled text-white mx-auto`}
         >
           Follow
         </button>

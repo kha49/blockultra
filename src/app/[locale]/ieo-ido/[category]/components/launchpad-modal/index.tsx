@@ -1,10 +1,10 @@
-import { Avatar, Flex, Modal } from 'antd';
-import Link from 'next/link';
-import React from 'react';
-import { IIeoIdoData } from '../../types';
-import { IeoIdoCategory } from '../../config';
-import { useParams } from 'next/navigation';
+import Text from '@/components/Text';
 import { changeImageUrl } from '@/helpers/functions';
+import { Avatar, Flex, Modal } from 'antd';
+import { useParams } from 'next/navigation';
+import React from 'react';
+import { IeoIdoCategory } from '../../config';
+import { IIeoIdoData } from '../../types';
 
 type IChildrenCallback = {
   onOpen: () => void;
@@ -44,35 +44,62 @@ export default function LaunchpadModal(props: LaunchpadProps) {
     isOpen,
   };
 
+  const handleGoToLaunchpad = (key: string) => {
+    window.open(
+      window.location.origin + `/${locale}/ieo-ido/top-ido-launchpads/${key}`
+    );
+  };
+
   return (
     <>
       {children(childrenCallback)}
       <Modal
-        title='Launchpads'
+        title={
+          <Text weight='bold' size={20} lineHeight={28}>
+            Launchpads
+          </Text>
+        }
         onCancel={handleCancel}
         centered
         open={isOpen}
         footer={null}
         styles={{
+          header: {
+            paddingTop: 20,
+            paddingLeft: 24,
+            paddingRight: 24,
+            marginBottom: 24,
+          },
           content: {
-            height: 'auto',
+            overflow: 'hidden',
+            padding: 0,
+            maxHeight: 468,
+          },
+          body: {
+            paddingBottom: 20,
+            paddingLeft: 24,
+            paddingRight: 20,
+            marginRight: 4,
             overflowY: 'auto',
+            height: 'auto',
+            maxHeight: 392,
           },
         }}
+        classNames={{
+          content: 'modal-scroll',
+        }}
       >
-        <Flex vertical gap={16} className='mt-6'>
-          {data?.map((item, index) => (
-            <Link
-              href={`/${locale}/ieo-ido/${IeoIdoCategory.topIdoLaunchpads}/${item.key}/${category}`}
-              key={index}
-              target='_blank'
-              className='flex items-center gap-2 hover:cursor-pointer'
-            >
+        <Flex vertical gap={16}>
+          {data.map((item: any) => (
+            <Flex align='center' gap={12} key={item.name}>
               <Avatar src={changeImageUrl(item.image)} alt='avatar' size={32} />
-              <span className='text-sm font-normal text-[#333747]'>
+              <Text
+                onClick={() => handleGoToLaunchpad(item.key)}
+                className={'cursor-pointer'}
+              >
                 {item.name}
-              </span>
-            </Link>
+              </Text>
+            </Flex>
           ))}
         </Flex>
       </Modal>

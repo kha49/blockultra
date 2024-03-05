@@ -1,18 +1,40 @@
 import IconCircle from '@/assets/icons/IconCircle';
 import CountdownTimer from '@/components/CountdownTimer/CountDownTimer';
+import Text from '@/components/Text';
 import { currencyFormat, nFormatter, percentFormat } from '@/helpers';
+import { cn } from '@/helpers/functions';
 import moment from 'moment';
-import React from 'react';
+import { useMemo } from 'react';
 
-const Progress = ({tokenInfo, data}: any) => {
-  // const data = props.data;
+const Progress = ({ tokenInfo, data }: any) => {
   if (!data) return;
+
+  const TotalRemainingTime = useMemo(() => {
+    if (!data.totalRemainingTime) return '';
+
+    const now = Number(moment().format('X'));
+    const target = Number(moment(data.totalRemainingTime).format('X'));
+    const isPast = now >= target;
+    const between = isPast ? now - target : target - now;
+
+    const value = moment.duration(between, 'seconds').asDays();
+
+    let symbol = '';
+    if (isPast) symbol = value > 1 ? ' days ago' : ' day ago';
+    else symbol = value > 1 ? ' days left' : ' day left';
+
+    return (
+      <Text size={20} lineHeight={28} type='secondary'>
+        {value.toFixed(0)}
+        {symbol}
+      </Text>
+    );
+  }, [data.totalRemainingTime]);
+
   const date = new Date(data.totalRemainingTime || Date.now);
-  let unlockPercent: number = data.totalUnlockedPercent || 0;
-  let lockedPercent: number = data.totalLockedPercent || 0;
+  const unlockPercent: number = data.totalUnlockedPercent || 0;
+  const lockedPercent: number = data.totalLockedPercent || 0;
   const nextUnlockPercent: number = data.totalNextUnlockPercent;
-  unlockPercent = unlockPercent < 100 ? unlockPercent : 100;
-  lockedPercent = lockedPercent < 100 ? lockedPercent : 100;
   const nextUnlockToken =
     (data.unlockedTokens || 0 * nextUnlockPercent || 0) / unlockPercent || 1;
 
@@ -25,85 +47,102 @@ const Progress = ({tokenInfo, data}: any) => {
         <span className='text-grey-700 font-bold text-xl'>
           Total Unlock Progress
         </span>
-        <span className='text-grey-500 font-bold text-xl'>
-          {moment(date).fromNow()}
+        <span className='text-grey-500 font-medium text-xl'>
+          {TotalRemainingTime}
         </span>
       </div>
       <div className='flex items-center justify-between flex-wrap gap-4'>
-        <div className='w-full xl:max-w-[750px]'>
+        <div
+          className={cn(
+            'w-full ',
+            !!data?.totalNextUnlockPercent && 'xl:max-w-[750px]'
+          )}
+        >
           <div className='flex items-center justify-between'>
             <div className='flex items-center gap-3'>
               <IconCircle color='#5766FF' />
-              <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
+              <Text weight='bold' size={16} lineHeight={24}>
                 Unlocked
-              </span>
-              <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
-                {currencyFormat(unlockPercent, '', { numberRound: 2 })}%
-              </span>
+              </Text>
+              <Text weight='bold' size={16} lineHeight={24}>
+                {currencyFormat(data.totalUnlockedPercent, '%', {
+                  numberRound: 2,
+                  symbolLast: true,
+                })}
+              </Text>
             </div>
             <div className='flex items-center gap-3'>
               <IconCircle color='#E5E6EB' />
-              <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
-                Locked Unlock
-              </span>
-              <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
-                {currencyFormat(lockedPercent, '', { numberRound: 2 })}%
-              </span>
+              <Text weight='bold' size={16} lineHeight={24}>
+                Locked
+              </Text>
+              <Text weight='bold' size={16} lineHeight={24}>
+                {currencyFormat(data.totalLockedPercent, '%', {
+                  numberRound: 2,
+                  symbolLast: true,
+                })}
+              </Text>
             </div>
           </div>
           <div className='py-2 relative'>
             <div
               className='unlock absolute top-1/2 left-0 -translate-y-1/2 bg-primary-500 h-1.5 rounded-xl z-20'
-              style={{ width: unlockPercent + '%' }}
+              style={{ width: data.totalUnlockedPercent + '%' }}
             ></div>
             <div
               className='next-lock absolute top-1/2 left-0 -translate-y-1/2 bg-orange-500 h-1.5 rounded-xl z-10'
-              style={{ width: processNextUnlockPercent + '%' }}
+              style={{
+                width: unlockPercent ? processNextUnlockPercent + '%' : 0,
+              }}
             ></div>
             <div className='locked bg-grey-300 w-full h-1.5 rounded-xl'></div>
           </div>
           <div className='flex items-center justify-between flex-wrap'>
-            <span className='text-grey-500 text-sm font-medium font-jb'>
-              {nFormatter(data.totalUnlockedToken, 2, '')} ~
-              {nFormatter(data.unlockedTokens, 2, '$')}
-            </span>
-            <span className='text-grey-500 text-sm font-medium font-jb'>
-              {nFormatter(data.lockedTokens, 2, '')}~
-              {nFormatter(data.totalLockedToken, 2, '$')}
-            </span>
+            <Text type='secondary'>
+              {tokenInfo.symbol} {currencyFormat(data?.totalUnlockedToken, '')}
+              <span> ~ </span>
+              {currencyFormat(data?.totalUnlockedValue, '$')}
+            </Text>
+            <Text type='secondary'>
+              {tokenInfo.symbol} {currencyFormat(data?.totalLockedToken, '')}
+              <span> ~ </span>
+              {currencyFormat(data?.totalLockedValue, '$')}
+            </Text>
           </div>
         </div>
 
-        <div className='md:flex items-center justify-between gap-9 mx-auto xl:mx-0'>
-          <div className='w-full mb-4'>
-            <div className='flex items-center justify-center gap-3'>
-              <IconCircle />
-              <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
-                Next Unlock
-              </span>
-              <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
-                {percentFormat(data.totalNextUnlockPercent)}
-              </span>
+        {!!data?.totalNextUnlockPercent && (
+          <div className='md:flex items-center justify-between gap-9 mx-auto xl:mx-0'>
+            <div className='w-full mb-4'>
+              <div className='flex items-center justify-center gap-3'>
+                <IconCircle />
+                <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
+                  Next Unlock
+                </span>
+                <span className='text-grey-700 text-xs md:text-base font-bold font-jb'>
+                  {percentFormat(data?.totalNextUnlockPercent)}
+                </span>
+              </div>
+              <div className='text-grey-500 text-sm'>
+                {nFormatter(data?.totalNextUnlockToken, 2, '')}~
+                {nFormatter(
+                  data?.totalNextUnlockToken * tokenInfo.price,
+                  2,
+                  '$'
+                )}{' '}
+                (
+                {nFormatter(
+                  (data?.totalNextUnlockToken * tokenInfo.price * 100) /
+                    (tokenInfo.marketCap / tokenInfo.price),
+                  2,
+                  ''
+                )}
+                % of M.Cap)
+              </div>
             </div>
-            <div className='text-grey-500 text-sm'>
-              {nFormatter(data?.totalNextUnlockToken, 2, '')}~
-              {nFormatter(
-                data?.totalNextUnlockToken * tokenInfo.price,
-                2,
-                '$'
-              )}{' '}
-              (
-              {nFormatter(
-                (data?.totalNextUnlockToken * tokenInfo.price * 100) /
-                  (tokenInfo.marketCap / tokenInfo.price),
-                2,
-                ''
-              )}
-              % of M.Cap)
-            </div>
+            <CountdownTimer targetDate={date} />
           </div>
-          <CountdownTimer targetDate={date} />
-        </div>
+        )}
       </div>
     </div>
   );

@@ -1,20 +1,40 @@
-import React from 'react';
-import { Socials } from '../socials';
-import { Overview } from '../overview';
+import BreadcrumbContext from '@/context/Breadcrumb/BreadcrumbContext';
 import { Tabs } from 'antd';
-import './index.scss';
+import { useLocale } from 'next-intl';
 import dynamic from 'next/dynamic';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { memo, useContext, useEffect, useState } from 'react';
+import { Overview } from '../overview';
+import { Socials } from '../socials';
+import './index.scss';
 
-const IEOIDODetail = dynamic(() => import('../ieoido'), { ssr: false })
-const Unlock = dynamic(() => import('../unlock'), { ssr: false })
-const Markets = dynamic(() => import('../markets'), { ssr: false })
-const Tokenomics = dynamic(() => import('../tokenomics'), { ssr: false })
-const Profile = dynamic(() => import('../profile/Profile'), { ssr: false })
-const Fundraising = dynamic(() => import('../fundraising/Fundraising'), { ssr: false })
-
+const IEOIDODetail = dynamic(() => import('../ieoido'), { ssr: false });
+const Unlock = dynamic(() => import('../unlock'), { ssr: false });
+const Markets = dynamic(() => import('../markets'), { ssr: false });
+const Tokenomics = dynamic(() => import('../tokenomics'), { ssr: false });
+const Profile = dynamic(() => import('../profile/Profile'), { ssr: false });
+const Fundraising = dynamic(() => import('../fundraising/Fundraising'), {
+  ssr: false,
+});
 
 const CoinTabInfo = (props: any) => {
-  const data = props?.data ;
+  const searchParams = useSearchParams();
+  const tab = searchParams.get('tab');
+  const router = useRouter();
+  const locale = useLocale();
+
+  const [activeKey, setActiveKey] = useState('1');
+
+  const { breadcrumbs, handleBreadcrumb } = useContext(BreadcrumbContext);
+
+  const handleActiveKey = (key: string) => {
+    const label = tabs.find((t) => t.id === key)?.label;
+    let url = `/${locale}/detail/${props.slug}`;
+    if (key !== '1') url += `?tab=${label?.toLowerCase()}`;
+    router.push(url);
+  };
+
+  const data = props?.data;
   const tabs = [
     {
       id: '1',
@@ -77,12 +97,43 @@ const CoinTabInfo = (props: any) => {
       component: '',
     },
   ];
+
+  useEffect(() => {
+    const urlTab = tab?.toLowerCase();
+    const findKey = tab
+      ? tabs.find((t) => t.label.toLowerCase() === urlTab)?.id
+      : '1';
+    if (breadcrumbs.length >= 3 && activeKey !== findKey) {
+      let newBreadcrumbs = breadcrumbs.slice(2, 3);
+      if (tab) {
+        setActiveKey(
+          tabs.find((t) => t.label.toLowerCase() === urlTab)?.id || '1'
+        );
+        newBreadcrumbs = [
+          ...newBreadcrumbs.map((val) => ({
+            ...val,
+            url: window.location.origin + window.location.pathname,
+          })),
+          {
+            title:
+              tabs.find((t) => t.label.toLowerCase() === urlTab)?.label || '',
+          },
+        ];
+      } else setActiveKey('1');
+
+      handleBreadcrumb(newBreadcrumbs, {
+        holdData: 2,
+      });
+    }
+  }, [tab, breadcrumbs, activeKey]);
+
   return (
     <div className='detail-tab'>
       <div>
         <Tabs
-          defaultActiveKey='1'
           tabPosition={'top'}
+          activeKey={activeKey}
+          onChange={handleActiveKey}
           items={tabs?.map((tab) => {
             return {
               label: tab.label,
@@ -97,4 +148,4 @@ const CoinTabInfo = (props: any) => {
   );
 };
 
-export default CoinTabInfo;
+export default memo(CoinTabInfo);

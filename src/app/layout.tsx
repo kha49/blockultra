@@ -1,8 +1,8 @@
 import '@/assets/app.scss';
+import '@/assets/scss/globals.css';
 import type { Metadata } from 'next';
 import 'slick-carousel/slick/slick-theme.css';
 import 'slick-carousel/slick/slick.css';
-import '@/assets/scss/globals.css';
 
 export const metadata: Metadata = {
   title: 'BlockUltra',
@@ -12,14 +12,37 @@ export const metadata: Metadata = {
   },
 };
 
-import type { PropsWithChildren } from 'react';
 import { RootStyleRegistry } from '@/components/RootStyle';
+import { cn } from '@/helpers/functions';
+import { ConfigProvider } from 'antd';
+import type { PropsWithChildren } from 'react';
 
 export default function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang='en' suppressHydrationWarning={true}>
       <body className={'font-jm font-medium text-base'}>
-        <RootStyleRegistry>{children}</RootStyleRegistry>
+        <RootStyleRegistry>
+          <ConfigProvider
+            typography={{
+              style: {
+                color: '#333747',
+              },
+            }}
+            button={{
+              style: {
+                color: '#333747',
+              },
+              className: cn(
+                'disabled:!text-[#9FA4B7]',
+                'disabled:!bg-white',
+                'disabled:!border-[#E5E6EB]',
+                'disabled:!border-[1.5px]'
+              ),
+            }}
+          >
+            {children}
+          </ConfigProvider>
+        </RootStyleRegistry>
       </body>
     </html>
   );

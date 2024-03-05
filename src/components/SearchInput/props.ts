@@ -3,7 +3,11 @@ export interface IGlobalSearch {
   coins: ICoin[];
   fundraisings: IFundraising[];
   upcomings: IUpcoming[];
-  trendings: ITrending[];
+  trendings: ITrendingCustom[];
+  exchanges: any[];
+  launchpads: any[];
+  backers: any[];
+  unlocks: any[];
 }
 
 export interface IRecent {
@@ -15,6 +19,7 @@ export interface IRecent {
 export interface ICategory {
   id: number;
   name: string;
+  slug: string;
 }
 
 export interface ICoin {
@@ -43,7 +48,7 @@ export interface IFundraising {
   key: string;
   name: string;
   symbol: any;
-  image: string;
+  icon: string;
   price: IPrice;
   priceChangeIn24h: number;
 }
@@ -64,5 +69,15 @@ export interface ITrending {
   image: IImage;
   rank?: number;
   price: IPrice;
+  priceChangeIn24h: number;
+}
+
+export interface ITrendingCustom {
+  key: string;
+  name: string;
+  symbol: string;
+  image: IImage;
+  rank?: number;
+  price: number;
   priceChangeIn24h: number;
 }

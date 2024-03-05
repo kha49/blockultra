@@ -76,7 +76,7 @@ export default function GraphLine(props: GraphLineProps) {
   const { data, color, width, height } = props;
 
   const mappedData = {
-    labels: data.map((_, index) => index + ''),
+    labels: data?.map((_, index) => index + ''),
     datasets: [
       {
         data: data,

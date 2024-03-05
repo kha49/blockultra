@@ -332,7 +332,7 @@ export default function Chart(props: any) {
                       key={item.id}
                     >
                       <SwitchAllocation
-                        id={item.id}
+                        _id={item.id}
                         isActive={item.isActive}
                         title={item.title}
                         activeColor={item.activeColor}

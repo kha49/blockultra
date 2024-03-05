@@ -12,8 +12,8 @@ export default function BaseTable(props: any) {
     pageSize,
     currentPage,
     total,
-    _onChangePage,
-    _onChangeSize,
+    onChangePagingParams,
+    // _onChangeSize,
     ...rest
   } = props;
 
@@ -26,6 +26,32 @@ export default function BaseTable(props: any) {
       </span>
     );
   };
+
+  const _changePageSize = (pageSize: number) => {
+    const totalItem = pageSize * currentPage;
+    let pageChange = currentPage;
+    if (totalItem > total) {
+      const maxPage = Math.round(total / pageSize);
+      pageChange = maxPage;
+    }
+    onChangePagingParams({
+      page: pageChange,
+      pageSize,
+    });
+  };
+
+  const _onChangePage = (page: number) => {
+    onChangePagingParams({
+      pageSize,
+      page,
+    });
+  };
+  // const _onChangeSize = (pageSize: number) => {
+  //   onChangePagingParams({
+  //     pageSize,
+  //     page: currentPage,
+  //   });
+  // };
 
   return (
     <div className='base-table'>
@@ -58,7 +84,7 @@ export default function BaseTable(props: any) {
           />
         </div>
         <div>
-          <SelectItemTable onChange={_onChangeSize} pageSize={pageSize} />
+          <SelectItemTable onChange={_changePageSize} pageSize={pageSize} />
         </div>
       </div>
     </div>

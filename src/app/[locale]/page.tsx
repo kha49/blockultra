@@ -1,5 +1,6 @@
-import dynamic from 'next/dynamic';
 import { validateLocale } from '@/helpers/validate-locale';
+import { Flex } from 'antd';
+import dynamic from 'next/dynamic';
 
 const Banner = dynamic(() => import('../home/banner'), { ssr: true });
 
@@ -12,10 +13,10 @@ export default function Home(props: PageProps) {
   validateLocale(props);
 
   return (
-    <div>
+    <Flex vertical gap={80} className='pt-[60px] pb-10 px-8 mx-auto max-w-2xl'>
       <Banner />
       <RenderTabs />
       <Introduce />
-    </div>
+    </Flex>
   );
 }

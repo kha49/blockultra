@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { IBankerData } from '../../types';
+import BreadcrumbContext from '@/context/Breadcrumb/BreadcrumbContext';
 import { FetchDetailBanker } from '@/usecases/fundraising';
 import dynamic from 'next/dynamic';
+import { useContext, useEffect, useState } from 'react';
+import { IBankerData } from '../../types';
 
 const FundraisingDetailOverview = dynamic(
   () => import('./components/fundraising-detail-overview'),
@@ -16,11 +17,15 @@ const FundraisingDetailTable = dynamic(
 
 const Main = ({ params }: any) => {
   const [data, setData] = useState<IBankerData | any>(null);
+
+  const { handleBreadcrumb } = useContext(BreadcrumbContext);
+
   const fetchDetail = async () => {
     try {
       const res: any = await FetchDetailBanker({
         backer_id: params.id,
       });
+      if (res.name) handleBreadcrumb([{ title: res.name }]);
       setData(res);
     } catch (error) {
       return null;
@@ -31,22 +36,13 @@ const Main = ({ params }: any) => {
     fetchDetail();
   }, [params.id]);
 
-  const _renderInfo = () => {
-    if (!data) return null;
-    return <FundraisingDetailOverview data={data} />;
-  };
-
   return (
     <div>
-      {data ? (
+      {data && (
         <>
-          <div className='bg-white-imp container-shadow '>{_renderInfo()}</div>
-          <div className='bg-white-imp container-shadow '>
-            <FundraisingDetailTable slug={data?.slug || ''} />
-          </div>
+          <FundraisingDetailOverview data={data} />
+          <FundraisingDetailTable slug={data?.slug || ''} />
         </>
-      ) : (
-        ''
       )}
     </div>
   );

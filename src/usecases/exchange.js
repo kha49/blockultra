@@ -2,7 +2,7 @@ import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
 
-const prefix = "api-service/api/";
+const prefix = 'api/';
 
 export const FetchList = (params) => {
   return apiClient.get(prefix + 'exchanges', params);
@@ -18,4 +18,8 @@ export const FetchSpotList = (params) => {
 
 export const SearchCoinsInFilter = (params) => {
   return apiClient.get(prefix + 'exchanges/spots/search', params);
+};
+
+export const SpotDetailSearch = (params) => {
+  return apiClient.get(prefix + 'exchange-detail/spots/search', params);
 };

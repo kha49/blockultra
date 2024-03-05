@@ -46,4 +46,8 @@
   .btn-secondary {
     @apply py-[7px] text-grey-700 border-solid border border-grey-300;
   }
+
+  .btn-disabled {
+    @apply py-2 text-white bg-gray-300;
+  }
 }

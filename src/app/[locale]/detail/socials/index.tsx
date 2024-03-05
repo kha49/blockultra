@@ -103,7 +103,7 @@ export const Socials = () => {
                 </span>
               </div>
               <div className='time text-right font-medium text-xs leading-normal font-jm text-grey-500'>
-               -
+                -
               </div>
             </div>
           </div>
@@ -114,7 +114,7 @@ export const Socials = () => {
                   Followers
                 </div>
                 <div className='visit__number font-bold text-xl leading-normal font-jm'>
-                 -
+                  -
                 </div>
               </div>
               <div className='visit-chart'>
@@ -127,12 +127,12 @@ export const Socials = () => {
                   View
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                 -
+                  -
                 </div>
               </div>
               <div className='interact'>
                 <div className='font-medium text-sm leading-normal font-jm text-grey-500'>
-                  Interact
+                  Engagement
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
                   -
@@ -193,7 +193,7 @@ export const Socials = () => {
               </div>
               <div className='interact'>
                 <div className='font-medium text-sm leading-normal font-jm text-grey-500'>
-                  Interact
+                  Engagement
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
                   -
@@ -254,7 +254,7 @@ export const Socials = () => {
               </div>
               <div className='interact'>
                 <div className='font-medium text-sm leading-normal font-jm text-grey-500'>
-                  Interact
+                  Engagement
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
                   -
@@ -310,15 +310,15 @@ export const Socials = () => {
                   View
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                 -
+                  -
                 </div>
               </div>
               <div className='interact'>
                 <div className='font-medium text-sm leading-normal font-jm text-grey-500'>
-                  Interact
+                  Engagement
                 </div>
                 <div className='font-bold text-sm leading-normal font-jm'>
-                 -
+                  -
                 </div>
               </div>
             </div>
@@ -360,7 +360,7 @@ export const Socials = () => {
                 href='https://coin98.net/'
                 className='font-medium text-sm leading-normal font-jm text-grey-500'
               >
-                https://coin98.net
+                -
               </a>
             </div>
           </div>

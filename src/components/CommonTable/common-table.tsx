@@ -1,10 +1,11 @@
-import React, { forwardRef, memo } from 'react';
-import { Table, TableProps } from 'antd';
-import { get, sumBy } from 'lodash';
-import { ColumnType } from 'antd/es/table';
-import './index.scss';
 import { renderSortIcon } from '@/helpers';
+import { cn } from '@/helpers/functions';
+import { Table, TableProps } from 'antd';
+import { ColumnType } from 'antd/es/table';
+import { get, sumBy } from 'lodash';
+import { forwardRef, memo } from 'react';
 import { useWindowSize } from 'usehooks-ts';
+import './index.scss';
 
 type RecordType = Record<string, any>;
 
@@ -69,6 +70,8 @@ const WapperTable = forwardRef((props: IWapperTable, ref?: any) => {
       <Table
         ref={ref}
         {...props}
+        sticky
+        className={cn(props.className, 'overflow-visible')}
         columns={columnsConvert}
         scroll={{ x: 'max-content' }}
         showSorterTooltip={false}

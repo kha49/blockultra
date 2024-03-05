@@ -1,5 +1,7 @@
 'use client';
 import { Page } from '@/components/page';
+import BreadcrumbContext from '@/context/Breadcrumb/BreadcrumbContext';
+import { useContext, useEffect } from 'react';
 import { getBreadcrumbDetailConfig } from '../../config';
 import './index.scss';
 import Main from './main';
@@ -13,18 +15,21 @@ type PageProps = {
   searchParams: any;
 };
 
-export default async function FundraisingDetail({
-  params,
-  searchParams,
-}: PageProps) {
-  const { category } = params;
+export default function FundraisingDetail(props: PageProps) {
+  const { handleBreadcrumb } = useContext(BreadcrumbContext);
+
+  useEffect(() => {
+    handleBreadcrumb(
+      getBreadcrumbDetailConfig(props?.params?.category, props?.params?.locale),
+      {
+        resetData: true,
+      }
+    );
+  }, []);
 
   return (
-    <Page
-      breadcrumbs={getBreadcrumbDetailConfig(category, searchParams?.name)}
-      contentClassnames='pt-4 pb-3'
-    >
-      <Main params={params} />
+    <Page contentClassnames='pt-4 pb-3'>
+      <Main params={props?.params} />
     </Page>
   );
 }

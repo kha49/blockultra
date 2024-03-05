@@ -45,6 +45,7 @@ const Gainers = () => {
         item.average24 = average24;
         return item;
       });
+      res.data.sort((a: { priceChangeIn24: number; }, b: { priceChangeIn24: number; }) => b.priceChangeIn24 - a.priceChangeIn24);
       setGainers(res.data);
     });
   }
@@ -61,6 +62,7 @@ const Gainers = () => {
         item.average24 = average24;
         return item;
       });
+      res.data.sort((a: { priceChangeIn24: number; }, b: { priceChangeIn24: number; }) => b.priceChangeIn24 - a.priceChangeIn24);
       setLosers(res.data);
     });
   }

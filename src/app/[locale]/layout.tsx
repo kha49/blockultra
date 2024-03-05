@@ -1,8 +1,8 @@
-import { PropsWithChildren } from 'react';
-import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from 'react-toastify';
-import dynamic from 'next/dynamic';
 import { validateLocale } from '@/helpers/validate-locale';
+import dynamic from 'next/dynamic';
+import { PropsWithChildren } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Header = dynamic(
   () => import('@/components/CommonLayouts/Header/Index'),
@@ -13,6 +13,11 @@ const Footer = dynamic(
   { ssr: true }
 );
 
+const BreadcrumbProvider = dynamic(
+  () => import('../../context/Breadcrumb/BreadcrumbProvider'),
+  { ssr: true }
+);
+
 export default function LocaleLayout(props: PageProps & PropsWithChildren) {
   const { children } = props;
   validateLocale(props);
@@ -20,7 +25,7 @@ export default function LocaleLayout(props: PageProps & PropsWithChildren) {
   return (
     <main>
       <Header />
-      {children}
+      <BreadcrumbProvider>{children}</BreadcrumbProvider>
       <Footer />
       <ToastContainer
         position='top-right'

@@ -13,3 +13,13 @@
     }
   }
 }
+
+.allocation-tooltip {
+  --antd-arrow-background-color: #fcfcfd !important;
+
+  .ant-tooltip-inner {
+    background-color: #fcfcfd !important;
+    color: #333747 !important;
+    font-size: 12px;
+  }
+}

@@ -1,14 +1,12 @@
-import { Checkbox, Flex, Select, Tag } from 'antd';
-import CustomSelect from '@/components/CustomSelect';
-import { useEffect, useRef, useState } from 'react';
-import Image from 'next/image';
-import { CloseCircleOutlined } from '@ant-design/icons';
+import { ISearchFilter } from '@/app/home/coin/props';
 import FilterCustom from '@/components/FilterCustom';
 import { IOptionAny, IOptionCustom } from '@/components/FilterCustom/props';
-import { ISearchFilter } from '@/app/home/coin/props';
-import { SearchCoinsFilter } from '@/usecases/home';
+import Text from '@/components/Text';
+import { changeImageUrl, cn } from '@/helpers/functions';
 import { FetchSearchTokenUnlock } from '@/usecases/token-unlock';
-import { changeImageUrl } from '@/helpers/functions';
+import { CloseCircleOutlined } from '@ant-design/icons';
+import { Checkbox, Flex, Select, Tag } from 'antd';
+import { useEffect, useRef, useState } from 'react';
 
 type TData = {
   id: string;
@@ -32,7 +30,7 @@ export const UsHeader = (props: UsHeaderProps) => {
     const preview = dataSelected.slice(0, 3);
     const isMore = dataSelected.length > 3;
     return (
-      <Flex gap={12} wrap={'wrap'}>
+      <Flex gap={4} wrap={'wrap'}>
         {preview.map((item, index) => (
           <Tag
             className={'filter-tag'}
@@ -40,7 +38,12 @@ export const UsHeader = (props: UsHeaderProps) => {
             onClose={() => handleRemoveTag(index)}
             key={item.key}
           >
-            <img src={changeImageUrl(item.image)} alt={'icon-select'} width={24} height={24} />
+            <img
+              src={changeImageUrl(item.image)}
+              alt={'icon-select'}
+              width={24}
+              height={24}
+            />
             {item.name}
           </Tag>
         ))}
@@ -58,31 +61,30 @@ export const UsHeader = (props: UsHeaderProps) => {
     setDataSelected(newStage);
   };
 
-  const initRef = useRef(false)
+  const initRef = useRef(false);
   useEffect(() => {
-    if(!initRef.current) {
-      initRef.current = true
+    if (!initRef.current) {
+      initRef.current = true;
       return;
-    };
+    }
     onFilter?.(dataSelected);
   }, [dataSelected]);
 
-  const _renderOption = ({ name, code, checked }: IOptionCustom) => {
+  const _renderOption = ({ name, code, checked, image }: IOptionCustom) => {
     return (
       <Select.Option isSelectOption={true} value={code} key={name}>
-        <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
-          <div className=''>
-            <span className='name mx-2'>{name}</span>
-            <span className='code px-2 rounded py-0 bg-[#EEF2F6] text-[#9FA4B7] leading-5'>
-              {code}
-            </span>
-          </div>
-          <div className='ant-checkbox'>
-            {!checked ? (
-              <Checkbox disabled className='hover:cursor-pointer' />
-            ) : null}
-          </div>
-        </div>
+        <Flex
+          className='mx-0 select-coin-custom__item'
+          align='center'
+          justify='space-between'
+          gap={8}
+        >
+          <img src={changeImageUrl(image)} width={24} height={24} alt={name} />
+          <Text className='grow'>{name}</Text>
+          {!checked ? (
+            <Checkbox  className='custom-checkbox' />
+          ) : null}
+        </Flex>
       </Select.Option>
     );
   };
@@ -110,6 +112,7 @@ export const UsHeader = (props: UsHeaderProps) => {
   const _onChange = (_value: string[], optionSelect: any) => {
     setDataSelected(optionSelect);
   };
+
   return (
     <Flex align={'center'} wrap={'wrap'} gap={10} className={'us-header'}>
       <FilterCustom
@@ -120,7 +123,9 @@ export const UsHeader = (props: UsHeaderProps) => {
         getData={_getData}
         isSortSelected='oldToNew'
         value={dataSelected}
+        overlayClassName={cn('[&_.ant-select-item]:!p-3')}
       />
+      {!!dataSelected.length && <div className='border-l border-gray-300 w-[1px] h-[44px] mx-[12px]'></div>}
       {_renderActiveTag()}
     </Flex>
   );

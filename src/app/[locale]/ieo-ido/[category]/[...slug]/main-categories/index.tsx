@@ -1,12 +1,12 @@
-import React from 'react';
-import { CategoryDistribution } from '../../types';
+import Text from '@/components/Text';
 import { Flex } from 'antd';
 import { colorChart } from '../../config';
+import { CategoryDistribution } from '../../types';
 
 const MainCategories = ({ data }: { data: CategoryDistribution[] }) => {
   return (
     <Flex vertical gap={12}>
-      {data.map((item, index) => (
+      {data.slice(3, data.length).map((item, index) => (
         <Flex gap={13} key={index}>
           <span>
             <svg
@@ -21,9 +21,9 @@ const MainCategories = ({ data }: { data: CategoryDistribution[] }) => {
               />
             </svg>
           </span>
-          <span>
+          <Text>
             {item.name}: {item.percentage.toFixed(2)}%
-          </span>
+          </Text>
         </Flex>
       ))}
     </Flex>

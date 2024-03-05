@@ -1,8 +1,9 @@
+import Text from '@/components/Text';
+import { changeImageUrl } from '@/helpers/functions';
 import { Avatar, Flex, Modal } from 'antd';
+import { useLocale } from 'next-intl';
 import React from 'react';
 import { IIeoIdoData } from '../../types';
-import _ from 'lodash';
-import { changeImageUrl } from '@/helpers/functions';
 
 type IChildrenCallback = {
   onOpen: () => void;
@@ -17,6 +18,9 @@ type LaunchpadProps = {
 
 export default function LaunchpadModal(props: LaunchpadProps) {
   const { children, data } = props;
+
+  const locale = useLocale();
+
   const [isOpen, setIsOpen] = React.useState(false);
   const showModal = () => {
     setIsOpen(true);
@@ -31,29 +35,66 @@ export default function LaunchpadModal(props: LaunchpadProps) {
     isOpen,
   };
 
+  const handleGoToLaunchpad = (key: string) => {
+    window.open(
+      window.location.origin + `/${locale}/ieo-ido/top-ido-launchpads/${key}`
+    );
+  };
+
   return (
     <>
       {children(childrenCallback)}
       <Modal
-        title='Launchpads'
+        title={
+          <Text weight='bold' size={20}>
+            Launchpads
+          </Text>
+        }
         onCancel={handleCancel}
         centered
         open={isOpen}
         footer={null}
         styles={{
+          header: {
+            paddingTop: 20,
+            paddingLeft: 24,
+            paddingRight: 24,
+            marginBottom: 24,
+          },
           content: {
-            height: 'auto',
+            overflow: 'hidden',
+            padding: 0,
+            maxHeight: 468,
+          },
+          body: {
+            paddingBottom: 20,
+            paddingLeft: 24,
+            paddingRight: 20,
+            marginRight: 4,
             overflowY: 'auto',
+            height: 'auto',
+            maxHeight: 392,
           },
         }}
+        classNames={{
+          content: 'modal-scroll',
+        }}
       >
-        <Flex vertical gap={16} className='mt-6'>
-          {data.map((item) => (
-            <Flex align='center' gap={8} key={item.name}>
-              <Avatar   src={changeImageUrl(item.avatarUrl)}  alt='avatar' size={32} />
-              <span className='text-sm font-medium font-jm text-grey-700'>
+        <Flex vertical gap={16}>
+          {data.map((item: any) => (
+            <Flex align='center' gap={12} key={item.name}>
+              <Avatar
+                src={changeImageUrl(item.avatarUrl)}
+                alt='avatar'
+                size={32}
+              />
+              <Text
+                
+                onClick={() => handleGoToLaunchpad(item.key)}
+                className={'cursor-pointer'}
+              >
                 {item.name}
-              </span>
+              </Text>
             </Flex>
           ))}
         </Flex>

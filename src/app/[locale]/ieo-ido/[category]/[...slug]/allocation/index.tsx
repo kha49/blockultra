@@ -1,8 +1,12 @@
 'use client';
 
+import Text from '@/components/Text';
 import { COLOR_CHART } from '@/helpers/constants';
+import { cn } from '@/helpers/functions';
 import { Flex, Tooltip } from 'antd';
-import ReactECharts from 'echarts-for-react';
+import { default as ReactECharts } from 'echarts-for-react';
+import { round } from 'lodash';
+import { useMemo, useRef, useState } from 'react';
 import { CategoryDistribution } from '../../types';
 import './index.scss';
 
@@ -12,7 +16,15 @@ type Props = {
 };
 
 export default function Allocation(props: Props) {
-  const _dataECharts = () => {
+  const refName = useRef<HTMLSpanElement>(null);
+  const refNameTooltip = useRef<HTMLSpanElement>(null);
+  const refPercent = useRef<HTMLSpanElement>(null);
+
+  const [nameTooltip, setNameTooltip] = useState(props.data[0]?.name);
+
+  const _dataECharts = useMemo(() => {
+    if (props.data.length === 0) return [];
+
     const _othersTotal = props.data
       .slice(3)
       .reduce((sum, curr) => sum + curr.percentage, 0);
@@ -23,67 +35,123 @@ export default function Allocation(props: Props) {
         .map((item) => ({ value: item.percentage, name: item.name })),
       { value: _othersTotal, name: 'Others' },
     ];
+  }, [props.data]);
+
+  const optionPie = useMemo(
+    () => ({
+      color: [
+        COLOR_CHART.BITTER_LEMON,
+        COLOR_CHART.MALACHITE,
+        COLOR_CHART.PAOLO_VERONESE_GREEN,
+        COLOR_CHART.TURQUOISE_SURF,
+        COLOR_CHART.CERULEAN_FROST,
+        COLOR_CHART.PLUMP_PURPLE,
+        COLOR_CHART.PURPUREUS,
+        COLOR_CHART.JAZZBERRY_JAM,
+        COLOR_CHART.CERISE,
+        COLOR_CHART.SUNSET_ORANGE,
+      ],
+      series: [
+        {
+          name: 'Launched Project Categories',
+          type: 'pie',
+          radius: ['50%', '70%'],
+          itemStyle: {
+            borderRadius: 0,
+            borderColor: '#fff',
+            borderWidth: 3,
+          },
+          label: {
+            show: false,
+          },
+          showInLegend: false,
+          labelLine: {
+            show: false,
+          },
+          data: _dataECharts,
+        },
+      ],
+    }),
+    [_dataECharts]
+  );
+
+  const handleMouseOverChart = (param: any) => {
+    if (refName.current) {
+      refName.current.innerText = param.name || '';
+      if (refNameTooltip.current)
+        refNameTooltip.current.innerText = param.name || '';
+    }
+    if (refPercent.current)
+      refPercent.current.innerText = param.percent ? param.percent + '%' : '';
   };
 
-  const optionPie = {
-    color: [
-      COLOR_CHART.BITTER_LEMON,
-      COLOR_CHART.MALACHITE,
-      COLOR_CHART.PAOLO_VERONESE_GREEN,
-      COLOR_CHART.TURQUOISE_SURF,
-      COLOR_CHART.CERULEAN_FROST,
-      COLOR_CHART.PLUMP_PURPLE,
-      COLOR_CHART.PURPUREUS,
-      COLOR_CHART.JAZZBERRY_JAM,
-      COLOR_CHART.CERISE,
-      COLOR_CHART.SUNSET_ORANGE,
-    ],
-    series: [
-      {
-        name: 'Launched Project Categories',
-        type: 'pie',
-        radius: ['50%', '70%'],
-        itemStyle: {
-          borderRadius: 0,
-          borderColor: '#fff',
-          borderWidth: 3,
-        },
-        label: {
-          show: false,
-        },
-        showInLegend: false,
-        labelLine: {
-          show: false,
-        },
-        data: _dataECharts(),
-      },
-    ],
-    tooltip: {
-      trigger: 'item',
-      formatter: '{b}',
-    },
-  };
+  const Chart = useMemo(() => {
+    return (
+      <ReactECharts
+        option={optionPie}
+        onEvents={{
+          mouseover: handleMouseOverChart,
+        }}
+      />
+    );
+  }, [optionPie]);
+
   return (
-    <div className='allocations'>
-      <div className='text-neutral-600 flex justify-center text-base font-jb leading-normal items-center'>
+    <Flex vertical align='center' className='allocations'>
+      <Text
+        weight='bold'
+        size={16}
+        lineHeight={24}
+        className={'!text-[#4F4F4F]'}
+      >
         Launched Project Categories
-      </div>
+      </Text>
       <div className='flex flex-wrap justify-center'>
         <div className='allocations__table relative justify-center flex'>
-          <ReactECharts option={optionPie} />
-          <div className='absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4 flex flex-col justify-center items-center'>
+          {Chart}
+          <div
+            className={cn(
+              'absolute top-2/4 left-2/4 -translate-x-2/4 -translate-y-2/4',
+              'flex flex-col justify-center items-center'
+            )}
+          >
+            {props.data.length === 0 && (
+              <Text size={32} lineHeight={28} type='secondary'>
+                N/A
+              </Text>
+            )}
             <Tooltip
-              title={props.data[0].name}
-              placement='top'
-              overlayClassName='allocation-tooltip'
+              title={<Text size={12}>{nameTooltip}</Text>}
+              onOpenChange={(open) => {
+                if (open && refName.current) {
+                  setNameTooltip(refName.current.innerText);
+                }
+              }}
+              overlayClassName='tooltip-light'
             >
-              <div className='text-zinc-700 text-xl font-jb leading-7 max-w-[120px] truncate'>
-                {props.data[0].name}
-              </div>
+              <Text
+                ref={refName}
+                weight='bold'
+                size={20}
+                lineHeight={28}
+                ellipsis={{
+                  open: false,
+                }}
+                maxWidth={100}
+              >
+                {props.data[0]?.name}
+              </Text>
             </Tooltip>
-            <div className='text-gray-400 text-base font-sb leading-normal'>
-              {props.data[0].percentage.toFixed(2) + '%'}
-            </div>
+            <Text
+              ref={refPercent}
+              weight='semiBold'
+              size={16}
+              lineHeight={24}
+              type='secondary'
+            >
+              {props.data[0]?.percentage &&
+                round(props.data[0]?.percentage, 2) + '%'}
+            </Text>
           </div>
         </div>
 
@@ -103,14 +171,18 @@ export default function Allocation(props: Props) {
                   />
                 </svg>
               </span>
-              <span className='font-normal'>
-                {item.name}:{item.percentage.toFixed(2)}%
-              </span>
+              <Text>
+                {item.name}: {round(item.percentage, 2)}%
+              </Text>
             </Flex>
           ))}
 
           {props.data.length > 3 && (
-            <Flex gap={13}>
+            <Flex
+              gap={13}
+              onClick={props.toggleModal}
+              className={'cursor-pointer'}
+            >
               <span>
                 <svg
                   className='w-4.5 h-5 hover:w-5.5 hover:h-6'
@@ -124,13 +196,11 @@ export default function Allocation(props: Props) {
                   />
                 </svg>
               </span>
-              <span className='font-normal'>
-                Other:{_dataECharts()[3].value.toFixed(2)}%
-              </span>
+              <Text>Other: {round(_dataECharts[3]?.value, 2)}%</Text>
             </Flex>
           )}
         </Flex>
       </div>
-    </div>
+    </Flex>
   );
 }

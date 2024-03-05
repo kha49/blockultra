@@ -1,28 +1,49 @@
 import { Pagination } from 'antd';
 import SelectItemTable from '@/components/SelectItemTable';
+import { IPagingParams } from '@/models/IPaging';
 
 export type CoreTableFooterProps = {
   total: number;
   pageSize: number;
   currentPage: number;
   length: number;
-  onChangePage: (page: number) => void;
-  onChangeSize: (size: number) => void;
+  onChangePagingParams: (params: IPagingParams) => void;
+  // onChangePage: (page: number) => void;
+  // onChangeSize: (size: number) => void;
 };
 
 export const CoreTableFooter = (props: CoreTableFooterProps) => {
-  const { total, pageSize, currentPage, length, onChangePage, onChangeSize } =
-    props;
+  const { total, pageSize, currentPage, length, onChangePagingParams } = props;
 
   const start = (currentPage - 1) * pageSize + 1;
   const end = start + length - 1;
 
   const renderRangePagination = () => {
     return (
-      <div className={'text-sm font-medium text-[#333747]'}>
+      <div className={'text-sm font-medium font-jm text-[#333747]'}>
         {start} - {end} from {total}
       </div>
     );
+  };
+
+  const _changePageSize = (pageSize: number) => {
+    const totalItem = pageSize * currentPage;
+    let pageChange = currentPage;
+    if (totalItem > total) {
+      const maxPage = Math.round(total / pageSize);
+      pageChange = maxPage;
+    }
+    onChangePagingParams({
+      page: pageChange ? pageChange : 1,
+      pageSize,
+    });
+  };
+
+  const _onChangePage = (page: number) => {
+    onChangePagingParams({
+      pageSize,
+      page,
+    });
   };
 
   return (
@@ -32,13 +53,13 @@ export const CoreTableFooter = (props: CoreTableFooterProps) => {
           total={total}
           pageSize={pageSize}
           current={currentPage}
-          onChange={onChangePage}
+          onChange={_onChangePage}
           showLessItems
           showSizeChanger={false}
         />
         <div className={'flex items-center w-full justify-between'}>
           {renderRangePagination()}
-          <SelectItemTable onChange={onChangeSize} />
+          <SelectItemTable onChange={_changePageSize} />
         </div>
       </div>
 
@@ -48,11 +69,11 @@ export const CoreTableFooter = (props: CoreTableFooterProps) => {
           total={total}
           pageSize={pageSize}
           current={currentPage}
-          onChange={onChangePage}
+          onChange={_onChangePage}
           showSizeChanger={false}
         />
         <SelectItemTable
-          onChange={onChangeSize}
+          onChange={_changePageSize}
           pageSize={pageSize.toString()}
         />
       </div>

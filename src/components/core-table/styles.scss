@@ -1,11 +1,10 @@
 .core-table {
-
   .ant-table-thead {
+    .ant-table-column-title,
     .ant-table-cell {
       font-size: 14px;
-      font-weight: 700;
-      font-family: 'Plus Jakarta Sans Medium';
-      color: black;
+      font-family: 'Plus Jakarta Sans bold';
+      color: #333747;
       background: #fff !important;
       border-top: 1px solid #f0f0f0;
       border-bottom: 1px solid #f0f0f0;
@@ -14,15 +13,24 @@
         width: 0px !important;
       }
     }
+    .ant-table-column-title {
+      border: 0px;
+    }
+  }
+  .ant-table-tbody {
+    .ant-table-cell {
+      color: #333747;
+      font-size: 14px;
+    }
   }
 
-  .ant-table-container table>thead>tr:first-child >*:first-child {
+  .ant-table-container table > thead > tr:first-child > *:first-child {
     @media (max-width: 768px) {
       border-start-start-radius: 0px !important;
     }
   }
 
-  .ant-table-container table>thead>tr:first-child >*:last-child {
+  .ant-table-container table > thead > tr:first-child > *:last-child {
     @media (max-width: 768px) {
       border-start-end-radius: 0px !important;
     }
@@ -54,7 +62,7 @@
       height: 44px;
 
       &:not(&:disabled) {
-        @apply hover:border-primary-500 hover:text-primary-500
+        @apply hover:border-primary-500 hover:text-primary-500;
       }
     }
   }
@@ -66,12 +74,42 @@
     }
 
     .ant-pagination {
-      .ant-pagination-item.ant-pagination-item-active{
-        background-color: #5766FF;
+      .ant-pagination-item.ant-pagination-item-active {
+        background-color: #5766ff;
         & > a {
           color: #fff;
         }
       }
     }
   }
+}
+
+.ant-select-selection-placeholder {
+  padding-left: 30px !important;
+}
+
+.select-coin-custom__item {
+  background-color: #fff !important;
+}
+
+.ant-select-item-option-active {
+  background-color: #fff !important;
+}
+
+.ant-select-item-option {
+  background-color: #fff !important;
+}
+
+.ant-select-item-option-selected {
+  font-weight: 400 !important;
+}
+
+.custom-checkbox .ant-checkbox-inner {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.custom-checkbox .ant-checkbox-inner::after {
+  width: 10px !important; 
+  height: 10px !important;
 }

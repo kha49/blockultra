@@ -1,14 +1,17 @@
 .header-filter {
+  .ant-btn {
+    border-radius: 8px;
+    height: 44px;
+    padding: 0 20px;
+  }
   &__options {
     .ant-btn {
-      border-radius: 8px;
-      height: 44px;
-      padding: 0 20px;
-
       &.active {
-        background: linear-gradient(180deg,
-            #547aff 0%,
-            #4551de 100%) !important;
+        background: linear-gradient(
+          180deg,
+          #547aff 0%,
+          #4551de 100%
+        ) !important;
         color: white !important;
       }
 

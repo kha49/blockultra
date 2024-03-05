@@ -1,10 +1,23 @@
-import { Flex } from 'antd';
-import { Page } from '@/components/page';
-import dynamic from 'next/dynamic';
+'use client';
 
-const DetailTabs = dynamic(() => import('./components/exchange-detail-table/tabs'), { ssr: false });
-const CoinInformation = dynamic(() => import('./components/exchange-detail-overview'), { ssr: false });
-const CoinTableInfo = dynamic(() => import('./components/exchange-detail-table'), { ssr: false });
+import { Page } from '@/components/page';
+import BreadcrumbContext from '@/context/Breadcrumb/BreadcrumbContext';
+import { Flex } from 'antd';
+import dynamic from 'next/dynamic';
+import { useContext, useEffect } from 'react';
+
+const DetailTabs = dynamic(
+  () => import('./components/exchange-detail-table/tabs'),
+  { ssr: false }
+);
+const CoinInformation = dynamic(
+  () => import('./components/exchange-detail-overview'),
+  { ssr: false }
+);
+const CoinTableInfo = dynamic(
+  () => import('./components/exchange-detail-table'),
+  { ssr: false }
+);
 
 type PageProps = {
   params: {
@@ -14,22 +27,27 @@ type PageProps = {
 };
 
 export default function Detail({ params }: PageProps) {
+  const { handleBreadcrumb } = useContext(BreadcrumbContext);
+
   const breadcrumbs = [
     {
-      title: 'BlockUltra',
-    },
-    {
       title: 'Exchanges',
+      url: `/${params.locale}/exchange/spot`,
     },
     {
       title: 'Spot',
-    },
-    {
-      title: `${params.slug}`,
+      url: `/${params.locale}/exchange/spot`,
     },
   ];
+
+  useEffect(() => {
+    handleBreadcrumb(breadcrumbs, {
+      resetData: true,
+    });
+  }, []);
+
   return (
-    <Page  breadcrumbs={breadcrumbs}>
+    <Page>
       <Flex vertical>
         <CoinInformation />
         <Flex className='box-shadow-common rounded-lg p-6' vertical gap={16}>

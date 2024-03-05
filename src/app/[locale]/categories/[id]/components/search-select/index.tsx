@@ -4,11 +4,12 @@ import {
   IOptionAny,
   IOptionCustom,
 } from '@/components/FilterCustom/props';
-import { Checkbox, Select, Tag } from 'antd';
+import Text from '@/components/Text';
+import { CategoryCoinsSearch } from '@/usecases/category';
+import { Checkbox, Flex, Select, Tag } from 'antd';
+import { useParams } from 'next/navigation';
 import React from 'react';
 import { SearchProject } from '../../types';
-import { CategoryCoinsSearch } from '@/usecases/category';
-import { useParams } from 'next/navigation';
 
 type PropsType = {
   onFilterChange: (values: string[]) => void;
@@ -18,19 +19,22 @@ type PropsType = {
 export default function SelectProject(props: PropsType) {
   const params = useParams<{ id: string }>();
   const categoryId = params.id;
-  const _renderOption = ({ name, key, checked, code }: IOptionCustom) => {
+  const _renderOption = ({ name, symbol, checked, code }: IOptionCustom) => {
     return (
       <Select.Option isSelectOption={true} value={code} key={code}>
-        <div className='flex pr-0 pl-0 mr-0 ml-0 select-coin-custom__item px-3 justify-between'>
-          <div className=''>
-            <span className='name mx-2'>{name}</span>
-          </div>
-          <div className='ant-checkbox'>
-            {!checked ? (
-              <Checkbox disabled className='hover:cursor-pointer' />
-            ) : null}
-          </div>
-        </div>
+        <Flex justify='space-between'>
+          <Flex align='center' gap={4}>
+            <Text>{name}</Text>
+            <Text
+              type='secondary'
+              size={12}
+              className='!bg-[#EEF2F6] !px-2 !rounded'
+            >
+              {symbol}
+            </Text>
+          </Flex>
+          {!checked && <Checkbox disabled className='hover:cursor-pointer' />}
+        </Flex>
       </Select.Option>
     );
   };
@@ -42,9 +46,9 @@ export default function SelectProject(props: PropsType) {
       event.stopPropagation();
     };
 
-    if (index > 3) return <></>;
+    if (index > 2) return <></>;
 
-    if (index === 3)
+    if (index === 2)
       return (
         <Tag color='#5766ff' style={{ marginRight: 3 }}>
           ...
@@ -70,13 +74,13 @@ export default function SelectProject(props: PropsType) {
       category_id: categoryId,
     });
 
-    console.log('data', data);
     return data.map((searchItem: any) => ({
       id: searchItem.key,
       name: searchItem.name,
       code: searchItem.key,
       thumb: '',
       isSelected: false,
+      symbol: searchItem.symbol,
     }));
   };
 
@@ -89,6 +93,8 @@ export default function SelectProject(props: PropsType) {
         props.onFilterChange(keys);
       }}
       getData={_getData}
+      className='!font-jm'
+      overlayClassName='[&_.ant-select-item]:!p-3'
     />
   );
 }

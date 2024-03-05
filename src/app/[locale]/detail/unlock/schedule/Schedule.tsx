@@ -1,44 +1,97 @@
 'use client';
 
+import { cn } from '@/helpers/functions';
+import { FetchUnlockToken } from '@/usecases/coin-info';
 import { Segmented } from 'antd';
-import { useState } from 'react';
-import TokenAllocation from '../../tokenomics/token';
+import { AnyObject } from 'antd/es/_util/type';
+import { memo, useEffect, useRef, useState } from 'react';
+import Chart from './Chart/index';
 import Rounds from './Rounds/Rounds';
 import Upcomming from './Upcomming/Upcomming';
-import Chart from './Chart/index';
 
-const Schedule = ({data, tokenInfo}: any) => {
-  const [unlock, setUnlock] = useState('Rounds');
+const Schedule = ({ slug, tokenInfo }: any) => {
+  const [data, setData] = useState<AnyObject>({
+    round: null,
+    upcoming: null,
+    ended: null,
+    chart: null,
+  });
+  const refUnlockSchedule = useRef<HTMLDivElement>(null);
+
+  const [unlock, setUnlock] = useState('round');
 
   const handler = (e: any) => {
     setUnlock(e);
+    setTimeout(
+      () =>
+        refUnlockSchedule.current?.scrollIntoView({
+          behavior: 'smooth',
+        }),
+      1000
+    );
   };
 
   const renderUnlock = () => {
     switch (unlock) {
-      case 'Rounds':
-        return <Rounds data={data} tokenInfo={tokenInfo} />;
-      case 'Upcomming':
-      case 'Past':
-        return <Upcomming tokenInfo={tokenInfo} />;
-      case 'Chart':
+      case 'round':
+        return <Rounds data={data.round} tokenInfo={tokenInfo} />;
+      case 'upcoming':
+      case 'ended':
+        return <Upcomming data={data.upcoming} tokenInfo={tokenInfo} />;
+      case 'chart':
         return <Chart data={data} />;
       default:
         break;
     }
   };
 
+  const fetchUnlock = async () => {
+    if (data[unlock]) return;
+    let res = await FetchUnlockToken({
+      coin_key: slug,
+      status: unlock,
+    });
+    setData((prev) => ({
+      ...prev,
+      [unlock]: res,
+    }));
+  };
+
+  useEffect(() => {
+    fetchUnlock();
+  }, [unlock]);
   return (
-    <div className='box-shadow-common p-6'>
+    <div ref={refUnlockSchedule} className='box-shadow-common p-6'>
       <div className='flex items-center justify-between mb-6'>
         <div className='text-xl text-grey-700 font-bold font-jb'>
           Unlock Schedule
         </div>
         <div>
           <Segmented
-            options={['Rounds', 'Upcomming', 'Past', 'Chart']}
+            options={[
+              {
+                value: 'round',
+                label: 'Rounds',
+              },
+              {
+                value: 'upcoming',
+                label: 'Upcoming',
+              },
+              {
+                value: 'ended',
+                label: 'Past',
+              },
+              {
+                value: 'chart',
+                label: 'Chart',
+              },
+            ]}
             value={unlock}
             onChange={(e) => handler(e)}
+            className={cn(
+              '[&_.ant-segmented-item-selected>div]:!text-[#5766FF]',
+              '[&_.ant-segmented-item-selected>div]:!font-jsb'
+            )}
           />
         </div>
       </div>
@@ -47,4 +100,4 @@ const Schedule = ({data, tokenInfo}: any) => {
   );
 };
 
-export default Schedule;
+export default memo(Schedule);

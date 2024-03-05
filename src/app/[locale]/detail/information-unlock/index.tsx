@@ -1,15 +1,18 @@
 'use client';
 
+import { IconUnLock } from '@/assets/icons';
+import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
+import CountdownTimer from '@/components/CountdownTimer/CountDownTimer';
+import { currencyFormat } from '@/helpers';
 import { graphic } from 'echarts';
 import ReactECharts from 'echarts-for-react';
+import moment from 'moment';
 import './style.scss';
-import CountdownTimer from '@/components/CountdownTimer/CountDownTimer';
-import { IconUnLock } from '@/assets/icons';
-import { currencyFormat } from '@/helpers';
-import IconCheckedCompleted from '@/assets/icons/IconCheckedCompleted';
 
-export default function InformationUnlock({data} : any) {
-  const countDownTime = data?.tokenUnlock ? new Date(data?.tokenUnlock.unlockChartRemainingTime) : new Date();
+export default function InformationUnlock({ data }: any) {
+  const countDownTime = data?.tokenUnlock
+    ? new Date(data?.tokenUnlock.unlockChartRemainingTime)
+    : new Date();
 
   const option = {
     color: [
@@ -49,16 +52,25 @@ export default function InformationUnlock({data} : any) {
           focus: false,
           scale: false,
         },
-        data: data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 ? [
-          { value: data?.tokenUnlock?.unlockChartLocked, name: 'Unlock' },
-          { value: data?.tokenUnlock?.unlockChartNextUnlock, name: 'Next unlock' },
-          { value: data?.tokenUnlock?.unlockChartUnlocked, name: 'Block' },
-        ] : [
-          { value: 0, name: 'Unlock'},
-          { value: 0, name: 'Next unlock' },
-          { value: 0, name: 'Block' },
-          { value: 100, name: 'N/A'}
-        ],
+        data:
+          data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0
+            ? [
+                {
+                  value: data?.tokenUnlock?.unlockChartUnlocked,
+                  name: 'Unlock',
+                },
+                {
+                  value: data?.tokenUnlock?.unlockChartNextUnlock,
+                  name: 'Next unlock',
+                },
+                { value: data?.tokenUnlock?.unlockChartLocked, name: 'Block' },
+              ]
+            : [
+                { value: 0, name: 'Unlock' },
+                { value: 0, name: 'Next unlock' },
+                { value: 0, name: 'Block' },
+                { value: 100, name: 'N/A' },
+              ],
       },
     ],
   };
@@ -67,35 +79,46 @@ export default function InformationUnlock({data} : any) {
     <div className='chart'>
       <div className='relative'>
         <div className='chart__unlock'>
-          { data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 ? <IconUnLock /> : '' }
+          {data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 ? (
+            <IconUnLock />
+          ) : (
+            ''
+          )}
           <div>
             {data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 ? (
               <div className='text-2xl text-primary-500 font-jb font-bold'>
-                {currencyFormat(data?.tokenUnlock?.unlockChartLocked, '')} %
+                {currencyFormat(data?.tokenUnlock?.unlockChartUnlocked, '')} %
               </div>
-            ) : (<span className='text-grey-200 text-2xl'>N/A</span>)}
+            ) : (
+              <span className='text-grey-200 text-2xl'>N/A</span>
+            )}
           </div>
         </div>
         <ReactECharts option={option} />
       </div>
 
-      {
-        data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 ? (
-          <CountdownTimer
-            countDownName={'Next Unlock'}
-            targetDate={countDownTime}
-          />
-        ) : ''
-      }
+      {data?.tokenUnlock &&
+      Object.keys(data?.tokenUnlock).length > 0 &&
+      data?.tokenUnlock?.unlockChartRemainingTime &&
+      moment(data?.tokenUnlock?.unlockChartRemainingTime).isAfter(moment()) ? (
+        <CountdownTimer
+          countDownName={'Next Unlock'}
+          targetDate={countDownTime}
+        />
+      ) : (
+        ''
+      )}
 
-      {
-        data && data?.tokenUnlock && Object.keys(data?.tokenUnlock).length > 0 && data?.tokenUnlock?.unlockChartLocked === 100 ? (
-          <div className='flex items-center justify-center gap-2'>
-            Fully Vested <IconCheckedCompleted />
-          </div>
-        ) : ''
-      }
-      
+      {data &&
+      data?.tokenUnlock &&
+      Object.keys(data?.tokenUnlock).length > 0 &&
+      data?.tokenUnlock?.unlockChartLocked === 100 ? (
+        <div className='flex items-center justify-center gap-2'>
+          Fully Vested <IconCheckedCompleted />
+        </div>
+      ) : (
+        ''
+      )}
     </div>
   );
 }

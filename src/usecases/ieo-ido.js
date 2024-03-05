@@ -1,7 +1,7 @@
 import { APIClient } from '../helpers/api_helper';
 
 const apiClient = new APIClient();
-const prefix = "api-service/api/";
+const prefix = "api/";
 export const FetchIeoIdo = (path, params) =>
   apiClient.get(`${prefix}${path}`, params);
 export const FetchLaunchPadProjects = (params) =>

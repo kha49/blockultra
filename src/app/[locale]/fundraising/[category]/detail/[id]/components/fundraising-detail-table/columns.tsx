@@ -1,15 +1,15 @@
+import Text from '@/components/Text';
+import { CoreCellName } from '@/components/core-table/core-cell-name';
 import {
-  renderSortIcon,
   currencyFormat,
-  percentFormat,
   nFormatter,
+  percentFormat,
+  renderSortIcon,
 } from '@/helpers';
 import { ColumnsType } from 'antd/es/table';
 import { get } from 'lodash';
 import { IPortfolios } from '../../../../types';
 import { roundsColumns } from '../../config';
-import { changeImageUrl } from '@/helpers/functions';
-import { CoreCellName } from '@/components/core-table/core-cell-name';
 
 const columnPorfolio: ColumnsType<IPortfolios> = [
   {
@@ -17,8 +17,12 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     title: '#',
     align: 'left',
     fixed: true,
-
-    render: (_, _value, index) => index + 1,
+    width: 56,
+    render: (_, record) => (
+      <Text weight='semiBold' ellipsis>
+        {record._index}
+      </Text>
+    ),
   },
   {
     key: 'name',
@@ -38,20 +42,14 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     sorter: true,
   },
   {
-    key: 'rating',
-    title: 'Rate',
-    align: 'center',
-    render: () => {
-      return '-';
-    },
-  },
-  {
     key: 'price',
     title: 'Price',
     width: 200,
     align: 'right',
     render: (_, value) => {
-      return currencyFormat(value.price, '$');
+      return (
+        <Text weight='semiBold'>{currencyFormat(value.price, '$') || '-'}</Text>
+      );
     },
     sortIcon: renderSortIcon,
     sorter: true,
@@ -62,7 +60,11 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     width: 167,
     align: 'right',
     render: (_, { price24hPercent }) => {
-      return percentFormat(price24hPercent);
+      return (
+        <Text weight='semiBold' noChildrenStyle>
+          {price24hPercent ? percentFormat(price24hPercent) : '-'}
+        </Text>
+      );
     },
     sorter: true,
   },
@@ -72,7 +74,9 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     width: 186,
     align: 'right',
     render: (_, value: any) => {
-      return nFormatter(value.volume24h, 2, '$');
+      return (
+        <Text weight='semiBold'>{nFormatter(value.volume24h, 2, '$')}</Text>
+      );
     },
     sorter: true,
   },
@@ -82,7 +86,11 @@ const columnPorfolio: ColumnsType<IPortfolios> = [
     width: 168,
     align: 'right',
     render: (_, value) => {
-      return nFormatter(Number(value.marketCap), 2, '$');
+      return (
+        <Text weight='semiBold'>
+          {nFormatter(Number(value.marketCap), 2, '$')}
+        </Text>
+      );
     },
     sorter: true,
   },
